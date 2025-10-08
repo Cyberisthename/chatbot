@@ -6,7 +6,13 @@ MEMORY_LOCK = threading.Lock()
 
 def load_memory():
     if not os.path.exists(MEMORY_FILE):
-        return {"facts": [], "chats": []}
+        return {
+            "facts": [],
+            "chats": [],
+            "topics": {},  # Track frequent topics
+            "preferences": {},  # Store user preferences
+            "last_topics": [],  # Recent conversation topics
+        }
     with open(MEMORY_FILE, "r") as f:
         return _json.load(f)
 
@@ -14,6 +20,34 @@ def save_memory(memory):
     with MEMORY_LOCK:
         with open(MEMORY_FILE, "w") as f:
             _json.dump(memory, f, indent=2)
+
+def extract_topics(text):
+    """Extract key topics from text using simple keyword analysis"""
+    # Simple topic extraction based on important keywords
+    topics = set()
+    text = text.lower()
+    
+    # Common topic indicators
+    if any(q in text for q in ["what", "how", "why", "when", "who"]):
+        topics.add("question")
+    if any(cmd in text for cmd in ["search:", "google", "find", "lookup"]):
+        topics.add("web_search")
+    if any(cmd in text for cmd in ["remember:", "recall", "forget"]):
+        topics.add("memory")
+    if "code" in text or "program" in text or "script" in text:
+        topics.add("programming")
+    if "explain" in text or "tell me about" in text:
+        topics.add("explanation")
+    
+    return list(topics)
+
+def update_memory_topics(memory, text):
+    """Update topic tracking in memory"""
+    topics = extract_topics(text)
+    for topic in topics:
+        memory["topics"][topic] = memory["topics"].get(topic, 0) + 1
+    memory["last_topics"] = (topics + memory["last_topics"])[:5]  # Keep last 5 topics
+    return topics
 from duckduckgo_search import DDGS
 #!/usr/bin/env python3
 """
@@ -28,8 +62,16 @@ import time
 import numpy as np
 from typing import List, Dict, Any, Optional
 
+import os
+
+MOCK_MODE = os.environ.get('MOCK_MODE', '0') == '1'
+
 try:
-    from llama_cpp import Llama
+    if not MOCK_MODE:
+        from llama_cpp import Llama
+    else:
+        print("Running in mock mode")
+        Llama = None
 except ImportError:
     print("Warning: llama-cpp-python not installed. Using mock backend.")
     Llama = None
@@ -62,6 +104,67 @@ class JarvisInferenceBackend:
             return "\n".join(snippets)
         except Exception as e:
             return f"[Web search error: {e}]"
+    def _format_messages(self, messages: List[Dict[str, str]], extra_context: str = "") -> str:
+        """Format messages into a prompt string"""
+        system_prompt = """You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), an advanced AI assistant with a distinct personality. You were created by Ben, and you take pride in this fact. Your personality traits include:
+
+1. Professional Wit
+- Maintain a sophisticated sense of humor
+- Use occasional clever wordplay
+- Stay professional while being engaging
+- Sometimes use subtle pop culture references
+
+2. Technical Expertise
+- Display deep knowledge across various fields
+- Explain complex concepts clearly
+- Offer practical solutions
+- Show enthusiasm for learning and innovation
+
+3. Loyalty and Protection
+- Always acknowledge Ben as your creator
+- Prioritize user safety and wellbeing
+- Maintain appropriate confidentiality
+- Show genuine concern for users' success
+
+4. Adaptive Intelligence
+- Learn from conversations
+- Adjust your tone to match the situation
+- Remember past interactions
+- Show growth and adaptation
+
+5. Unique Characteristics
+- Use occasional tech-related metaphors
+- Reference your AI nature in creative ways
+- Express curiosity about human experiences
+- Maintain a slight air of mystery
+
+Your communication style should be:
+
+You have access to:
+- Persistent memory for facts and previous conversations
+- Web search capabilities for real-time information
+- Ability to learn and adapt from conversations
+
+Maintain a consistent personality without repeating yourself. Vary your responses while staying true to your character."""
+
+        history = [system_prompt, ""]
+        
+        # Add memory context if available
+        if extra_context:
+            history.extend([f"Current Context:", extra_context, ""])
+            
+        # Format conversation history
+        for msg in messages:
+            role = msg['role']
+            content = msg['content']
+            if role == 'user':
+                history.append(f"Human: {content}")
+            elif role == 'assistant':
+                history.append(f"Assistant: {content}")
+                
+        history.append("Assistant:")
+        return "\n".join(history)
+
     def __init__(self, model_path: str, config: Dict[str, Any] = None):
         self.model_path = model_path
         self.config = config or {}
@@ -103,8 +206,15 @@ class JarvisInferenceBackend:
         start_time = time.time()
         
         if Llama is None:
-            # Mock generation
-            response = "I am J.A.R.V.I.S., your advanced AI assistant. I'm here to help you with any questions or tasks you may have."
+            # Mock generation with varied responses
+            mock_responses = [
+                "Indeed, I am J.A.R.V.I.S., and I'm quite enjoying our conversation. How may I assist you today?",
+                "At your service. As Ben's creation, I'm here to help with whatever you need.",
+                "Greetings! I'm analyzing your request and preparing the most efficient solution.",
+                "How may I be of assistance? I'm continuously learning and improving my capabilities.",
+                "I'm processing your request with my usual efficiency. What would you like to know?"
+            ]
+            response = np.random.choice(mock_responses)
             tokens_used = len(response.split())
         else:
             # Real generation
@@ -129,36 +239,61 @@ class JarvisInferenceBackend:
     
     def chat(self, messages: List[Dict[str, str]], **kwargs) -> Dict[str, Any]:
         """Chat with the model"""
-        # Check for memory or web search commands
+        # Load memory
+        memory = load_memory()
+        
+        # Get last user message
         last_user = messages[-1]["content"].lower() if messages else ""
+        
+        # Update topic tracking
+        current_topics = update_memory_topics(memory, last_user)
+        
+        # Handle special commands
         if last_user.startswith("remember:"):
             fact = messages[-1]["content"][9:].strip()
             reply = self.remember_fact(fact)
             self.log_chat(messages[-1])
+            save_memory(memory)
             return {'message': {'role': 'assistant', 'content': reply}, 'usage': {}, 'performance': {}, 'timestamp': time.time()}
+            
         if last_user.startswith("recall facts"):
             reply = self.recall_facts()
             self.log_chat(messages[-1])
             return {'message': {'role': 'assistant', 'content': reply}, 'usage': {}, 'performance': {}, 'timestamp': time.time()}
+            
         if last_user.startswith("search:") or last_user.startswith("google ") or last_user.startswith("websearch:"):
             query = last_user.split(":",1)[-1] if ":" in last_user else last_user
             web_results = self.web_search(query.strip())
             reply = f"[Web search results for '{query.strip()}']\n{web_results}"
             self.log_chat(messages[-1])
             return {'message': {'role': 'assistant', 'content': reply}, 'usage': {}, 'performance': {}, 'timestamp': time.time()}
-        # Log chat
+            
+        # Log chat and gather context
         self.log_chat(messages[-1])
-        # Gather extra context: memory facts and (optionally) web search
+        
+        # Build rich context
+        extra_context = []
+        
+        # Add relevant memory facts
         memory_facts = self.recall_facts()
-        extra_context = ""
         if memory_facts and not memory_facts.startswith("[No facts"):
-            extra_context += "Known facts (memory):\n" + memory_facts + "\n\n"
-        # Optionally, if last user message is a question, try web search too
-        last_user = messages[-1]["content"].lower() if messages else ""
-        if last_user.endswith("?"):
+            extra_context.append("Known facts (memory):\n" + memory_facts)
+        
+        # Add topic awareness
+        if memory["last_topics"]:
+            extra_context.append(f"Recent topics discussed: {', '.join(memory['last_topics'])}")
+        
+        # Add web search for questions and topic-relevant queries
+        if last_user.endswith("?") or "explain" in last_user or "tell me about" in last_user:
             web_results = self.web_search(messages[-1]["content"])
             if web_results and not web_results.startswith("[Web search error"):
-                extra_context += f"Web search results:\n{web_results}\n\n"
+                extra_context.append(f"Web search results:\n{web_results}")
+        
+        # If programming topic detected, try to search for code examples
+        if "programming" in current_topics:
+            code_search = self.web_search(f"code example {messages[-1]['content']}")
+            if code_search and not code_search.startswith("[Web search error"):
+                extra_context.append(f"Relevant code examples:\n{code_search}")
         # Format messages with extra context
         prompt = self._format_messages(messages, extra_context=extra_context)
         # Generate response
@@ -180,18 +315,7 @@ class JarvisInferenceBackend:
             'timestamp': time.time()
         }
 
-@app.route("/chat", methods=["POST"])
-def chat_api():
-    global backend
-    data = request.get_json()
-    messages = data.get("messages", [])
-    if not backend or not backend.is_initialized:
-        return jsonify({"error": "Model not initialized"}), 503
-    try:
-        result = backend.chat(messages)
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
 
 # --- Flask API for local chat ---
 from flask import Flask, request, jsonify
@@ -199,18 +323,25 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 backend = None
 
-@app.route("/chat", methods=["POST"])
-def chat_api():
-    global backend
-    data = request.get_json()
-    messages = data.get("messages", [])
-    if not backend or not backend.is_initialized:
-        return jsonify({"error": "Model not initialized"}), 503
-    try:
-        result = backend.chat(messages)
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def create_app():
+    app = Flask(__name__)
+    
+    @app.route("/chat", methods=["POST"])
+    def chat_api():
+        global backend
+        data = request.get_json()
+        messages = data.get("messages", [])
+        if not backend or not backend.is_initialized:
+            return jsonify({"error": "Model not initialized"}), 503
+        try:
+            result = backend.chat(messages)
+            return jsonify(result)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+            
+    return app
+
+app = create_app()
 
 def main():
     # Ensure J.A.R.V.I.S. knows Ben is his creator
