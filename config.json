@@ -1,0 +1,17 @@
+{
+  "model_type": "llama",
+  "vocab_size": 32000,
+  "context_size": 2048,
+  "hidden_size": 4096,
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "intermediate_size": 11008,
+  "max_position_embeddings": 2048,
+  "rope_scaling": null,
+  "tie_word_embeddings": false,
+  "use_cache": true,
+  "quantization": "q4_0",
+  "architecture": "llama",
+  "tokenizer": "sentencepiece",
+  "gguf_version": 3
+}

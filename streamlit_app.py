@@ -1,56 +1,71 @@
-import streamlit as st
-from openai import OpenAI
 
-# Show title and description.
-st.title("💬 Chatbot")
-st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+import streamlit as st
+import requests
+
+# --- Custom JARVIS UI Styling ---
+st.set_page_config(page_title="J.A.R.V.I.S. AI", page_icon="🤖", layout="wide")
+st.markdown(
+        """
+        <style>
+        body, .stApp { background-color: #0a192f; color: #00eaff; }
+        .css-18e3th9 { background: #0a192f; }
+        .css-1d391kg { background: #112240; }
+        .stChatMessage, .stTextInput, .stButton, .stMarkdown, .stAlert {
+                font-family: 'Orbitron', 'Consolas', 'Arial', sans-serif;
+                color: #00eaff;
+        }
+        .stChatMessage { border-left: 4px solid #00eaff; margin-bottom: 1em; }
+        .stTextInput > div > input { background: #112240; color: #00eaff; border: 1px solid #00eaff; }
+        .stButton > button { background: #00eaff; color: #0a192f; border-radius: 8px; }
+        .stMarkdown a { color: #64ffda; }
+        .stAlert { background: #112240; border-left: 4px solid #64ffda; }
+        </style>
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+        """,
+        unsafe_allow_html=True
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+# --- JARVIS Header ---
+st.markdown("""
+<div style='display:flex;align-items:center;gap:1em;'>
+    <img src='https://upload.wikimedia.org/wikipedia/commons/6/6a/Iron_Man_Mark_III_helmet.png' width='60'>
+    <h1 style='font-family:Orbitron,sans-serif;color:#00eaff;margin-bottom:0;'>J.A.R.V.I.S. AI</h1>
+</div>
+<div style='font-family:Orbitron,sans-serif;color:#64ffda;font-size:1.1em;margin-bottom:1em;'>
+    <b>Just A Rather Very Intelligent System</b> &mdash; Your Personal AI Assistant
+</div>
+<div style='color:#8892b0;font-size:1em;'>
+    <b>Tip:</b> To search the web, start your message with <code>search:</code>, <code>google</code>, or <code>websearch:</code>.<br>
+    <b>Memory:</b> Use <code>remember:</code> to teach J.A.R.V.I.S. facts. Use <code>recall facts</code> to see what he knows.
+</div>
+---
+""", unsafe_allow_html=True)
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+# --- Chat State ---
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    # Create a session state variable to store the chat messages. This ensures that the
-    # messages persist across reruns.
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+# --- Chat Display ---
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    # Display the existing chat messages via `st.chat_message`.
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    # Create a chat input field to allow the user to enter a message. This will display
-    # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
-
-        # Store and display the current prompt.
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
+# --- Chat Input ---
+prompt = st.chat_input("Type your command or question for J.A.R.V.I.S....")
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    try:
+        response = requests.post(
+            "http://localhost:8000/chat",
+            json={"messages": st.session_state.messages}
         )
-
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        response.raise_for_status()
+        data = response.json()
+        answer = data["message"]["content"]
+    except Exception as e:
+        answer = f"[Error communicating with local J.A.R.V.I.S. backend: {e}]"
+    with st.chat_message("assistant"):
+        st.markdown(answer)
+    st.session_state.messages.append({"role": "assistant", "content": answer})

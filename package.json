@@ -1,0 +1,50 @@
+{
+  "name": "jarvis-ai-system",
+  "version": "2.0.0",
+  "description": "Complete locally-runnable AI assistant with GGUF models",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'Build complete - J.A.R.V.I.S. is ready!'",
+    "test": "node test/test-server.js",
+    "setup": "npm install && echo 'Setup complete!'",
+    "install-deps": "npm install",
+    "postinstall": "echo '✅ J.A.R.V.I.S. AI System installed successfully!' && echo '🚀 Run \"npm start\" to launch J.A.R.V.I.S.'"
+  },
+  "keywords": [
+    "ai",
+    "artificial-intelligence",
+    "llm",
+    "gguf",
+    "local-ai",
+    "chatbot",
+    "voice-assistant",
+    "machine-learning",
+    "inference",
+    "quantized-models"
+  ],
+  "author": "J.A.R.V.I.S. AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "path": "^0.12.7",
+    "fs": "^0.0.1-security",
+    "socket.io": "^4.7.0",
+    "multer": "latest",
+    "compression": "^1.7.4",
+    "helmet": "^7.0.0",
+    "winston": "^3.10.0",
+    "dotenv": "^16.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "bin": {
+    "jarvis": "./server.js"
+  }
+}

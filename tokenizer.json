@@ -1,0 +1,30 @@
+{
+  "vocab": {
+    "<s>": 1,
+    "</s>": 2,
+    "<unk>": 0,
+    "<pad>": 3
+  },
+  "model": {
+    "type": "bpe",
+    "vocab_size": 32000,
+    "merges": []
+  },
+  "added_tokens": [
+    {
+      "id": 1,
+      "content": "<s>",
+      "special": true
+    },
+    {
+      "id": 2,
+      "content": "</s>",
+      "special": true
+    },
+    {
+      "id": 0,
+      "content": "<unk>",
+      "special": true
+    }
+  ]
+}
