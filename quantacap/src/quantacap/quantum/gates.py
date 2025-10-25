@@ -1,15 +1,15 @@
 """Elementary quantum gates for Quantacap."""
+
 from __future__ import annotations
 
 import math
 import numpy as np
 
-
 _COMPLEX = np.complex128
 
 
 def kron_n(*mats: np.ndarray) -> np.ndarray:
-    """Kronecker product of the provided matrices."""
+    """Return the Kronecker product of the provided matrices."""
     if not mats:
         raise ValueError("kron_n requires at least one matrix")
     out = np.array([[1.0]], dtype=_COMPLEX)
@@ -19,22 +19,27 @@ def kron_n(*mats: np.ndarray) -> np.ndarray:
 
 
 def I() -> np.ndarray:
+    """Single-qubit identity gate."""
     return np.eye(2, dtype=_COMPLEX)
 
 
 def X() -> np.ndarray:
+    """Pauli-X gate."""
     return np.array([[0.0, 1.0], [1.0, 0.0]], dtype=_COMPLEX)
 
 
 def Z() -> np.ndarray:
+    """Pauli-Z gate."""
     return np.array([[1.0, 0.0], [0.0, -1.0]], dtype=_COMPLEX)
 
 
 def H() -> np.ndarray:
+    """Hadamard gate."""
     return (1 / math.sqrt(2)) * np.array([[1.0, 1.0], [1.0, -1.0]], dtype=_COMPLEX)
 
 
 def RZ(theta: float) -> np.ndarray:
+    """Rotation about the Z-axis by ``theta`` radians."""
     phase = theta / 2.0
     return np.array(
         [
@@ -46,6 +51,7 @@ def RZ(theta: float) -> np.ndarray:
 
 
 def CNOT() -> np.ndarray:
+    """Two-qubit controlled-NOT gate acting on (control, target)."""
     return np.array(
         [
             [1.0, 0.0, 0.0, 0.0],

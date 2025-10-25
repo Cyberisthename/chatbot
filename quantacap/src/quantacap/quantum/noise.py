@@ -1,4 +1,5 @@
-"""Noise channels for Quantacap."""
+"""Simple noise channels implemented via Kraus operators."""
+
 from __future__ import annotations
 
 from typing import Iterable, List

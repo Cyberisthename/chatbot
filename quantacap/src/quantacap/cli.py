@@ -1,3 +1,5 @@
+"""Command-line interface for running Quantacap experiments."""
+
 import argparse
 import json
 import math

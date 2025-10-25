@@ -1,5 +1,7 @@
-import numpy as np
+"""Simple Grover search implementation used by the CLI demo."""
+
 import math
+import numpy as np
 
 
 def _hadamard(n):
