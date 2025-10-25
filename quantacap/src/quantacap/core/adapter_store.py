@@ -57,3 +57,17 @@ def load_adapter(id):
         return json.load(fh)
 
 
+def list_adapters(prefix: str | None = None) -> list[str]:
+    if not os.path.isdir(ROOT):
+        return []
+    items: list[str] = []
+    for name in os.listdir(ROOT):
+        if not name.endswith(".json"):
+            continue
+        if prefix and not name.startswith(prefix):
+            continue
+        items.append(name[:-5])
+    items.sort()
+    return items
+
+

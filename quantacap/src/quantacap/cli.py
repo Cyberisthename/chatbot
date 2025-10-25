@@ -6,7 +6,7 @@ import math
 
 import numpy as np
 
-from quantacap.core.adapter_store import create_adapter
+from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
 from quantacap.quantum.bell import bell_counts
 from quantacap.quantum.circuits import Circuit
 from quantacap.quantum.gates import H, RZ
@@ -40,6 +40,12 @@ def main():
     save_state.add_argument("--theta", type=float, required=True)
     save_state.add_argument("--n", type=int, default=1)
     save_state.add_argument("--seed", type=int, default=424242)
+
+    replay = sub.add_parser("replay", help="Replay a saved adapter (no recompute)")
+    replay.add_argument("--id", required=True)
+
+    ls_adapters = sub.add_parser("ls-adapters", help="List saved adapters")
+    ls_adapters.add_argument("--prefix", default=None)
 
     args = ap.parse_args()
 
@@ -85,6 +91,11 @@ def main():
             meta={"theta": float(args.theta)},
         )
         print(json.dumps({"saved": path}, indent=2))
+    elif args.cmd == "replay":
+        record = load_adapter(args.id)
+        print(json.dumps(record, indent=2))
+    elif args.cmd == "ls-adapters":
+        print(json.dumps(list_adapters(args.prefix), indent=2))
     else:
         raise SystemExit(2)
 
