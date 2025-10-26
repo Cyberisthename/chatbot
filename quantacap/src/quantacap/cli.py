@@ -11,11 +11,15 @@ from quantacap.core.adapter_store import create_adapter, list_adapters, load_ada
 from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
 from quantacap.experiments.chsh_rehearsal import run_chsh_scan
+from quantacap.experiments.chsh_ybit import run_chsh_y
 from quantacap.quantum.backend import create_circuit
 from quantacap.quantum.bell import bell_counts
 from quantacap.quantum.gates import H, RZ
 from quantacap.quantum.grover import grover_search
 from quantacap.quantum.xp import to_numpy
+from quantacap.primitives.ggraph import GGraph
+from quantacap.primitives.ybit import YBit
+from quantacap.primitives.zbit import ZBit
 
 
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
@@ -98,6 +102,34 @@ def main() -> None:
     chsh_scan.add_argument("--id", required=True)
     chsh_scan.add_argument("--seed", type=int, default=424242)
     _add_backend_flags(chsh_scan)
+
+    chsh_y = sub.add_parser("chsh-y", help="Run CHSH with Y-bit and G-graph modulation")
+    chsh_y.add_argument("--shots", type=int, default=50000)
+    chsh_y.add_argument("--depol", type=float, default=0.0)
+    chsh_y.add_argument("--seed", type=int, default=424242)
+    chsh_y.add_argument("--seed-id", default="demo.ybit")
+    chsh_y.add_argument("--lam", type=float, default=0.85)
+    chsh_y.add_argument("--eps", type=float, default=0.02)
+    chsh_y.add_argument("--delta", type=float, default=0.03)
+    chsh_y.add_argument("--nodes", type=int, default=4096)
+    chsh_y.add_argument("--out", type=int, default=3)
+    chsh_y.add_argument("--gamma", type=float, default=0.87)
+    chsh_y.add_argument("--id", default=None)
+    _add_backend_flags(chsh_y)
+
+    build_g = sub.add_parser("build-g", help="Build and persist a G-graph summary")
+    build_g.add_argument("--nodes", type=int, default=4096)
+    build_g.add_argument("--out", type=int, default=3)
+    build_g.add_argument("--gamma", type=float, default=0.87)
+    build_g.add_argument("--seed", type=int, default=424242)
+    build_g.add_argument("--id", default=None)
+
+    make_y = sub.add_parser("make-y", help="Synthesize a demo Y-bit from a single qubit state")
+    make_y.add_argument("--theta", type=float, default=1.234)
+    make_y.add_argument("--lam", type=float, default=0.85)
+    make_y.add_argument("--eps", type=float, default=0.02)
+    make_y.add_argument("--seed", type=int, default=424242)
+    _add_backend_flags(make_y, allow_backend=False)
 
     atom = sub.add_parser("atom1d", help="Generate synthetic atom 1-D density")
     atom.add_argument("--n", type=int, required=True)
@@ -211,6 +243,54 @@ def main() -> None:
             **backend_cfg,
         )
         print(json.dumps(result, indent=2))
+        return
+
+    if args.cmd == "chsh-y":
+        backend_cfg = _backend_kwargs(args)
+        adapter_id = args.id or f"chsh_y.{args.seed_id}"
+        result = run_chsh_y(
+            shots=args.shots,
+            depol=args.depol,
+            seed=args.seed,
+            seed_id=args.seed_id,
+            lam=args.lam,
+            eps=args.eps,
+            delta=args.delta,
+            graph_nodes=args.nodes,
+            graph_out=args.out,
+            graph_gamma=args.gamma,
+            adapter_id=adapter_id,
+            **backend_cfg,
+        )
+        print(json.dumps(result, indent=2))
+        return
+
+    if args.cmd == "build-g":
+        graph = GGraph(n=args.nodes, out_degree=args.out, gamma=args.gamma, seed=args.seed)
+        summary = graph.summary()
+        adapter_id = args.id or f"ggraph.n{args.nodes}.gamma{args.gamma:.2f}"
+        create_adapter(adapter_id, data=summary, meta={"kind": "ggraph"})
+        print(json.dumps({"id": adapter_id, "summary": summary}, indent=2))
+        return
+
+    if args.cmd == "make-y":
+        backend_cfg = _backend_kwargs(args)
+        circuit = create_circuit(1, seed=args.seed, **backend_cfg)
+        xp = getattr(circuit, "xp", None)
+        circuit.add(H(xp=xp), [0])
+        circuit.add(RZ(float(args.theta), xp=xp), [0])
+        circuit.add(H(xp=xp), [0])
+        psi = to_numpy(xp if xp is not None else np, circuit.run()).reshape(-1)
+        alpha, beta = psi[0], psi[1]
+        zbit = ZBit(seed=args.seed)
+        ybit = YBit((alpha, beta), zbit, lam=args.lam, eps_phase=args.eps)
+        out = {
+            "z_value": zbit.value(),
+            "bias": zbit.bias_sigma(),
+            "phase": zbit.phase(),
+            "ybit": ybit.info(),
+        }
+        print(json.dumps(out, indent=2))
         return
 
     if args.cmd == "atom1d":

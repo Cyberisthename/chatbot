@@ -122,6 +122,8 @@ jarvis.onVoiceCommand(async (command) => {
 ### Quantacap Discovery-Style Demos (synthetic)
 Quantacap reproduces textbook quantum signatures entirely offline using deterministic synthetic qubits. Experiments such as interference fringes, Bell correlations, and CHSH Bell-inequality violations (S≈2.828) are generated numerically and persisted as adapters for instant replay. The Atom-1D routine constructs a Gaussian bound-state density over a discrete grid and saves the resulting wavefunction statistics for later analysis—these are simulated states, not measurements of physical atoms.
 
+**Y-bit & G-graph (synthetic primitives).** We introduce a Z-bit (a scalar defined over the continuum excluding [1,2]), a Y-bit (hybrid qubit ⊗ Z-bias with phase nudge), and a G-graph (a convergent, decaying weave over thousands of adapters—“fall of infinity”). We extend CHSH to CHSH-Y, where local measurement frames receive small, deterministic adjustments from Y/G, preserving quantum structure while exposing new, reproducible patterns. Results are synthetic (classical simulation), deterministic, and replayable.
+
 ### Model Format (GGUF)
 - **Quantization**: 4-bit integer quantization (Q4_0)
 - **Compression**: ~75% size reduction with minimal quality loss
