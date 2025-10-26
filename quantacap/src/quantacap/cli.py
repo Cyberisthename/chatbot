@@ -10,6 +10,7 @@ import numpy as np
 from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
 from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
+from quantacap.experiments.chsh_rehearsal import run_chsh_scan
 from quantacap.quantum.backend import create_circuit
 from quantacap.quantum.bell import bell_counts
 from quantacap.quantum.gates import H, RZ
@@ -88,6 +89,15 @@ def main() -> None:
     chsh.add_argument("--depol", type=float, default=0.0)
     chsh.add_argument("--seed", type=int, default=424242)
     _add_backend_flags(chsh)
+
+    chsh_scan = sub.add_parser("chsh-scan", help="Run CHSH noise rehearsal scan")
+    chsh_scan.add_argument("--pmin", type=float, default=0.0)
+    chsh_scan.add_argument("--pmax", type=float, default=0.2)
+    chsh_scan.add_argument("--steps", type=int, default=21)
+    chsh_scan.add_argument("--shots", type=int, default=50000)
+    chsh_scan.add_argument("--id", required=True)
+    chsh_scan.add_argument("--seed", type=int, default=424242)
+    _add_backend_flags(chsh_scan)
 
     atom = sub.add_parser("atom1d", help="Generate synthetic atom 1-D density")
     atom.add_argument("--n", type=int, required=True)
@@ -183,6 +193,20 @@ def main() -> None:
         result = run_chsh(
             shots=args.shots,
             depol=args.depol,
+            seed=args.seed,
+            **backend_cfg,
+        )
+        print(json.dumps(result, indent=2))
+        return
+
+    if args.cmd == "chsh-scan":
+        backend_cfg = _backend_kwargs(args)
+        result = run_chsh_scan(
+            pmin=args.pmin,
+            pmax=args.pmax,
+            steps=args.steps,
+            shots=args.shots,
+            adapter_id=args.id,
             seed=args.seed,
             **backend_cfg,
         )
