@@ -5,10 +5,10 @@ from typing import Dict, Optional
 
 import numpy as np
 
-from .circuits import Circuit
+from .backend import create_circuit
 from .gates import CNOT, H
 from .noise import apply_channel_rho, depolarizing, phase_damp
-from .statevector import to_density_matrix
+from .xp import to_numpy
 
 
 def _probabilities_from_density(rho: np.ndarray) -> np.ndarray:
@@ -24,14 +24,19 @@ def bell_counts(
     shots: int = 8192,
     seed: int = 424242,
     noise: Optional[Dict[str, float]] = None,
+    *,
+    backend: str = "statevector",
+    use_gpu: bool = False,
+    dtype: str = "complex128",
+    chi: int = 32,
 ) -> Dict[str, int]:
-    circuit = Circuit(n=2, seed=seed)
-    circuit.add(H(), [0])
-    circuit.add(CNOT(), [0, 1])
+    circuit = create_circuit(2, backend=backend, seed=seed, use_gpu=use_gpu, dtype=dtype, chi=chi)
+    circuit.add(H(xp=circuit.xp), [0])
+    circuit.add(CNOT(xp=circuit.xp), [0, 1])
 
     if noise:
-        psi = circuit.run()
-        rho = to_density_matrix(psi)
+        psi = to_numpy(circuit.xp, circuit.run())
+        rho = psi @ psi.conj().T
         if noise.get("depol"):
             p = float(noise["depol"])
             for qubit in (0, 1):

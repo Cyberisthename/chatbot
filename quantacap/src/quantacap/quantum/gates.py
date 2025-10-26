@@ -1,63 +1,125 @@
-"""Elementary quantum gates for Quantacap."""
-
+"""Gate factories supporting CPU/GPU backends."""
 from __future__ import annotations
 
 import math
-import numpy as np
+from typing import Any
 
-_COMPLEX = np.complex128
+from .xp import get_xp
 
 
-def kron_n(*mats: np.ndarray) -> np.ndarray:
-    """Return the Kronecker product of the provided matrices."""
+def _resolve_backend(xp: Any | None):
+    return xp if xp is not None else get_xp(False)
+
+
+def _resolve_dtype(xp: Any, dtype: str):
+    return xp.complex128 if dtype == "complex128" else xp.complex64
+
+
+def kron_n(*mats, xp: Any | None = None):
+    xp = _resolve_backend(xp)
     if not mats:
         raise ValueError("kron_n requires at least one matrix")
-    out = np.array([[1.0]], dtype=_COMPLEX)
+    out = xp.array([[1.0]], dtype=xp.complex128)
     for mat in mats:
-        out = np.kron(out, np.asarray(mat, dtype=_COMPLEX))
+        out = xp.kron(out, xp.asarray(mat, dtype=xp.complex128))
     return out
 
 
-def I() -> np.ndarray:
-    """Single-qubit identity gate."""
-    return np.eye(2, dtype=_COMPLEX)
+def I(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.eye(2, dtype=dt)
 
 
-def X() -> np.ndarray:
-    """Pauli-X gate."""
-    return np.array([[0.0, 1.0], [1.0, 0.0]], dtype=_COMPLEX)
+def X(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.array([[0.0, 1.0], [1.0, 0.0]], dtype=dt)
 
 
-def Z() -> np.ndarray:
-    """Pauli-Z gate."""
-    return np.array([[1.0, 0.0], [0.0, -1.0]], dtype=_COMPLEX)
+def Y(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.array([[0.0, -1j], [1j, 0.0]], dtype=dt)
 
 
-def H() -> np.ndarray:
-    """Hadamard gate."""
-    return (1 / math.sqrt(2)) * np.array([[1.0, 1.0], [1.0, -1.0]], dtype=_COMPLEX)
+def Z(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.array([[1.0, 0.0], [0.0, -1.0]], dtype=dt)
 
 
-def RZ(theta: float) -> np.ndarray:
-    """Rotation about the Z-axis by ``theta`` radians."""
-    phase = theta / 2.0
-    return np.array(
+def H(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    factor = 1.0 / math.sqrt(2.0)
+    return factor * xp.array([[1.0, 1.0], [1.0, -1.0]], dtype=dt)
+
+
+def RX(theta: float, *, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    half = theta / 2.0
+    return xp.array(
         [
-            [np.exp(-1j * phase), 0.0],
-            [0.0, np.exp(1j * phase)],
+            [math.cos(half), -1j * math.sin(half)],
+            [-1j * math.sin(half), math.cos(half)],
         ],
-        dtype=_COMPLEX,
+        dtype=dt,
     )
 
 
-def CNOT() -> np.ndarray:
-    """Two-qubit controlled-NOT gate acting on (control, target)."""
-    return np.array(
+def RY(theta: float, *, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    half = theta / 2.0
+    return xp.array(
+        [
+            [math.cos(half), -math.sin(half)],
+            [math.sin(half), math.cos(half)],
+        ],
+        dtype=dt,
+    )
+
+
+def RZ(theta: float, *, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    phase = theta / 2.0
+    e_neg = math.cos(phase) - 1j * math.sin(phase)
+    e_pos = math.cos(phase) + 1j * math.sin(phase)
+    return xp.array(
+        [
+            [e_neg, 0.0],
+            [0.0, e_pos],
+        ],
+        dtype=dt,
+    )
+
+
+def CNOT(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.array(
         [
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
             [0.0, 0.0, 0.0, 1.0],
             [0.0, 0.0, 1.0, 0.0],
         ],
-        dtype=_COMPLEX,
+        dtype=dt,
+    )
+
+
+def SWAP(*, xp: Any | None = None, dtype: str = "complex128"):
+    xp = _resolve_backend(xp)
+    dt = _resolve_dtype(xp, dtype)
+    return xp.array(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        dtype=dt,
     )

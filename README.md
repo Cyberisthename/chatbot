@@ -119,6 +119,9 @@ jarvis.onVoiceCommand(async (command) => {
 
 ## 🔧 Technical Architecture
 
+### Quantacap Discovery-Style Demos (synthetic)
+Quantacap reproduces textbook quantum signatures entirely offline using deterministic synthetic qubits. Experiments such as interference fringes, Bell correlations, and CHSH Bell-inequality violations (S≈2.828) are generated numerically and persisted as adapters for instant replay. The Atom-1D routine constructs a Gaussian bound-state density over a discrete grid and saves the resulting wavefunction statistics for later analysis—these are simulated states, not measurements of physical atoms.
+
 ### Model Format (GGUF)
 - **Quantization**: 4-bit integer quantization (Q4_0)
 - **Compression**: ~75% size reduction with minimal quality loss

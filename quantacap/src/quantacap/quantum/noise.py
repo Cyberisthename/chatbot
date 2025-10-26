@@ -6,7 +6,8 @@ from typing import Iterable, List
 
 import numpy as np
 
-from .statevector import apply_unitary
+from .statevector import apply_unitary, init_state
+from .xp import to_numpy
 
 _COMPLEX = np.complex128
 
@@ -16,12 +17,14 @@ def _expand_operator(U: np.ndarray, targets: Iterable[int], n: int) -> np.ndarra
     if not targets:
         raise ValueError("targets must be provided")
     dim = 2**n
+    psi, xp = init_state(n)
     out = np.zeros((dim, dim), dtype=_COMPLEX)
+    unitary = xp.asarray(U, dtype=psi.dtype)
     for basis in range(dim):
-        col = np.zeros((dim, 1), dtype=_COMPLEX)
-        col[basis, 0] = 1.0
-        transformed = apply_unitary(col, U, targets, n)
-        out[:, basis] = transformed[:, 0]
+        psi[:, 0] = 0.0
+        psi[basis, 0] = 1.0
+        transformed = apply_unitary(psi, unitary, targets, n, xp)
+        out[:, basis] = to_numpy(xp, transformed)[:, 0]
     return out
 
 

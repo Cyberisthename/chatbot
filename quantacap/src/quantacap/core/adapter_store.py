@@ -21,19 +21,38 @@ def _serialize_amplitudes(amps: Iterable[complex]) -> list[list[float]]:
 
 
 def _prepare_state_payload(state: dict[str, Any]) -> dict[str, Any]:
-    if "n" not in state or "amps" not in state:
-        raise ValueError("state payload requires 'n' and 'amps'")
-    amps = np.asarray(state["amps"], dtype=np.complex128).reshape(-1)
-    probs = state.get("probs")
-    if probs is None:
-        probs = (np.abs(amps) ** 2).tolist()
-    else:
-        probs = list(map(float, probs))
-    return {
-        "n": int(state["n"]),
-        "amps": _serialize_amplitudes(amps),
-        "probs": probs,
+    if "n" not in state:
+        raise ValueError("state payload requires 'n'")
+    n = int(state["n"])
+    dtype = str(state.get("dtype", "complex128"))
+
+    amps_serialized: list[list[float]] | None = None
+    probs_list: list[float] | None = None
+
+    if "amps" in state and state["amps"] is not None:
+        amps = np.asarray(state["amps"], dtype=np.complex128).reshape(-1)
+        amps_serialized = _serialize_amplitudes(amps)
+        probs_list = (np.abs(amps) ** 2).real.tolist()
+
+    if "probs" in state and state["probs"] is not None:
+        probs_list = list(map(float, state["probs"]))
+
+    if probs_list is None:
+        raise ValueError("state payload requires 'probs' or 'amps'")
+
+    payload: dict[str, Any] = {
+        "n": n,
+        "dtype": dtype,
+        "probs": probs_list,
     }
+    if amps_serialized is not None:
+        payload["amps"] = amps_serialized
+
+    backend = state.get("backend")
+    if backend is not None:
+        payload["backend"] = backend
+
+    return payload
 
 
 def create_adapter(id, data=None, *, state: dict[str, Any] | None = None, meta: dict[str, Any] | None = None):
