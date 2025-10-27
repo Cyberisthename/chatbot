@@ -5,6 +5,7 @@ import json
 import math
 import os
 import runpy
+from pathlib import Path
 from typing import Any, Dict
 
 
@@ -30,6 +31,13 @@ def _serve_download_cmd(args: argparse.Namespace) -> None:
     )
     runpy.run_module("scripts.serve_download", run_name="__main__")
 
+
+def _summarize_artifacts_cmd(args: argparse.Namespace) -> None:
+    zip_path = Path(getattr(args, 'zip_path', os.path.join('artifacts', 'quion_experiment.zip')))
+    artifacts_dir = Path(getattr(args, 'artifacts_dir', 'artifacts'))
+    summary_path = Path(getattr(args, 'summary_path', os.path.join('artifacts', 'summary_results.json')))
+    summarize_quantum_artifacts(zip_path, artifacts_dir, summary_path)
+
 import numpy as np
 
 from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
@@ -46,6 +54,7 @@ from quantacap.primitives.ggraph import GGraph
 from quantacap.primitives.ybit import YBit
 from quantacap.primitives.zbit import ZBit
 from quantacap.utils.optional_import import optional_import
+from scripts.summarize_quantum_artifacts import summarize_quantum_artifacts
 
 
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
@@ -125,6 +134,12 @@ def main() -> None:
     )
     serve_parser.add_argument("--port", type=int, default=8009)
     serve_parser.set_defaults(func=_serve_download_cmd)
+
+    summarize_parser = sub.add_parser("summarize-artifacts", help="Summarize saved quantum artifacts")
+    summarize_parser.add_argument("--zip", dest="zip_path", default=os.path.join("artifacts", "quion_experiment.zip"))
+    summarize_parser.add_argument("--artifacts", dest="artifacts_dir", default="artifacts")
+    summarize_parser.add_argument("--output", dest="summary_path", default=os.path.join("artifacts", "summary_results.json"))
+    summarize_parser.set_defaults(func=_summarize_artifacts_cmd)
 
     estimate = sub.add_parser("estimate", help="Estimate memory required for a state vector")
     estimate.add_argument("--n", type=int, required=True)
