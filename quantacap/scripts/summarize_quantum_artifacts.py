@@ -175,8 +175,22 @@ def summarize_quantum_artifacts(
         if quion_summary:
             summary["quion"] = quion_summary
 
+    output_payload: Dict[str, object] = dict(summary)
+
+    chsh_summary = summary.get("chsh", {})
+    atom_summary = summary.get("atom", {})
+
+    if isinstance(chsh_summary, dict) and "S" in chsh_summary:
+        output_payload["chsh_S_value"] = chsh_summary.get("S")
+
+    if isinstance(atom_summary, dict):
+        if "mean" in atom_summary:
+            output_payload["atom_mean"] = atom_summary.get("mean")
+        if "variance" in atom_summary:
+            output_payload["atom_variance"] = atom_summary.get("variance")
+
     with summary_path.open("w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, sort_keys=True)
+        json.dump(output_payload, f, indent=2, sort_keys=True)
     print(f"✅ Summaries saved to {summary_path}")
 
     return summary
@@ -187,7 +201,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--zip",
         dest="zip_path",
-        default=os.path.join("artifacts", "quion_experiment.zip"),
+        default="quion_experiment.zip",
         help="Path to the quion experiment zip archive",
     )
     parser.add_argument(
@@ -207,11 +221,16 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
-    summarize_quantum_artifacts(
-        Path(args.zip_path),
-        Path(args.artifacts_dir),
-        Path(args.summary_path),
-    )
+    zip_path = Path(args.zip_path)
+    artifacts_dir = Path(args.artifacts_dir)
+    summary_path = Path(args.summary_path)
+
+    if not zip_path.exists():
+        fallback = artifacts_dir / zip_path.name
+        if fallback.exists():
+            zip_path = fallback
+
+    summarize_quantum_artifacts(zip_path, artifacts_dir, summary_path)
 
 
 if __name__ == "__main__":
