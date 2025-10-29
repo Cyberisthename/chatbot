@@ -4,12 +4,17 @@ from __future__ import annotations
 import json
 import math
 import os
+import json
+import math
+import os
+import time
 from dataclasses import dataclass
 from typing import Dict, List
 
 import numpy as np
 
 from quantacap.core.adapter_store import create_adapter
+from quantacap.utils.telemetry import log_quantum_run
 
 
 @dataclass(frozen=True)
@@ -81,6 +86,8 @@ def run_pi_phase(
     rng = np.random.default_rng(seed)
     base = math.pi
     two_pi = 2.0 * math.pi
+
+    t0 = time.perf_counter()
 
     rotation_values = np.empty(rotations, dtype=np.float64)
     phases = np.empty(rotations, dtype=np.float64)
@@ -193,6 +200,14 @@ def run_pi_phase(
         )
 
     payload["artifact"] = artifact_name
+
+    log_quantum_run(
+        "pi.phase",
+        seed=seed,
+        latency_ms=(time.perf_counter() - t0) * 1000.0,
+        metrics={"entropy": None, "coherence": summary.coherence, "S": summary.stability_score},
+        delta_v=None,
+    )
     return payload
 
 

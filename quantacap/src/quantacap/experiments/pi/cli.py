@@ -1,0 +1,50 @@
+"""CLI bridge for π-phase extension experiments."""
+
+from __future__ import annotations
+
+import argparse
+import json
+
+from .couple import run_pi_coupling
+from .drift import run_pi_drift
+from .noise import run_pi_noise_scan
+from .entropy import run_pi_entropy_control
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="π-phase extension suite")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    couple = sub.add_parser("couple", help="Couple two π-locked oscillators")
+    couple.add_argument("--kappa", type=float, required=True)
+    couple.add_argument("--steps", type=int, default=50000)
+
+    drift = sub.add_parser("drift", help="Material-time drift simulation")
+    drift.add_argument("--rate", type=float, required=True)
+    drift.add_argument("--steps", type=int, default=100000)
+
+    noise = sub.add_parser("noise", help="Noise-collapse sweep")
+    noise.add_argument("--sigma-max", type=float, required=True)
+    noise.add_argument("--steps", type=int, default=41)
+    noise.add_argument("--rotations", type=int, default=1000)
+
+    entropy = sub.add_parser("entropy", help="Entropy minimisation control loop")
+    entropy.add_argument("--steps", type=int, default=80000)
+
+    args = parser.parse_args(argv)
+
+    if args.cmd == "couple":
+        result = run_pi_coupling(kappa=args.kappa, steps=args.steps)
+    elif args.cmd == "drift":
+        result = run_pi_drift(rate=args.rate, steps=args.steps)
+    elif args.cmd == "noise":
+        result = run_pi_noise_scan(sigma_max=args.sigma_max, steps=args.steps, rotations=args.rotations)
+    elif args.cmd == "entropy":
+        result = run_pi_entropy_control(steps=args.steps)
+    else:  # pragma: no cover - defensive
+        raise SystemExit(2)
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()

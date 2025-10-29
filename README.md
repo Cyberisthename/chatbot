@@ -248,3 +248,15 @@ MIT License - see [LICENSE](LICENSE) file for details.
 **J.A.R.V.I.S. - Your Personal AI Assistant** 🚀
 
 *Built with ❤️ by the J.A.R.V.I.S. AI Team*
+
+
+## Quantacap Discovery Extensions
+
+### Medical Simulation (Synthetic)
+This repository now includes the Quantacap medicinal discovery sandbox. The docking and molecule modules synthesise toy ligand graphs, score them against a mock receptor pocket, and persist the ranked candidates as adapters. **Ethical use:** these simulations generate hypotheses only—they are not clinical advice nor a replacement for laboratory validation.
+
+### 3D Computing Map
+The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from saved adapters and can export headless GIF/NPY artefacts for discovery reports.
+
+### Black-Hole Lensing
+`quantacap.astro` provides a Schwarzschild null-geodesic integrator and a simple Einstein-ring renderer, allowing reproducible gravitational lensing experiments fully offline.

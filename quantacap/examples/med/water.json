@@ -1,0 +1,12 @@
+{
+  "name": "water",
+  "atoms": [
+    {"id": "O", "charge": -0.82, "hydrophobicity": 0.1, "hbond_donor": false, "hbond_acceptor": true},
+    {"id": "H1", "charge": 0.41, "hydrophobicity": 0.2, "hbond_donor": true, "hbond_acceptor": false},
+    {"id": "H2", "charge": 0.41, "hydrophobicity": 0.2, "hbond_donor": true, "hbond_acceptor": false}
+  ],
+  "bonds": [
+    {"a": "O", "b": "H1", "order": 1},
+    {"a": "O", "b": "H2", "order": 1}
+  ]
+}

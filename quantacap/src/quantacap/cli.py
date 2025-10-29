@@ -58,6 +58,12 @@ from quantacap.utils.optional_import import optional_import
 from scripts.summarize_quantum_artifacts import summarize_quantum_artifacts
 
 
+def _forward_cli(module: str, purpose: str, argv: list[str] | None) -> None:
+    module_obj = optional_import(module, purpose=purpose)
+    main = getattr(module_obj, 'main')
+    main(argv or None)
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -135,6 +141,22 @@ def main() -> None:
     )
     serve_parser.add_argument("--port", type=int, default=8009)
     serve_parser.set_defaults(func=_serve_download_cmd)
+
+    med_parser = sub.add_parser('med', help='Forward to medicinal discovery CLI')
+    med_parser.add_argument('argv', nargs=argparse.REMAINDER)
+    med_parser.set_defaults(func=lambda args: _forward_cli('quantacap.experiments.med.cli', 'run medicinal discovery', args.argv))
+
+    viz3d_parser = sub.add_parser('viz3d', help='Forward to 3D computing map CLI')
+    viz3d_parser.add_argument('argv', nargs=argparse.REMAINDER)
+    viz3d_parser.set_defaults(func=lambda args: _forward_cli('quantacap.viz3d.cli', 'render 3D computing maps', args.argv))
+
+    astro_parser = sub.add_parser('astro', help='Forward to Schwarzschild simulator CLI')
+    astro_parser.add_argument('argv', nargs=argparse.REMAINDER)
+    astro_parser.set_defaults(func=lambda args: _forward_cli('quantacap.astro.cli', 'run black-hole simulations', args.argv))
+
+    pi_parser = sub.add_parser('pi-ext', help='Forward to extended π experiments CLI')
+    pi_parser.add_argument('argv', nargs=argparse.REMAINDER)
+    pi_parser.set_defaults(func=lambda args: _forward_cli('quantacap.experiments.pi.cli', 'run π-phase extension experiments', args.argv))
 
     summarize_parser = sub.add_parser("summarize-artifacts", help="Summarize saved quantum artifacts")
     summarize_parser.add_argument("--zip", dest="zip_path", default=os.path.join("artifacts", "quion_experiment.zip"))
