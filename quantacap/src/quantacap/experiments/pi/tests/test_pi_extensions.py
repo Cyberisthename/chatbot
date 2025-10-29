@@ -22,8 +22,17 @@ def test_pi_drift_half_life() -> None:
 
 
 def test_pi_noise_scan_threshold() -> None:
-    result = run_pi_noise_scan(sigma_max=1e-9, steps=5, rotations=128, seed=5)
+    result = run_pi_noise_scan(
+        sigma_max=1e-9,
+        sigma_min=1e-12,
+        steps=5,
+        rotations=128,
+        entropy_threshold=0.0,
+        seed=5,
+    )
     assert len(result["sigma"]) == len(result["coherence"])
+    assert len(result["entropy"]) == len(result["sigma"])
+    assert result["sigma"][0] == pytest.approx(1e-12)
 
 
 def test_pi_entropy_control() -> None:

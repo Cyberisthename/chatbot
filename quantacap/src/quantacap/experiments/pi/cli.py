@@ -25,8 +25,11 @@ def main(argv: list[str] | None = None) -> None:
 
     noise = sub.add_parser("noise", help="Noise-collapse sweep")
     noise.add_argument("--sigma-max", type=float, required=True)
+    noise.add_argument("--sigma-min", type=float, default=0.0)
     noise.add_argument("--steps", type=int, default=41)
     noise.add_argument("--rotations", type=int, default=1000)
+    noise.add_argument("--entropy-threshold", type=float, default=0.05)
+    noise.add_argument("--entropy-bins", type=int, default=64)
 
     entropy = sub.add_parser("entropy", help="Entropy minimisation control loop")
     entropy.add_argument("--steps", type=int, default=80000)
@@ -38,7 +41,14 @@ def main(argv: list[str] | None = None) -> None:
     elif args.cmd == "drift":
         result = run_pi_drift(rate=args.rate, steps=args.steps)
     elif args.cmd == "noise":
-        result = run_pi_noise_scan(sigma_max=args.sigma_max, steps=args.steps, rotations=args.rotations)
+        result = run_pi_noise_scan(
+            sigma_max=args.sigma_max,
+            sigma_min=args.sigma_min,
+            steps=args.steps,
+            rotations=args.rotations,
+            entropy_threshold=args.entropy_threshold,
+            entropy_bins=args.entropy_bins,
+        )
     elif args.cmd == "entropy":
         result = run_pi_entropy_control(steps=args.steps)
     else:  # pragma: no cover - defensive

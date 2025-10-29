@@ -130,7 +130,13 @@ def run_pi_phase(
     phase_rms_error = float(np.sqrt(np.mean(phase_errors**2)))
 
     coherence = float(np.abs(np.exp(1j * phases).mean()))
-    stability_score = float(coherence * math.exp(-tail_std / base))
+    # Combine alignment, phase locking, and error suppression to favour
+    # deterministic stability while still reflecting coherence information.
+    error_scale = max(precision * 10.0, 1e-18)
+    stability_score = float(
+        math.sqrt(max(alignment_ratio * phase_lock_ratio, 0.0))
+        * math.exp(-phase_rms_error / error_scale)
+    )
     stabilized = bool(phase_rms_error <= precision * 20.0 or stability_score > 0.9)
 
     hist_counts, hist_edges = np.histogram(phases, bins=36, range=(0.0, two_pi), density=True)

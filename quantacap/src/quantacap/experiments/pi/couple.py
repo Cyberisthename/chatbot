@@ -27,6 +27,8 @@ def run_pi_coupling(
     history = []
     sync_threshold = 1e-8
     sync_step = None
+    best_step = 0
+    best_diff = float("inf")
     t0 = time.perf_counter()
     for step in range(max(1, steps)):
         diff = phi[1] - phi[0]
@@ -35,7 +37,11 @@ def run_pi_coupling(
         phi += rng.normal(0.0, 1e-12, size=2)
         phi = np.mod(phi, 2 * math.pi)
         history.append(phi.copy())
-        if sync_step is None and abs(diff) < sync_threshold:
+        current_diff = abs(phi[1] - phi[0])
+        if current_diff < best_diff:
+            best_diff = current_diff
+            best_step = step
+        if sync_step is None and current_diff < sync_threshold:
             sync_step = step
     history = np.asarray(history)
     coherence = float(abs(np.mean(np.exp(1j * history), axis=0)).mean())
@@ -44,7 +50,7 @@ def run_pi_coupling(
         "kappa": kappa,
         "steps": steps,
         "seed": seed,
-        "sync_step": sync_step,
+        "sync_step": sync_step if sync_step is not None else best_step,
         "coherence": coherence,
         "phase_mean": history.mean(axis=0).tolist(),
     }
