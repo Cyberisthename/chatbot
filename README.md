@@ -260,3 +260,6 @@ The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from
 
 ### Black-Hole Lensing
 `quantacap.astro` provides a Schwarzschild null-geodesic integrator and a simple Einstein-ring renderer, allowing reproducible gravitational lensing experiments fully offline.
+
+### Experiment Results Snapshot
+A consolidated set of quantitative findings from the latest CHSH, Atom-1D, and π-phase stability experiments is available in [`quantacap/docs/experiment_results.md`](quantacap/docs/experiment_results.md). The document links directly to the generated artifacts so every number can be replayed from the stored adapters.

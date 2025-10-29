@@ -6,3 +6,4 @@
 - Added Schwarzschild geodesic and lensing simulators with CLI entry points.
 - Extended π-phase experiments with coupling, drift, noise, and entropy controls.
 - Integrated telemetry CSV logging for all experiments.
+- Documented replayable experiment outcomes in `docs/experiment_results.md` with direct artifact references.
