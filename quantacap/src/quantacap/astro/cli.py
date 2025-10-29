@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from .lensing import render_lensing_map
+from .lensing import render_lensing_map, run_lens_atom_equivalence
 from .schwarzschild import integrate_null_geodesic
 
 
@@ -23,6 +23,15 @@ def main(argv: list[str] | None = None) -> None:
     geo.add_argument("--b", type=float, required=True)
     geo.add_argument("--steps", type=int, default=5000)
 
+    equiv = sub.add_parser(
+        "equivalence", help="Compare lensing intensity with atom densities"
+    )
+    equiv.add_argument("--res", type=int, required=True)
+    equiv.add_argument("--impact-min", type=float, required=True)
+    equiv.add_argument("--impact-max", type=float, required=True)
+    equiv.add_argument("--atom-artifact", required=True)
+    equiv.add_argument("--id", default=None)
+
     args = parser.parse_args(argv)
 
     if args.cmd == "lens":
@@ -38,6 +47,17 @@ def main(argv: list[str] | None = None) -> None:
     if args.cmd == "geodesic":
         result = integrate_null_geodesic(args.b, steps=args.steps)
         print(json.dumps(result.to_dict(), indent=2))
+        return
+
+    if args.cmd == "equivalence":
+        report = run_lens_atom_equivalence(
+            resolution=args.res,
+            impact_min=args.impact_min,
+            impact_max=args.impact_max,
+            atom_artifact=args.atom_artifact,
+            adapter_id=args.id,
+        )
+        print(json.dumps(report, indent=2))
         return
 
     raise SystemExit(2)

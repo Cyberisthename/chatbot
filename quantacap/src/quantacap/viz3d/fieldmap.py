@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, Iterable, Tuple
 
+import json
 import numpy as np
 
 from quantacap.core.adapter_store import load_adapter
@@ -74,6 +76,24 @@ def _initial_volume(source: str, grid: Tuple[int, int, int]) -> np.ndarray:
         probs = _extract_probs(record)
         if probs.size:
             return probs.reshape(grid) if probs.size == np.prod(grid) else np.resize(probs, grid)
+    if source.startswith("file:"):
+        path = Path(source.split(":", 1)[1])
+        if path.is_file():
+            try:
+                with path.open("r", encoding="utf-8") as handle:
+                    data = json.load(handle)
+            except json.JSONDecodeError:
+                data = {}
+            density = data.get("density")
+            if density is None and "field" in data:
+                density = data["field"]
+            if density is None and "frames" in data:
+                first = data["frames"][0] if data["frames"] else {}
+                density = first.get("field")
+            if density is not None:
+                arr = np.asarray(density, dtype=float)
+                if arr.size:
+                    return arr.reshape(grid) if arr.size == np.prod(grid) else np.resize(arr, grid)
     rng = np.random.default_rng(424242)
     return rng.random(grid)
 

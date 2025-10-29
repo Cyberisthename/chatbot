@@ -5,7 +5,7 @@ import pytest
 
 from quantacap.experiments.pi.couple import run_pi_coupling
 from quantacap.experiments.pi.drift import run_pi_drift
-from quantacap.experiments.pi.noise import run_pi_noise_scan
+from quantacap.experiments.pi.noise import run_pi_noise_scan, run_pi_entropy_collapse
 from quantacap.experiments.pi.entropy import run_pi_entropy_control
 
 
@@ -38,3 +38,19 @@ def test_pi_noise_scan_threshold() -> None:
 def test_pi_entropy_control() -> None:
     result = run_pi_entropy_control(steps=100, seed=7)
     assert result["entropy_final"] >= 0
+
+
+def test_pi_entropy_collapse_steps() -> None:
+    result = run_pi_entropy_collapse(
+        kappa=0.02,
+        sigma_min=1e-9,
+        sigma_max=1e-7,
+        stages=6,
+        stage_length=32,
+        entropy_threshold=0.0,
+        seed=11,
+    )
+    assert len(result["sigma"]) == 6
+    assert len(result["entropy"]) == 6
+    if result["entropy_steps"]:
+        assert all(idx >= 0 for idx in result["entropy_steps"])

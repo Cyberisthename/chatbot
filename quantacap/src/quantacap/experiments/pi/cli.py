@@ -7,7 +7,7 @@ import json
 
 from .couple import run_pi_coupling
 from .drift import run_pi_drift
-from .noise import run_pi_noise_scan
+from .noise import run_pi_noise_scan, run_pi_entropy_collapse
 from .entropy import run_pi_entropy_control
 
 
@@ -31,6 +31,16 @@ def main(argv: list[str] | None = None) -> None:
     noise.add_argument("--entropy-threshold", type=float, default=0.05)
     noise.add_argument("--entropy-bins", type=int, default=64)
 
+    collapse = sub.add_parser(
+        "collapse", help="Synthetic entropy collapse scan with coupled oscillators"
+    )
+    collapse.add_argument("--kappa", type=float, default=0.02)
+    collapse.add_argument("--sigma-min", type=float, default=1e-9)
+    collapse.add_argument("--sigma-max", type=float, default=1e-6)
+    collapse.add_argument("--stages", type=int, default=25)
+    collapse.add_argument("--stage-length", type=int, default=128)
+    collapse.add_argument("--entropy-threshold", type=float, default=1e-3)
+
     entropy = sub.add_parser("entropy", help="Entropy minimisation control loop")
     entropy.add_argument("--steps", type=int, default=80000)
 
@@ -51,6 +61,15 @@ def main(argv: list[str] | None = None) -> None:
         )
     elif args.cmd == "entropy":
         result = run_pi_entropy_control(steps=args.steps)
+    elif args.cmd == "collapse":
+        result = run_pi_entropy_collapse(
+            kappa=args.kappa,
+            sigma_min=args.sigma_min,
+            sigma_max=args.sigma_max,
+            stages=args.stages,
+            stage_length=args.stage_length,
+            entropy_threshold=args.entropy_threshold,
+        )
     else:  # pragma: no cover - defensive
         raise SystemExit(2)
     print(json.dumps(result, indent=2))

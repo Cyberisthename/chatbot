@@ -124,6 +124,8 @@ Quantacap reproduces textbook quantum signatures entirely offline using determin
 
 **Y-bit & G-graph (synthetic primitives).** We introduce a Z-bit (a scalar defined over the continuum excluding [1,2]), a Y-bit (hybrid qubit ⊗ Z-bias with phase nudge), and a G-graph (a convergent, decaying weave over thousands of adapters—“fall of infinity”). We extend CHSH to CHSH-Y, where local measurement frames receive small, deterministic adjustments from Y/G, preserving quantum structure while exposing new, reproducible patterns. Results are synthetic (classical simulation), deterministic, and replayable.
 
+**Latest experiments.** Synthetic entropy-collapse scans couple π-locked oscillators while slowly raising the noise floor and flagging discrete entropy drops. The atom module now supports 2D molecule-like wells that borrow phase entropy from the π-phase controller to form stable interference fringes. The Schwarzschild lensing tools can be driven with micro-scale parameters and compared directly against the atom densities, highlighting a numerical equivalence between diffraction patterns and curved-spacetime lensing. A `master_discovery.py` helper runs the flagship demos, generates 3D computing maps, and bundles artifacts for sharing.
+
 ### Model Format (GGUF)
 - **Quantization**: 4-bit integer quantization (Q4_0)
 - **Compression**: ~75% size reduction with minimal quality loss

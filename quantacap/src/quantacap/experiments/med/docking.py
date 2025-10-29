@@ -68,6 +68,29 @@ def _score_molecule(molecule: Molecule, mask: np.ndarray) -> tuple[float, Dict[s
     return float(score - clash), stats
 
 
+def _phase_weight_from_pi(pi_adapter: str | None) -> tuple[float, float]:
+    if not pi_adapter:
+        return 1.0, 0.0
+    try:
+        record = load_adapter(pi_adapter)
+    except FileNotFoundError:
+        return 1.0, 0.0
+
+    data = record.get("data", {}) if isinstance(record, dict) else {}
+    entropy = None
+    for key in ("entropy_final", "entropy_mean", "entropy"):
+        if key in data:
+            try:
+                entropy = float(data[key])
+                break
+            except (TypeError, ValueError):
+                continue
+    coherence = float(data.get("coherence", 0.0)) if isinstance(data, dict) else 0.0
+    entropy = float(entropy or 0.0)
+    weight = 1.0 / (1.0 + entropy)
+    return weight, coherence
+
+
 def run_search(
     target: str,
     *,
@@ -75,6 +98,7 @@ def run_search(
     topk: int = 10,
     seed: int = 424242,
     adapter_id: str | None = None,
+    pi_adapter: str | None = None,
 ) -> Dict[str, object]:
     rng = np.random.default_rng(seed)
     guard = LyapunovGuard()
@@ -87,10 +111,13 @@ def run_search(
     delta_v = None
     t0 = time.perf_counter()
 
+    phase_weight, phase_coherence = _phase_weight_from_pi(pi_adapter)
+
     for cycle in range(max(1, cycles)):
         mol = molecules[cycle % len(molecules)]
         mask = rng.random(len(mol.atoms)) > 0.35
         score, _ = _score_molecule(mol, mask)
+        score *= phase_weight
         pose_counts[mol.name] += mask.astype(float)
         entropy = _pose_entropy(pose_counts[mol.name])
         V = entropy - score
@@ -117,6 +144,9 @@ def run_search(
         "best_score": best[0].score if best else None,
         "candidates": [cand.to_dict() for cand in best],
         "delta_v": delta_v,
+        "phase_weight": phase_weight,
+        "phase_coherence": phase_coherence,
+        "pi_adapter": pi_adapter,
     }
 
     artifact = Path(f"artifacts/med_{target}_candidates.json")
@@ -129,14 +159,26 @@ def run_search(
     adapter_id = adapter_id or f"med.search.{target}.{seed}"
     create_adapter(
         adapter_id,
-        data={"candidates": payload["candidates"], "metrics": {"entropy": entropy, "best_score": payload["best_score"]}},
-        meta={"target": target, "seed": seed, "cycles": cycles},
+        data={
+            "candidates": payload["candidates"],
+            "metrics": {
+                "entropy": entropy,
+                "best_score": payload["best_score"],
+                "phase_weight": phase_weight,
+                "phase_coherence": phase_coherence,
+            },
+        },
+        meta={"target": target, "seed": seed, "cycles": cycles, "pi_adapter": pi_adapter},
     )
     log_quantum_run(
         "med.search",
         seed=seed,
         latency_ms=latency_ms,
-        metrics={"entropy": entropy, "S": payload["best_score"], "coherence": None},
+        metrics={
+            "entropy": entropy,
+            "S": payload["best_score"],
+            "coherence": phase_coherence if phase_coherence else None,
+        },
         delta_v=delta_v,
     )
     return payload

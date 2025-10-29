@@ -20,6 +20,7 @@ def main(argv: list[str] | None = None) -> None:
     search.add_argument("--topk", type=int, default=10)
     search.add_argument("--seed", type=int, default=424242)
     search.add_argument("--id", dest="adapter_id", default=None)
+    search.add_argument("--pi-adapter", dest="pi_adapter", default=None)
 
     replay = sub.add_parser("replay", help="Replay previously stored candidates")
     replay.add_argument("--id", required=True)
@@ -37,6 +38,7 @@ def main(argv: list[str] | None = None) -> None:
             topk=args.topk,
             seed=args.seed,
             adapter_id=args.adapter_id,
+            pi_adapter=args.pi_adapter,
         )
         print(json.dumps(payload, indent=2))
         return
