@@ -45,6 +45,7 @@ from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
 from quantacap.experiments.chsh_rehearsal import run_chsh_scan
 from quantacap.experiments.chsh_ybit import run_chsh_y
+from quantacap.experiments.pi_phase import run_pi_phase
 from quantacap.quantum.backend import create_circuit
 from quantacap.quantum.bell import bell_counts
 from quantacap.quantum.gates import H, RZ
@@ -144,6 +145,14 @@ def main() -> None:
     estimate = sub.add_parser("estimate", help="Estimate memory required for a state vector")
     estimate.add_argument("--n", type=int, required=True)
     estimate.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
+
+    pi_phase = sub.add_parser("pi-phase", help="Run probabilistic pi phase rotations")
+    pi_phase.add_argument("--rotations", type=int, default=100_000)
+    pi_phase.add_argument("--precision", type=float, default=1e-9)
+    pi_phase.add_argument("--seed", type=int, default=424242)
+    pi_phase.add_argument("--samples", type=int, default=256)
+    pi_phase.add_argument("--id", default=None)
+    pi_phase.add_argument("--artifact", default=None)
 
     chsh = sub.add_parser("chsh", help="Run CHSH Bell-inequality experiment")
     chsh.add_argument("--shots", type=int, default=50000)
@@ -294,6 +303,18 @@ def main() -> None:
         total_bytes = bytes_per_amp * (1 << n)
         gib = total_bytes / (1024**3)
         print(json.dumps({"n": n, "dtype": args.dtype, "bytes": total_bytes, "GiB": gib}, indent=2))
+        return
+
+    if args.cmd == "pi-phase":
+        result = run_pi_phase(
+            rotations=args.rotations,
+            precision=float(args.precision),
+            seed=args.seed,
+            samples=args.samples,
+            adapter_id=args.id,
+            artifact_path=args.artifact,
+        )
+        print(json.dumps(result, indent=2))
         return
 
     if args.cmd == "chsh":
