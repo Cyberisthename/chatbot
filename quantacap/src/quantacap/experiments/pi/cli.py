@@ -30,6 +30,13 @@ def main(argv: list[str] | None = None) -> None:
     noise.add_argument("--rotations", type=int, default=1000)
     noise.add_argument("--entropy-threshold", type=float, default=0.05)
     noise.add_argument("--entropy-bins", type=int, default=64)
+    noise.add_argument("--schedule", choices=["linear", "log"], default="linear")
+    noise.add_argument("--seed", type=int, default=424242)
+    noise.add_argument("--out", type=str, default=None)
+    noise.add_argument("--adapter-id", type=str, default=None)
+    noise.add_argument("--plateau-epsilon", type=float, default=1e-3)
+    noise.add_argument("--no-detect-steps", action="store_true")
+    noise.add_argument("--no-entropy", action="store_true")
 
     collapse = sub.add_parser(
         "collapse", help="Synthetic entropy collapse scan with coupled oscillators"
@@ -58,6 +65,13 @@ def main(argv: list[str] | None = None) -> None:
             rotations=args.rotations,
             entropy_threshold=args.entropy_threshold,
             entropy_bins=args.entropy_bins,
+            schedule=args.schedule,
+            seed=args.seed,
+            artifact_path=args.out,
+            adapter_id=args.adapter_id,
+            detect_steps=not args.no_detect_steps,
+            track_entropy=not args.no_entropy,
+            plateau_epsilon=args.plateau_epsilon,
         )
     elif args.cmd == "entropy":
         result = run_pi_entropy_control(steps=args.steps)

@@ -24,14 +24,14 @@ def run_pi_drift(
 ) -> Dict[str, object]:
     rng = np.random.default_rng(seed)
     phi = math.pi
-    history = []
     coherence = []
+    complex_sum = 0.0 + 0.0j
     t0 = time.perf_counter()
     for step in range(max(1, steps)):
         phi += rate
         phi += rng.normal(0.0, 5e-13)
-        history.append(phi)
-        coherence.append(abs(np.mean(np.exp(1j * np.asarray(history)))))
+        complex_sum += complex(math.cos(phi), math.sin(phi))
+        coherence.append(abs(complex_sum) / (step + 1))
     latency_ms = (time.perf_counter() - t0) * 1000.0
     result = {
         "rate": rate,
@@ -60,9 +60,10 @@ def _half_life(values: list[float]) -> int | None:
     if not values:
         return None
     initial = values[0]
-    if initial == 0:
+    final = values[-1]
+    if initial == final:
         return None
-    threshold = initial / 2
+    threshold = initial - (initial - final) / 2.0
     for idx, value in enumerate(values):
         if value <= threshold:
             return idx

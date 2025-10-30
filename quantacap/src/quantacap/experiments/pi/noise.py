@@ -14,6 +14,55 @@ from quantacap.core.adapter_store import create_adapter
 from quantacap.utils.telemetry import log_quantum_run
 
 
+def _sigma_schedule(
+    sigma_min: float,
+    sigma_max: float,
+    steps: int,
+    schedule: str,
+) -> np.ndarray:
+    count = max(2, steps)
+    if schedule == "log":
+        if sigma_min <= 0 or sigma_max <= 0:
+            raise ValueError("log schedule requires positive sigma bounds")
+        lower, upper = (min(sigma_min, sigma_max), max(sigma_min, sigma_max))
+        seq = np.geomspace(lower, upper, count)
+        if sigma_max < sigma_min:
+            seq = seq[::-1]
+        return seq
+    if schedule != "linear":
+        raise ValueError(f"Unknown schedule '{schedule}'")
+    return np.linspace(sigma_min, sigma_max, count)
+
+
+def _detect_plateaus(entropy: list[float], epsilon: float) -> list[Dict[str, float]]:
+    plateaus: list[Dict[str, float]] = []
+    if not entropy:
+        return plateaus
+    start = 0
+    for idx in range(1, len(entropy)):
+        if abs(entropy[idx] - entropy[idx - 1]) > epsilon:
+            if idx - 1 >= start:
+                window = entropy[start:idx]
+                plateaus.append(
+                    {
+                        "start": start,
+                        "end": idx - 1,
+                        "mean_entropy": float(sum(window) / len(window)),
+                    }
+                )
+            start = idx
+    if start < len(entropy):
+        window = entropy[start:]
+        plateaus.append(
+            {
+                "start": start,
+                "end": len(entropy) - 1,
+                "mean_entropy": float(sum(window) / len(window)),
+            }
+        )
+    return plateaus
+
+
 def run_pi_noise_scan(
     *,
     sigma_max: float,
@@ -25,43 +74,57 @@ def run_pi_noise_scan(
     seed: int = 424242,
     adapter_id: str | None = None,
     artifact_path: str | None = None,
+    schedule: str = "linear",
+    detect_steps: bool = True,
+    track_entropy: bool = True,
+    plateau_epsilon: float = 1e-3,
 ) -> Dict[str, object]:
     if sigma_max < 0 or sigma_min < 0:
         raise ValueError("sigma values must be non-negative")
-    if sigma_max < sigma_min:
-        raise ValueError("sigma_max must be >= sigma_min")
-    sigmas = np.linspace(sigma_min, sigma_max, max(2, steps))
+    sigmas = _sigma_schedule(sigma_min, sigma_max, steps, schedule)
     rng = np.random.default_rng(seed)
     coherence = []
     t0 = time.perf_counter()
     entropy: list[float] = []
     entropy_deltas: list[float] = []
     two_pi = 2.0 * math.pi
+    phase_state = np.full(rotations, math.pi, dtype=float)
 
     for sigma in sigmas:
-        phases = (math.pi + rng.normal(0.0, sigma, size=rotations)) % two_pi
+        phase_state = (phase_state + rng.normal(0.0, sigma, size=rotations)) % two_pi
+        phases = phase_state.copy()
         value = abs(np.mean(np.exp(1j * phases)))
         coherence.append(float(value))
 
-        counts, _ = np.histogram(phases, bins=entropy_bins, range=(0.0, two_pi))
-        total = counts.sum()
-        if total == 0:
-            entropy.append(0.0)
-        else:
-            probs = counts / total
-            nonzero = probs[probs > 0]
-            entropy.append(float(-np.sum(nonzero * np.log(nonzero))))
+        if track_entropy:
+            counts, _ = np.histogram(phases, bins=entropy_bins, range=(0.0, two_pi))
+            total = counts.sum()
+            if total == 0:
+                entropy.append(0.0)
+            else:
+                probs = counts / total
+                nonzero = probs[probs > 0]
+                entropy.append(float(-np.sum(nonzero * np.log(nonzero))))
 
-        if len(entropy) >= 2:
-            entropy_deltas.append(float(entropy[-1] - entropy[-2]))
+            if len(entropy) >= 2:
+                entropy_deltas.append(float(entropy[-1] - entropy[-2]))
+            else:
+                entropy_deltas.append(0.0)
         else:
+            entropy.append(0.0)
             entropy_deltas.append(0.0)
     latency_ms = (time.perf_counter() - t0) * 1000.0
-    discrete_steps = [
-        idx
-        for idx, delta in enumerate(entropy_deltas)
-        if abs(delta) >= entropy_threshold and idx > 0
-    ]
+    discrete_steps = (
+        [
+            idx
+            for idx, delta in enumerate(entropy_deltas)
+            if abs(delta) >= entropy_threshold and idx > 0
+        ]
+        if detect_steps and track_entropy
+        else []
+    )
+
+    plateaus = _detect_plateaus(entropy, plateau_epsilon) if track_entropy else []
 
     result = {
         "sigma": sigmas.tolist(),
@@ -69,10 +132,13 @@ def run_pi_noise_scan(
         "entropy": entropy,
         "entropy_delta": entropy_deltas,
         "entropy_steps": discrete_steps,
+        "entropy_plateaus": plateaus,
         "threshold_index": _first_below(coherence, 0.5),
         "sigma_min": sigma_min,
+        "sigma_max": sigma_max,
         "entropy_threshold": entropy_threshold,
         "seed": seed,
+        "schedule": schedule,
     }
     artifact_path = artifact_path or "artifacts/pi_noise_scan.json"
     Path(artifact_path).parent.mkdir(parents=True, exist_ok=True)

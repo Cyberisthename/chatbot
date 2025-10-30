@@ -47,7 +47,8 @@ def render_lensing_map(
         "intensity_path": str(image_path),
         "png_path": str(png_path) if png_path else None,
     }
-    with artifact_prefix.with_suffix("_meta.json").open("w", encoding="utf-8") as handle:
+    meta_path = artifact_prefix.parent / f"{artifact_prefix.name}_meta.json"
+    with meta_path.open("w", encoding="utf-8") as handle:
         json.dump(meta, handle, indent=2)
     adapter_id = adapter_id or f"astro.lens.{resolution}.{impact_min:.2f}_{impact_max:.2f}"
     create_adapter(adapter_id, data={"meta": meta}, meta={"experiment": "astro_lens"})

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Sequence
 
-DATA_ROOT = Path(__file__).resolve().parents[3] / "examples" / "med"
+DATA_ROOT = Path(__file__).resolve().parents[4] / "examples" / "med"
 
 
 @dataclass
