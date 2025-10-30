@@ -1,0 +1,27 @@
+{
+  "experiment": "quantum_uncertainty_collapse",
+  "version": "1.0",
+  "parameters": {
+    "n_points": 256,
+    "frames": 200,
+    "decay_rate": 0.98,
+    "initial_amplitude": 1.0
+  },
+  "results": {
+    "final_amplitude": 0.017587946605721515,
+    "final_entropy": 0.08597842406873427,
+    "final_mean": 0.1560489631230501,
+    "final_std": 0.293220777007248,
+    "position_mean": -1.4319997503647874e-05,
+    "position_std": 0.5001793608381269,
+    "max_amplitude": 1.0026950333817313,
+    "min_amplitude": 3.993672686548921e-11
+  },
+  "physics": {
+    "interpretation": "Digital analog of quantum decoherence",
+    "process": "Chaos (quantum randomness) stabilizing into classical order",
+    "convergence": "Amplitude\u00b2 converges to Gaussian distribution",
+    "decoherence_rate": "2.0% per frame"
+  },
+  "notes": "Simulates decoherence: chaos (quantum randomness) stabilizing into classical order"
+}
