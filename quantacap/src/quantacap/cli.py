@@ -54,9 +54,51 @@ def _report_phase_transition_cmd(args: argparse.Namespace) -> None:
         kwargs["output_prefix"] = args.out_prefix
     main(**kwargs)
 
+
+def _maybe_plot_cosmo(out_path: Path, payload: Dict[str, Any]) -> Path | None:
+    try:
+        mpl = optional_import(
+            "matplotlib",
+            pip_name="matplotlib",
+            purpose="visualise early-universe energy",
+        )
+        mpl.use("Agg")
+        import matplotlib.pyplot as plt
+    except RuntimeError:
+        return
+
+    density_values = [
+        payload.get("rho_J_m3", float("nan")),
+        payload.get("rho_modern_scaled_J_m3", float("nan")),
+    ]
+    density_labels = ["ρ(t)", "ρ(modern→t)"]
+
+    energy_values = [payload.get("E_total_J", float("nan"))]
+    energy_labels = ["E_total"]
+
+    fig, (ax_d, ax_e) = plt.subplots(1, 2, figsize=(9, 4))
+
+    ax_d.bar(density_labels, density_values, color=["tab:blue", "tab:orange"])
+    ax_d.set_yscale("log")
+    ax_d.set_ylabel("Energy density (J m⁻³)")
+    ax_d.set_title("Radiation energy density")
+
+    ax_e.bar(energy_labels, energy_values, color="tab:green")
+    ax_e.set_yscale("log")
+    ax_e.set_ylabel("Energy (J)")
+    ax_e.set_title("Total energy in horizon")
+
+    fig.suptitle("Early universe energy budget at t≈1 s")
+    fig.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    return out_path
+
 import numpy as np
 
 from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
+from quantacap.cosmo.t1s import energy_at_1s
 from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
 from quantacap.experiments.chsh_rehearsal import run_chsh_scan
@@ -154,6 +196,25 @@ def main() -> None:
     phase_report.add_argument("--artifacts-dir", default="artifacts")
     phase_report.add_argument("--out-prefix", default=None)
     phase_report.set_defaults(func=_report_phase_transition_cmd)
+
+    bigbang = sub.add_parser(
+        "bigbang-t1s",
+        help="Estimate radiation energy at t≈1 s after the Big Bang",
+    )
+    bigbang.add_argument("--t", type=float, default=1.0)
+    bigbang.add_argument("--g-star", dest="g_star", type=float, default=10.75)
+    bigbang.add_argument("--T-MeV", dest="T_MeV", type=float, default=1.0)
+    bigbang.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "early_universe_t1s.json"),
+        help="Output JSON path",
+    )
+    bigbang.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate a companion PNG when matplotlib is available",
+    )
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
@@ -349,6 +410,20 @@ def main() -> None:
         total_bytes = bytes_per_amp * (1 << n)
         gib = total_bytes / (1024**3)
         print(json.dumps({"n": n, "dtype": args.dtype, "bytes": total_bytes, "GiB": gib}, indent=2))
+        return
+
+    if args.cmd == "bigbang-t1s":
+        result = energy_at_1s(t=args.t, g_star=args.g_star, T_MeV=args.T_MeV)
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open('w', encoding='utf-8') as handle:
+            json.dump(result, handle, indent=2)
+        if getattr(args, 'plot', True):
+            png_path = out_path.with_suffix('.png')
+            created = _maybe_plot_cosmo(png_path, result)
+            if created is not None:
+                result['plot'] = str(created)
+        print(json.dumps(result, indent=2))
         return
 
     if args.cmd == "pi-phase":

@@ -403,6 +403,20 @@ def main(
         },
     }
 
+    cosmo_path = base / "early_universe_t1s.json"
+    if cosmo_path.is_file():
+        try:
+            cosmo_payload = _load_json(cosmo_path)
+            summary["cosmo"] = {
+                "t_s": cosmo_payload.get("time_s"),
+                "g_star": cosmo_payload.get("g_star"),
+                "rho_J_m3": cosmo_payload.get("rho_J_m3"),
+                "E_total_J": cosmo_payload.get("E_total_J"),
+                "horizon_radius_m": cosmo_payload.get("horizon_radius_m"),
+            }
+        except (OSError, ValueError, json.JSONDecodeError):
+            summary["cosmo"] = {"error": "failed to load early_universe_t1s.json"}
+
     with summary_path.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
 
