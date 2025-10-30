@@ -263,5 +263,8 @@ The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from
 ### Black-Hole Lensing
 `quantacap.astro` provides a Schwarzschild null-geodesic integrator and a simple Einstein-ring renderer, allowing reproducible gravitational lensing experiments fully offline.
 
+### Quantum Uncertainty Collapse Experiment
+A visual demonstration of quantum decoherence showing how random noise (chaos) gradually collapses into a stable quantum-like amplitude distribution. Run `python3 uncertainty_experiment_headless.py` to generate artifacts or `python3 uncertainty_experiment.py` for an interactive animation. Results are saved to `artifacts/uncertainty_experiment.json`. See [UNCERTAINTY_EXPERIMENT_README.md](UNCERTAINTY_EXPERIMENT_README.md) for details.
+
 ### Experiment Results Snapshot
 A consolidated set of quantitative findings from the latest CHSH, Atom-1D, and π-phase stability experiments is available in [`quantacap/docs/experiment_results.md`](quantacap/docs/experiment_results.md). The document links directly to the generated artifacts so every number can be replayed from the stored adapters.
