@@ -95,6 +95,129 @@ def _maybe_plot_cosmo(out_path: Path, payload: Dict[str, Any]) -> Path | None:
     plt.close(fig)
     return out_path
 
+
+def _write_json(path: Path | str, payload: Dict[str, Any]) -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+    return path
+
+
+def _maybe_plot_timecrystal(result, prefix: str) -> list[Path]:
+    try:
+        mpl = optional_import(
+            "matplotlib",
+            pip_name="matplotlib",
+            purpose="plot time-crystal observables",
+        )
+        mpl.use("Agg")
+        import matplotlib.pyplot as plt
+    except RuntimeError:
+        return []
+
+    times = list(range(len(result.autocorrelation)))
+    freq = result.frequencies
+    spec = result.spectrum
+
+    paths: list[Path] = []
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(times, result.autocorrelation, label="C(t)")
+    ax.set_xlabel("Floquet step")
+    ax.set_ylabel("Autocorrelation")
+    ax.grid(True, alpha=0.3)
+    ax.set_title("Time-crystal autocorrelation")
+    fig.tight_layout()
+    ac_path = Path(f"{prefix}_autocorr.png")
+    ac_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(ac_path, dpi=150)
+    plt.close(fig)
+    paths.append(ac_path)
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(freq, spec, color="tab:orange")
+    ax.set_xlabel("Frequency (cycles/step)")
+    ax.set_ylabel("|C(ω)|")
+    ax.set_title("Stroboscopic spectrum")
+    ax.axvline(0.5, color="tab:red", linestyle="--", alpha=0.6)
+    fig.tight_layout()
+    sp_path = Path(f"{prefix}_spectrum.png")
+    sp_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(sp_path, dpi=150)
+    plt.close(fig)
+    paths.append(sp_path)
+    return paths
+
+
+def _maybe_plot_material_time(result, prefix: str) -> list[Path]:
+    try:
+        mpl = optional_import(
+            "matplotlib",
+            pip_name="matplotlib",
+            purpose="plot material-time dynamics",
+        )
+        mpl.use("Agg")
+        import matplotlib.pyplot as plt
+    except RuntimeError:
+        return []
+
+    paths: list[Path] = []
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(result.real_time, result.material_time, label="material time")
+    ax.set_xlabel("Real time step")
+    ax.set_ylabel("Material time ticks")
+    ax.set_title("Material-time growth")
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    mt_path = Path(f"{prefix}_material_time.png")
+    mt_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(mt_path, dpi=150)
+    plt.close(fig)
+    paths.append(mt_path)
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(result.real_time, result.entropy_proxy, color="tab:green")
+    ax.set_xlabel("Real time step")
+    ax.set_ylabel("Entropy proxy")
+    ax.set_title("Entropy evolution")
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    ent_path = Path(f"{prefix}_entropy.png")
+    ent_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(ent_path, dpi=150)
+    plt.close(fig)
+    paths.append(ent_path)
+    return paths
+
+
+def _maybe_plot_timerev(result, prefix: str) -> list[Path]:
+    try:
+        mpl = optional_import(
+            "matplotlib",
+            pip_name="matplotlib",
+            purpose="plot quantum reversal fidelity",
+        )
+        mpl.use("Agg")
+        import matplotlib.pyplot as plt
+    except RuntimeError:
+        return []
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.plot(result.noise_levels, result.fidelities, marker="o")
+    ax.set_xlabel("Noise strength")
+    ax.set_ylabel("Fidelity")
+    ax.set_ylim(0.0, 1.05)
+    ax.grid(True, alpha=0.3)
+    ax.set_title("Noisy reversal fidelity")
+    fig.tight_layout()
+    out_path = Path(f"{prefix}_fidelity.png")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    return [out_path]
+
+
 import numpy as np
 
 from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
@@ -120,6 +243,220 @@ def _forward_cli(module: str, purpose: str, argv: list[str] | None) -> None:
     module_obj = optional_import(module, purpose=purpose)
     main = getattr(module_obj, 'main')
     main(argv or None)
+
+
+def _virtual_element_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="virtual element search")
+
+    from quantacap.experiments.virtual_element.plot import (
+        plot_binding_curve,
+        plot_heatmap,
+        plot_top_candidates,
+    )
+    from quantacap.experiments.virtual_element.search import search_isotopes
+
+    result = search_isotopes(
+        Z_min=args.Z_min,
+        Z_max=args.Z_max,
+        A_min_offset=args.A_min_offset,
+        A_max_offset=args.A_max_offset,
+        n_mc=args.mc,
+        seed=args.seed,
+        adapter_top_k=args.topk,
+    )
+    payload: Dict[str, Any] = {
+        "params": {
+            "Z_min": args.Z_min,
+            "Z_max": args.Z_max,
+            "A_min_offset": args.A_min_offset,
+            "A_max_offset": args.A_max_offset,
+            "n_mc": args.mc,
+            "seed": args.seed,
+            "topk": args.topk,
+        },
+        "top": result["top"][: args.topk],
+        "grid": {
+            "Z_values": result["Z_values"],
+            "A_values": result["A_values"],
+        },
+        "latency_ms": result["latency_ms"],
+    }
+    _write_json(args.out, payload)
+
+    plot_paths: list[str] = []
+    if args.plot:
+        prefix = str(args.plot_prefix or Path(args.out).with_suffix(""))
+        heatmap_path = plot_heatmap(
+            result["Z_values"],
+            result["A_values"],
+            result["stability_matrix"],
+            out_path=f"{prefix}_heatmap.png",
+        )
+        if heatmap_path:
+            plot_paths.append(str(heatmap_path))
+        top_plot = plot_top_candidates(result["entries"], out_path=f"{prefix}_top.png", top_k=args.topk)
+        if top_plot:
+            plot_paths.append(str(top_plot))
+        top_Z = []
+        for row in result["top"]:
+            z_val = row["Z"]
+            if z_val not in top_Z:
+                top_Z.append(z_val)
+            if len(top_Z) >= min(3, args.topk):
+                break
+        for z_val in top_Z:
+            binding_path = plot_binding_curve(
+                result["entries"],
+                Z=z_val,
+                out_path=f"{prefix}_binding_Z{z_val}.png",
+            )
+            if binding_path:
+                plot_paths.append(str(binding_path))
+
+    print(
+        json.dumps(
+            {
+                "top": payload["top"],
+                "out": str(args.out),
+                "plots": plot_paths,
+            },
+            indent=2,
+        )
+    )
+
+
+def _timecrystal_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="time-crystal simulation")
+    from dataclasses import asdict
+
+    from quantacap.experiments.timecrystal import run_time_crystal
+
+    result = run_time_crystal(
+        N=args.N,
+        steps=args.steps,
+        disorder=args.disorder,
+        jitter=args.jitter,
+        seed=args.seed,
+    )
+    payload = asdict(result)
+    _write_json(args.out, payload)
+    plots = []
+    if args.plot:
+        plots = [str(path) for path in _maybe_plot_timecrystal(result, args.plot_prefix)]
+    print(json.dumps({"detected": result.detected, "plots": plots, "out": str(args.out)}, indent=2))
+
+
+def _material_time_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="material-time simulation")
+    from dataclasses import asdict
+
+    from quantacap.experiments.material_time import simulate_material_time
+
+    result = simulate_material_time(
+        traps=args.traps,
+        steps=args.steps,
+        rate=args.rate,
+        temperature=args.temperature,
+        seed=args.seed,
+        reversal_period=args.reversal_period,
+    )
+    payload = asdict(result)
+    _write_json(args.out, payload)
+    plots = []
+    if args.plot:
+        plots = [str(path) for path in _maybe_plot_material_time(result, args.plot_prefix)]
+    print(
+        json.dumps(
+            {
+                "reversal_success": result.reversal_success,
+                "reversal_attempts": result.reversal_attempts,
+                "plots": plots,
+                "out": str(args.out),
+            },
+            indent=2,
+        )
+    )
+
+
+def _timerev_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="quantum reversal sweep")
+    from dataclasses import asdict
+
+    from quantacap.experiments.timerev import run_quantum_reversal
+
+    noise = args.noise or [0.0, 0.02, 0.05, 0.1]
+    result = run_quantum_reversal(
+        n_qubits=args.qubits,
+        depth=args.depth,
+        noise_levels=noise,
+        seed=args.seed,
+        guard_threshold=args.guard_threshold,
+    )
+    payload = asdict(result)
+    _write_json(args.out, payload)
+    plots = []
+    if args.plot:
+        plots = [str(path) for path in _maybe_plot_timerev(result, args.plot_prefix)]
+    print(
+        json.dumps(
+            {
+                "guard_triggered": result.guard_triggered,
+                "fidelities": result.fidelities,
+                "out": str(args.out),
+                "plots": plots,
+            },
+            indent=2,
+        )
+    )
+
+
+def _time_suite_cmd(args: argparse.Namespace) -> None:
+    selections = [part.strip() for part in args.sub.split(",") if part.strip()]
+    if not selections:
+        selections = ["timecrystal", "material_time", "timerev"]
+
+    from dataclasses import asdict
+
+    summary: Dict[str, Any] = {}
+    out_prefix = args.out_prefix
+
+    if "timecrystal" in selections:
+        from quantacap.experiments.timecrystal import run_time_crystal
+
+        tc = run_time_crystal(seed=args.seed)
+        tc_path = _write_json(f"{out_prefix}_timecrystal.json", asdict(tc))
+        plots = _maybe_plot_timecrystal(tc, f"{out_prefix}_timecrystal") if args.plot else []
+        summary["timecrystal"] = {
+            "detected": tc.detected,
+            "out": str(tc_path),
+            "plots": [str(p) for p in plots],
+        }
+
+    if "material_time" in selections:
+        from quantacap.experiments.material_time import simulate_material_time
+
+        mt = simulate_material_time(seed=args.seed)
+        mt_path = _write_json(f"{out_prefix}_material_time.json", asdict(mt))
+        plots = _maybe_plot_material_time(mt, f"{out_prefix}_material_time") if args.plot else []
+        summary["material_time"] = {
+            "reversal_success": mt.reversal_success,
+            "out": str(mt_path),
+            "plots": [str(p) for p in plots],
+        }
+
+    if "timerev" in selections:
+        from quantacap.experiments.timerev import run_quantum_reversal
+
+        qr = run_quantum_reversal(seed=args.seed)
+        qr_path = _write_json(f"{out_prefix}_timerev.json", asdict(qr))
+        plots = _maybe_plot_timerev(qr, f"{out_prefix}_timerev") if args.plot else []
+        summary["timerev"] = {
+            "guard_triggered": qr.guard_triggered,
+            "out": str(qr_path),
+            "plots": [str(p) for p in plots],
+        }
+
+    print(json.dumps(summary, indent=2))
 
 
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
@@ -215,6 +552,135 @@ def main() -> None:
         action=argparse.BooleanOptionalAction,
         help="Generate a companion PNG when matplotlib is available",
     )
+
+    virtual = sub.add_parser(
+        "virtual-element",
+        help="Run the virtual superheavy isotope search",
+    )
+    virtual.add_argument("--Zmin", dest="Z_min", type=int, default=100)
+    virtual.add_argument("--Zmax", dest="Z_max", type=int, default=130)
+    virtual.add_argument("--Amin-offset", dest="A_min_offset", type=int, default=150)
+    virtual.add_argument("--Amax-offset", dest="A_max_offset", type=int, default=220)
+    virtual.add_argument("--mc", type=int, default=5, help="Monte-Carlo samples per isotope")
+    virtual.add_argument("--seed", type=int, default=424242)
+    virtual.add_argument("--topk", type=int, default=10)
+    virtual.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "virtual_elements.json"),
+        help="Output JSON path",
+    )
+    virtual.add_argument(
+        "--plot-prefix",
+        default=os.path.join("artifacts", "virtual_elements"),
+        help="Prefix for generated plots",
+    )
+    virtual.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate heatmap and ranking plots when matplotlib is available",
+    )
+    virtual.set_defaults(func=_virtual_element_cmd)
+
+    timecrystal_parser = sub.add_parser(
+        "timecrystal", help="Simulate a discrete time-crystal Floquet drive"
+    )
+    timecrystal_parser.add_argument("--N", type=int, default=10)
+    timecrystal_parser.add_argument("--steps", type=int, default=500)
+    timecrystal_parser.add_argument("--disorder", type=float, default=0.08)
+    timecrystal_parser.add_argument("--jitter", type=float, default=0.05)
+    timecrystal_parser.add_argument("--seed", type=int, default=424242)
+    timecrystal_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "timecrystal.json"),
+    )
+    timecrystal_parser.add_argument(
+        "--plot-prefix",
+        default=os.path.join("artifacts", "timecrystal"),
+    )
+    timecrystal_parser.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate autocorrelation and spectrum plots",
+    )
+    timecrystal_parser.set_defaults(func=_timecrystal_cmd)
+
+    material_parser = sub.add_parser(
+        "material-time", help="Run the material-time aging simulation"
+    )
+    material_parser.add_argument("--traps", type=int, default=64)
+    material_parser.add_argument("--steps", type=int, default=5000)
+    material_parser.add_argument("--rate", type=float, default=1e-3)
+    material_parser.add_argument("--temperature", type=float, default=0.3)
+    material_parser.add_argument("--reversal-period", dest="reversal_period", type=int, default=250)
+    material_parser.add_argument("--seed", type=int, default=424242)
+    material_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "material_time.json"),
+    )
+    material_parser.add_argument(
+        "--plot-prefix",
+        default=os.path.join("artifacts", "material_time"),
+    )
+    material_parser.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate material-time plots when matplotlib is available",
+    )
+    material_parser.set_defaults(func=_material_time_cmd)
+
+    timerev_parser = sub.add_parser(
+        "timerev", help="Sweep noisy quantum reversal fidelity"
+    )
+    timerev_parser.add_argument("--qubits", type=int, default=3)
+    timerev_parser.add_argument("--depth", type=int, default=12)
+    timerev_parser.add_argument(
+        "--noise",
+        nargs="*",
+        type=float,
+        help="Explicit noise schedule (space-separated values)",
+    )
+    timerev_parser.add_argument("--guard-threshold", type=float, default=0.05)
+    timerev_parser.add_argument("--seed", type=int, default=424242)
+    timerev_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "timerev.json"),
+    )
+    timerev_parser.add_argument(
+        "--plot-prefix",
+        default=os.path.join("artifacts", "timerev"),
+    )
+    timerev_parser.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate fidelity plot when matplotlib is available",
+    )
+    timerev_parser.set_defaults(func=_timerev_cmd)
+
+    suite_parser = sub.add_parser(
+        "time-suite", help="Run a bundle of time-dynamics experiments"
+    )
+    suite_parser.add_argument(
+        "--sub",
+        default="timecrystal,material_time,timerev",
+        help="Comma-separated list of experiments to execute",
+    )
+    suite_parser.add_argument("--seed", type=int, default=424242)
+    suite_parser.add_argument(
+        "--out-prefix",
+        default=os.path.join("artifacts", "time_suite"),
+        help="Prefix for generated JSON/plots",
+    )
+    suite_parser.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate plots for the selected experiments",
+    )
+    suite_parser.set_defaults(func=_time_suite_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
