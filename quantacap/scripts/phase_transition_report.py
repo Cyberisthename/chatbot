@@ -408,16 +408,16 @@ def main(
 
     plots: List[Path] = []
     if enable_plots:
-        noise_plot = _maybe_plot_noise(prefix.with_suffix("_noise.png"), list(noise_up.values()), list(noise_down.values()))
+        noise_plot = _maybe_plot_noise(prefix.with_suffix(".noise.png"), list(noise_up.values()), list(noise_down.values()))
         if noise_plot:
             plots.append(noise_plot)
-        frontier_plot = _maybe_plot_frontier(prefix.with_suffix("_frontier.png"), curve, {
+        frontier_plot = _maybe_plot_frontier(prefix.with_suffix(".frontier.png"), curve, {
             "kneedle": summary["frontier"]["knee_kneedle"],
             "second_derivative": summary["frontier"]["knee_second_deriv"],
         })
         if frontier_plot:
             plots.append(frontier_plot)
-        drift_plot = _maybe_plot_drift(prefix.with_suffix("_drift.png"), drift_curve, alpha)
+        drift_plot = _maybe_plot_drift(prefix.with_suffix(".drift.png"), drift_curve, alpha)
         if drift_plot:
             plots.append(drift_plot)
 

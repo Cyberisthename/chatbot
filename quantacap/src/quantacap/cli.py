@@ -40,8 +40,10 @@ def _summarize_artifacts_cmd(args: argparse.Namespace) -> None:
 
 
 def _report_phase_transition_cmd(args: argparse.Namespace) -> None:
+    """Generate the phase-transition bundle via the standalone script."""
+
     module = optional_import(
-        "quantacap.scripts.phase_transition_report",
+        "scripts.phase_transition_report",
         purpose="generate phase transition summary",
     )
     main = getattr(module, "main")
