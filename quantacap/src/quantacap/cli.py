@@ -38,6 +38,20 @@ def _summarize_artifacts_cmd(args: argparse.Namespace) -> None:
     summary_path = Path(getattr(args, 'summary_path', os.path.join('artifacts', 'summary_results.json')))
     summarize_quantum_artifacts(zip_path, artifacts_dir, summary_path)
 
+
+def _report_phase_transition_cmd(args: argparse.Namespace) -> None:
+    module = optional_import(
+        "quantacap.scripts.phase_transition_report",
+        purpose="generate phase transition summary",
+    )
+    main = getattr(module, "main")
+    kwargs: Dict[str, Any] = {}
+    if getattr(args, "artifacts_dir", None) is not None:
+        kwargs["artifacts_dir"] = args.artifacts_dir
+    if getattr(args, "out_prefix", None) is not None:
+        kwargs["output_prefix"] = args.out_prefix
+    main(**kwargs)
+
 import numpy as np
 
 from quantacap.core.adapter_store import create_adapter, list_adapters, load_adapter
@@ -130,6 +144,14 @@ def main() -> None:
         "report-discovery", help="Generate a unified discovery report (JSON/MD/ZIP)"
     )
     report.set_defaults(func=_report_discovery_cmd)
+
+    phase_report = sub.add_parser(
+        "report-phase-transition",
+        help="Analyse π-phase noise/coupling/drift phase transitions",
+    )
+    phase_report.add_argument("--artifacts-dir", default="artifacts")
+    phase_report.add_argument("--out-prefix", default=None)
+    phase_report.set_defaults(func=_report_phase_transition_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
