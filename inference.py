@@ -212,7 +212,9 @@ Maintain a consistent personality without repeating yourself. Vary your response
                 "At your service. As Ben's creation, I'm here to help with whatever you need.",
                 "Greetings! I'm analyzing your request and preparing the most efficient solution.",
                 "How may I be of assistance? I'm continuously learning and improving my capabilities.",
-                "I'm processing your request with my usual efficiency. What would you like to know?"
+                "I'm processing your request with my usual efficiency. What would you like to know?",
+                "Hi there! I'm J.A.R.V.I.S., ready to assist you with any inquiries or tasks.",
+                "Hi! Nice to connect with you. What can I help you with today?"
             ]
             response = np.random.choice(mock_responses)
             tokens_used = len(response.split())
@@ -247,6 +249,20 @@ Maintain a consistent personality without repeating yourself. Vary your response
         
         # Update topic tracking
         current_topics = update_memory_topics(memory, last_user)
+        
+        # Handle greetings
+        greeting_patterns = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]
+        if any(last_user.strip() == pattern or last_user.strip().startswith(pattern + " ") for pattern in greeting_patterns):
+            greeting_responses = [
+                "Hi! I'm J.A.R.V.I.S., your advanced AI assistant. How may I help you today?",
+                "Hello! J.A.R.V.I.S. here, at your service. What can I do for you?",
+                "Hi there! It's a pleasure to assist you. What would you like to know?",
+                "Greetings! I'm J.A.R.V.I.S., ready to help with any task or inquiry you have.",
+                "Hi! Nice to connect with you. I'm here to provide any assistance you need."
+            ]
+            reply = np.random.choice(greeting_responses)
+            self.log_chat(messages[-1])
+            return {'message': {'role': 'assistant', 'content': reply}, 'usage': {}, 'performance': {}, 'timestamp': time.time()}
         
         # Handle special commands
         if last_user.startswith("remember:"):
