@@ -226,6 +226,7 @@ from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
 from quantacap.experiments.chsh_rehearsal import run_chsh_scan
 from quantacap.experiments.chsh_ybit import run_chsh_y
+from quantacap.experiments.exotic_atom_floquet import run_exotic_atom_floquet
 from quantacap.experiments.pi_phase import run_pi_phase
 from quantacap.quantum.backend import create_circuit
 from quantacap.quantum.bell import bell_counts
@@ -486,6 +487,30 @@ def _quantum_tunneling_cmd(args: argparse.Namespace) -> None:
     }, indent=2))
 
 
+def _exotic_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="exotic atom Floquet experiment")
+    
+    result = run_exotic_atom_floquet(
+        N=args.N,
+        steps=args.steps,
+        dt=args.dt,
+        drive_amp=args.drive_amp,
+        drive_freq=args.drive_freq,
+        J_nn=args.J_nn,
+        J_lr=args.J_lr,
+        alpha=args.alpha,
+        seed=args.seed,
+        make_gif=not args.no_gif,
+        out_json=args.out,
+    )
+    
+    print(json.dumps({
+        "experiment": result["experiment"],
+        "out": args.out,
+        "artifacts": result["results"]["artifacts"],
+    }, indent=2))
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -736,6 +761,26 @@ def main() -> None:
         help="Generate evolution plot when matplotlib is available",
     )
     tunneling_parser.set_defaults(func=_quantum_tunneling_cmd)
+
+    exotic_atom_parser = sub.add_parser(
+        "exotic-atom", help="Run exotic atom Floquet experiment with long-range Hamiltonian"
+    )
+    exotic_atom_parser.add_argument("--N", type=int, default=8, help="Number of qubits")
+    exotic_atom_parser.add_argument("--steps", type=int, default=80, help="Number of evolution steps")
+    exotic_atom_parser.add_argument("--dt", type=float, default=0.05, help="Time step size")
+    exotic_atom_parser.add_argument("--drive-amp", dest="drive_amp", type=float, default=1.0, help="Drive amplitude")
+    exotic_atom_parser.add_argument("--drive-freq", dest="drive_freq", type=float, default=2.0, help="Drive frequency")
+    exotic_atom_parser.add_argument("--J-nn", dest="J_nn", type=float, default=1.0, help="Nearest-neighbor coupling")
+    exotic_atom_parser.add_argument("--J-lr", dest="J_lr", type=float, default=0.5, help="Long-range coupling strength")
+    exotic_atom_parser.add_argument("--alpha", type=float, default=1.5, help="Long-range decay exponent")
+    exotic_atom_parser.add_argument("--seed", type=int, default=424242)
+    exotic_atom_parser.add_argument("--no-gif", action="store_true", help="Skip GIF generation")
+    exotic_atom_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "exotic_atom_floquet.json"),
+        help="Output JSON path",
+    )
+    exotic_atom_parser.set_defaults(func=_exotic_atom_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"

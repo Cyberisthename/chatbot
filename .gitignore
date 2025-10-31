@@ -164,3 +164,6 @@ cython_debug/
 #.idea/
 # Node modules
 node_modules/
+
+# Temporary files from experiments
+_tmp_frame.png
