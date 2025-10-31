@@ -459,6 +459,33 @@ def _time_suite_cmd(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2))
 
 
+def _quantum_tunneling_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="quantum tunneling simulation")
+    
+    from quantacap.experiments.quantum_tunneling import run_quantum_tunneling
+    
+    plot_path = f"{args.plot_prefix}.png" if args.plot else None
+    
+    result = run_quantum_tunneling(
+        energy=args.energy,
+        barrier=args.barrier,
+        steps=args.steps,
+        n=args.n,
+        barrier_width=args.barrier_width,
+        dt=args.dt,
+        seed=args.seed,
+        out=args.out,
+        plot=plot_path,
+    )
+    
+    print(json.dumps({
+        "final_transmission": result["final_transmission"],
+        "final_reflection": result["final_reflection"],
+        "out": result["artifacts"]["json"],
+        "plot": result["artifacts"].get("plot"),
+    }, indent=2))
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -681,6 +708,34 @@ def main() -> None:
         help="Generate plots for the selected experiments",
     )
     suite_parser.set_defaults(func=_time_suite_cmd)
+
+    tunneling_parser = sub.add_parser(
+        "quantum-tunneling", help="Simulate 1D quantum tunneling through a potential barrier"
+    )
+    tunneling_parser.add_argument("--energy", type=float, default=2.0, help="Particle kinetic energy")
+    tunneling_parser.add_argument("--barrier", type=float, default=5.0, help="Potential barrier height")
+    tunneling_parser.add_argument("--steps", type=int, default=2000, help="Number of time evolution steps")
+    tunneling_parser.add_argument("--n", type=int, default=1024, help="Number of spatial grid points")
+    tunneling_parser.add_argument("--barrier-width", dest="barrier_width", type=int, default=128, help="Barrier width in grid points")
+    tunneling_parser.add_argument("--dt", type=float, default=0.002, help="Time step size")
+    tunneling_parser.add_argument("--seed", type=int, default=424242)
+    tunneling_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "tunneling_result.json"),
+        help="Output JSON path",
+    )
+    tunneling_parser.add_argument(
+        "--plot-prefix",
+        default=os.path.join("artifacts", "tunneling_evolution"),
+        help="Prefix for generated plot",
+    )
+    tunneling_parser.add_argument(
+        "--plot",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+        help="Generate evolution plot when matplotlib is available",
+    )
+    tunneling_parser.set_defaults(func=_quantum_tunneling_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
