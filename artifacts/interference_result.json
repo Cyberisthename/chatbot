@@ -1,0 +1,23 @@
+{
+  "experiment": "quantum_double_slit_interference",
+  "version": "1.0",
+  "params": {
+    "n_points": 2048,
+    "wavelength": 1.0,
+    "slit_distance": 5.0,
+    "slit_width": 0.5,
+    "L": 50.0
+  },
+  "results": {
+    "mean_intensity": 0.024150932466280278,
+    "max_intensity": 1.0,
+    "min_intensity": 7.256508475674717e-33,
+    "std_intensity": 0.12641673370682263
+  },
+  "physics": {
+    "phenomenon": "wave-particle duality",
+    "description": "Bright and dark fringes from quantum interference",
+    "wave_number": 6.283185307179586
+  },
+  "notes": "Classic double-slit experiment showing quantum interference patterns"
+}

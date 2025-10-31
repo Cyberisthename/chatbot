@@ -1,0 +1,19 @@
+{
+  "name": "caffeine",
+  "atoms": [
+    {"id": "N1", "charge": -0.2, "hydrophobicity": 0.3, "hbond_donor": true, "hbond_acceptor": true},
+    {"id": "N3", "charge": -0.18, "hydrophobicity": 0.3, "hbond_donor": true, "hbond_acceptor": true},
+    {"id": "O2", "charge": -0.35, "hydrophobicity": 0.2, "hbond_donor": false, "hbond_acceptor": true},
+    {"id": "O4", "charge": -0.33, "hydrophobicity": 0.2, "hbond_donor": false, "hbond_acceptor": true},
+    {"id": "C5", "charge": 0.12, "hydrophobicity": 0.5, "hbond_donor": false, "hbond_acceptor": false},
+    {"id": "C6", "charge": 0.1, "hydrophobicity": 0.5, "hbond_donor": false, "hbond_acceptor": false}
+  ],
+  "bonds": [
+    {"a": "N1", "b": "C5", "order": 1},
+    {"a": "C5", "b": "N3", "order": 1},
+    {"a": "N3", "b": "C6", "order": 1},
+    {"a": "C6", "b": "O2", "order": 2},
+    {"a": "C6", "b": "O4", "order": 1},
+    {"a": "O4", "b": "N1", "order": 1}
+  ]
+}
