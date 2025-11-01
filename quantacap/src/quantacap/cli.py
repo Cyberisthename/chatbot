@@ -528,6 +528,75 @@ def _qcr_atom_cmd(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2))
 
 
+def _solve_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="physics-first atom solver")
+    
+    from quantacap.experiments.solve_atom_from_constants import imaginary_time_solve, save_slices, save_energy
+    from pathlib import Path
+    
+    outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    
+    result = imaginary_time_solve(
+        N=args.N,
+        L=args.L,
+        Z=args.Z,
+        dt=args.dt,
+        steps=args.steps,
+        softening=args.softening,
+    )
+    
+    np.save(outdir / "psi.npy", result["psi"])
+    np.save(outdir / "density.npy", result["density"])
+    np.save(outdir / "V.npy", result["V"])
+    
+    descriptor = {
+        "name": "REAL-ATOM-FROM-SCHRODINGER-V1",
+        "grid": {
+            "N": args.N,
+            "L": args.L,
+            "dx": float(result["dx"]),
+            "coords": {
+                "x_min": float(result["x"][0]),
+                "x_max": float(result["x"][-1]),
+            },
+        },
+        "potential": {
+            "type": "coulomb",
+            "Z": args.Z,
+            "softening": args.softening,
+        },
+        "solver": {
+            "method": "imaginary_time",
+            "dt": args.dt,
+            "steps": args.steps,
+        },
+        "energies": [
+            {"step": int(s), "E": float(e)} for (s, e) in result["energies"]
+        ],
+        "artifacts": {
+            "psi": str(outdir / "psi.npy"),
+            "density": str(outdir / "density.npy"),
+            "potential": str(outdir / "V.npy"),
+            "slices": str(outdir / "slice_*.png"),
+            "mip": str(outdir / "atom_mip.png"),
+            "energy_plot": str(outdir / "energy_convergence.png"),
+        },
+        "notes": "Derived from constants; no hand-tuned orbitals.",
+    }
+    with open(outdir / "atom_descriptor.json", "w") as f:
+        json.dump(descriptor, f, indent=2)
+    
+    if args.plot:
+        try:
+            save_slices(result["density"], result["x"], result["y"], result["z"], outdir)
+            save_energy(result["energies"], outdir)
+        except Exception:
+            pass
+    
+    print(json.dumps(descriptor, indent=2))
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -809,6 +878,19 @@ def main() -> None:
     qcr_atom_parser.add_argument("--n-qubits", dest="n_qubits", type=int, default=8, help="Synthetic qubit count")
     qcr_atom_parser.add_argument("--seed", type=int, default=424242)
     qcr_atom_parser.set_defaults(func=_qcr_atom_cmd)
+
+    solve_atom_parser = sub.add_parser(
+        "solve-atom", help="Physics-first atom solver via Schrödinger equation"
+    )
+    solve_atom_parser.add_argument("--N", type=int, default=64, help="Grid points per axis")
+    solve_atom_parser.add_argument("--L", type=float, default=12.0, help="Physical box size (a.u.)")
+    solve_atom_parser.add_argument("--Z", type=float, default=1.0, help="Nuclear charge")
+    solve_atom_parser.add_argument("--steps", type=int, default=600, help="Imaginary time steps")
+    solve_atom_parser.add_argument("--dt", type=float, default=0.002, help="Imaginary time step size")
+    solve_atom_parser.add_argument("--softening", type=float, default=0.3, help="Nuclear softening")
+    solve_atom_parser.add_argument("--outdir", default="artifacts/real_atom", help="Output directory")
+    solve_atom_parser.add_argument("--plot", action="store_true", help="Generate visualization plots")
+    solve_atom_parser.set_defaults(func=_solve_atom_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
