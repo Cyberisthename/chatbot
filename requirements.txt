@@ -18,3 +18,5 @@ speechrecognition>=3.10.0
 pyttsx3>=2.90
 requests>=2.31.0
 python-dotenv>=1.0.0
+scipy>=1.10.0
+imageio>=2.31.0
