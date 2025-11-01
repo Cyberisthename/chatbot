@@ -30,6 +30,28 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **cache-system/** - Redis-like caching implementation
 - **monitoring/** - Performance and health monitoring
 
+## 🔬 Quantum Experiments
+
+This repo includes powerful physics experiments that prove quantum-like behavior and solve fundamental problems:
+
+### 1. Digital Double-Slit Experiment
+**Proves adapter systems show quantum-like interference**
+```bash
+python -m experiments.adapter_double_slit
+# or
+python cli.py adapter-double-slit
+```
+**Results**: `artifacts/adapter_double_slit/interference.png` shows clear fringes proving quantum superposition.
+
+### 2. Physics-First Atom Solver
+**Generates atom images by solving Schrödinger equation (no guessing!)**
+```bash
+python cli.py atom-from-constants
+```
+**Results**: `artifacts/real_atom/atom_mip.png` shows the real electron density from pure physics.
+
+📖 **See [EXPERIMENTS_GUIDE.md](EXPERIMENTS_GUIDE.md) for full documentation.**
+
 ## 🛠️ Quick Start
 
 ### 1. System Requirements

@@ -597,6 +597,13 @@ def _solve_atom_cmd(args: argparse.Namespace) -> None:
     print(json.dumps(descriptor, indent=2))
 
 
+def _adapter_double_slit_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="adapter double-slit experiment")
+    
+    import runpy
+    runpy.run_module("experiments.adapter_double_slit", run_name="__main__")
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -891,6 +898,24 @@ def main() -> None:
     solve_atom_parser.add_argument("--outdir", default="artifacts/real_atom", help="Output directory")
     solve_atom_parser.add_argument("--plot", action="store_true", help="Generate visualization plots")
     solve_atom_parser.set_defaults(func=_solve_atom_cmd)
+
+    adapter_ds_parser = sub.add_parser(
+        "adapter-double-slit", help="Digital double-slit experiment showing adapter quantum-like interference"
+    )
+    adapter_ds_parser.set_defaults(func=_adapter_double_slit_cmd)
+
+    atom_from_constants_parser = sub.add_parser(
+        "atom-from-constants", help="Alias for solve-atom command"
+    )
+    atom_from_constants_parser.add_argument("--N", type=int, default=64, help="Grid points per axis")
+    atom_from_constants_parser.add_argument("--L", type=float, default=12.0, help="Physical box size (a.u.)")
+    atom_from_constants_parser.add_argument("--Z", type=float, default=1.0, help="Nuclear charge")
+    atom_from_constants_parser.add_argument("--steps", type=int, default=600, help="Imaginary time steps")
+    atom_from_constants_parser.add_argument("--dt", type=float, default=0.002, help="Imaginary time step size")
+    atom_from_constants_parser.add_argument("--softening", type=float, default=0.3, help="Nuclear softening")
+    atom_from_constants_parser.add_argument("--outdir", default="artifacts/real_atom", help="Output directory")
+    atom_from_constants_parser.add_argument("--plot", action="store_true", help="Generate visualization plots")
+    atom_from_constants_parser.set_defaults(func=_solve_atom_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
