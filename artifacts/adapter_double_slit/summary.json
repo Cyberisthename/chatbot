@@ -1,0 +1,18 @@
+{
+  "visibility_interference": 0.848560757369696,
+  "visibility_control": 0.8503609952075297,
+  "visibility": 0.848560757369696,
+  "visibility_difference": -0.0018002378378336736,
+  "I_max_interference": 0.9991927258956774,
+  "I_min_interference": 0.08185664931384684,
+  "I_max_control": 1.012349955055201,
+  "I_min_control": 0.0818689110765502,
+  "quantum_like": true,
+  "interpretation": "visibility > 0.2 suggests quantum-like behavior",
+  "artifacts": {
+    "slit_A": "artifacts/adapter_double_slit/slit_A.npy",
+    "slit_B": "artifacts/adapter_double_slit/slit_B.npy",
+    "interference": "artifacts/adapter_double_slit/interference.npy",
+    "control": "artifacts/adapter_double_slit/control.npy"
+  }
+}
