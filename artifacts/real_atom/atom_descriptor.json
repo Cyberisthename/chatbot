@@ -1,0 +1,57 @@
+{
+  "name": "REAL-ATOM-FROM-SCHRODINGER-V1",
+  "grid": {
+    "N": 16,
+    "L": 12.0,
+    "dx": 0.7999999999999998,
+    "coords": {
+      "x_min": -6.0,
+      "x_max": 6.0
+    }
+  },
+  "potential": {
+    "type": "coulomb",
+    "Z": 1.0,
+    "softening": 0.3
+  },
+  "solver": {
+    "method": "imaginary_time",
+    "dt": 0.002,
+    "steps": 50
+  },
+  "energies": [
+    {
+      "step": 0,
+      "E": -0.357487652725073
+    },
+    {
+      "step": 10,
+      "E": -0.3615422804942561
+    },
+    {
+      "step": 20,
+      "E": -0.3650301086058143
+    },
+    {
+      "step": 30,
+      "E": -0.36805402535738774
+    },
+    {
+      "step": 40,
+      "E": -0.3706955796017725
+    },
+    {
+      "step": 49,
+      "E": -0.37280002707145427
+    }
+  ],
+  "artifacts": {
+    "psi": "artifacts/real_atom/psi.npy",
+    "density": "artifacts/real_atom/density.npy",
+    "potential": "artifacts/real_atom/V.npy",
+    "slices": "artifacts/real_atom/slice_*.png",
+    "mip": "artifacts/real_atom/atom_mip.png",
+    "energy_plot": "artifacts/real_atom/energy_convergence.png"
+  },
+  "notes": "Derived from constants; no hand-tuned orbitals."
+}

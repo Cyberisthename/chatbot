@@ -267,8 +267,9 @@ The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from
 The `experiments/` directory contains standalone quantum physics demonstrations:
 - **Double-Slit Interference** (`quick_interference.py`): Classic demonstration of wave-particle duality with bright/dark fringes
 - **Quantum Uncertainty Collapse**: Visual demonstration of quantum decoherence (see root-level `uncertainty_experiment*.py` files)
+- **Physics-First Atom Solver**: Solves the Schrödinger equation from first principles to compute real atomic wavefunctions (see [PHYSICS_FIRST_ATOM_SOLVER.md](PHYSICS_FIRST_ATOM_SOLVER.md))
 
-Run `python3 experiments/quick_interference.py` for a quick double-slit simulation, or see [experiments/README.md](experiments/README.md) for the full catalog. All experiments save results to `artifacts/` for easy analysis.
+Run `python3 experiments/quick_interference.py` for a quick double-slit simulation, or `python3 quantacap/examples/demo_solve_atom.py` for hydrogen atom ground state calculations. See [experiments/README.md](experiments/README.md) for the full catalog. All experiments save results to `artifacts/` for easy analysis.
 
 ### Experiment Results Snapshot
 A consolidated set of quantitative findings from the latest CHSH, Atom-1D, and π-phase stability experiments is available in [`quantacap/docs/experiment_results.md`](quantacap/docs/experiment_results.md). The document links directly to the generated artifacts so every number can be replayed from the stored adapters.
