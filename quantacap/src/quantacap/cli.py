@@ -511,6 +511,23 @@ def _exotic_atom_cmd(args: argparse.Namespace) -> None:
     }, indent=2))
 
 
+def _qcr_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="QCR atom reconstruction")
+    
+    from quantacap.experiments.qcr_atom_reconstruct import run_qcr_atom
+    
+    summary = run_qcr_atom(
+        N=args.N,
+        R=args.R,
+        iters=args.iters,
+        iso=args.iso,
+        n_qubits=args.n_qubits,
+        seed=args.seed,
+    )
+    
+    print(json.dumps(summary, indent=2))
+
+
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
     parser.add_argument("--gpu", type=int, choices=(0, 1), default=0, help="Use GPU backend if available")
     parser.add_argument("--dtype", choices=("complex64", "complex128"), default="complex128")
@@ -781,6 +798,17 @@ def main() -> None:
         help="Output JSON path",
     )
     exotic_atom_parser.set_defaults(func=_exotic_atom_cmd)
+
+    qcr_atom_parser = sub.add_parser(
+        "qcr-atom", help="Run QCR (Quantum Coordinate Reconstruction) atom reconstruction"
+    )
+    qcr_atom_parser.add_argument("--N", type=int, default=64, help="Grid size per axis")
+    qcr_atom_parser.add_argument("--R", type=float, default=1.0, help="Spatial radius")
+    qcr_atom_parser.add_argument("--iters", type=int, default=100, help="Reconstruction iterations")
+    qcr_atom_parser.add_argument("--iso", type=float, default=0.35, help="Isosurface threshold")
+    qcr_atom_parser.add_argument("--n-qubits", dest="n_qubits", type=int, default=8, help="Synthetic qubit count")
+    qcr_atom_parser.add_argument("--seed", type=int, default=424242)
+    qcr_atom_parser.set_defaults(func=_qcr_atom_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"
