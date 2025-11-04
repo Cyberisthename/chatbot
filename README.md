@@ -50,6 +50,19 @@ python cli.py atom-from-constants
 ```
 **Results**: `artifacts/real_atom/atom_mip.png` shows the real electron density from pure physics.
 
+### 3. 3D Atom Discovery (NEW!)
+**Discovers atomic structure from first principles using imaginary time evolution**
+```bash
+python cli.py atom-3d-discovery
+```
+**Results**: 
+- `artifacts/real_atom_3d/density_N256.npy` - Full 3D electron density (256³ = 16.7M voxels)
+- `artifacts/real_atom_3d/atom_mip_*.png` - 4K resolution visualizations
+- `artifacts/real_atom_3d/atom_spin.gif` - 360° rotating animation
+- Ground state energy: -0.399 hartree (79.7% of theoretical)
+
+📖 **See [QUICK_START_ATOM_3D.md](QUICK_START_ATOM_3D.md) for detailed guide.**
+
 📖 **See [EXPERIMENTS_GUIDE.md](EXPERIMENTS_GUIDE.md) for full documentation.**
 
 ## 🛠️ Quick Start
