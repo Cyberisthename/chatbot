@@ -14,6 +14,7 @@ def main():
         print("  atom-from-constants    - Solve atom from Schrödinger equation")
         print("  solve-atom             - Alias for atom-from-constants")
         print("  atom-3d-discovery      - 3D atom solver with progressive resolution (physics-only)")
+        print("  atom-3d-v2             - Full-resolution split-operator atom solver")
         sys.exit(1)
     
     command = sys.argv[1]
@@ -27,6 +28,8 @@ def main():
         runpy.run_path("quantacap/src/quantacap/experiments/solve_atom_from_constants.py", run_name="__main__")
     elif command == "atom-3d-discovery":
         runpy.run_module("experiments.solve_atom_3d_discovery", run_name="__main__")
+    elif command == "atom-3d-v2":
+        runpy.run_module("experiments.solve_atom_3d_v2", run_name="__main__")
     else:
         print(f"Unknown command: {command}")
         print("\nAvailable commands:")
@@ -34,6 +37,7 @@ def main():
         print("  atom-from-constants    - Solve atom from Schrödinger equation")
         print("  solve-atom             - Alias for atom-from-constants")
         print("  atom-3d-discovery      - 3D atom solver with progressive resolution (physics-only)")
+        print("  atom-3d-v2             - Full-resolution split-operator atom solver")
         sys.exit(1)
 
 
