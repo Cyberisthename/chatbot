@@ -645,22 +645,29 @@ def render_orbit_video(
     ax.set_title("Atom isosurface (orbit)")
 
     output_path = out_path / "atom_orbit.mp4"
-    with imageio.get_writer(
-        output_path,
-        fps=fps,
-        codec="libx264",
-        quality=9,
-        bitrate="16M",
-    ) as writer:
+    writer = None
+    try:
+        writer = imageio.get_writer(
+            output_path,
+            fps=fps,
+            codec="libx264",
+            macro_block_size=1,
+        )
+
         for frame in range(n_frames):
             angle = 360.0 * frame / n_frames
             ax.view_init(elev=25, azim=angle)
             fig.canvas.draw()
-            image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-            image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            # Convert canvas to RGB image - compatible with newer matplotlib
+            buf = fig.canvas.buffer_rgba()
+            image = np.asarray(buf)
+            image = image[:, :, :3]
             writer.append_data(image)
             if (frame + 1) % 120 == 0:
                 print(f"  Frame {frame + 1}/{n_frames}")
+    finally:
+        if writer is not None:
+            writer.close()
 
     plt.close(fig)
     print(f"  ✓ atom_orbit.mp4 ({n_frames} frames)")
@@ -716,7 +723,12 @@ def generate_all_visualizations(results: Dict[str, object], output_dir: str) -> 
 
     render_orthogonal_slices(density, L, output_dir, dpi=1000)
     render_isosurfaces(density, L, output_dir, levels=(0.6, 0.3, 0.1), dpi=1000)
-    render_orbit_video(density, L, output_dir, n_frames=720, fps=30, dpi=480)
+
+    try:
+        render_orbit_video(density, L, output_dir, n_frames=720, fps=30, dpi=480)
+    except Exception as exc:  # pragma: no cover - visualization fallback
+        print(f"⚠️  Orbit video generation failed: {exc}")
+
     render_radial_comparison(
         results["radial_r"],
         results["radial_rho"],
