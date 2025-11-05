@@ -65,6 +65,58 @@ python cli.py atom-3d-discovery
 
 📖 **See [EXPERIMENTS_GUIDE.md](EXPERIMENTS_GUIDE.md) for full documentation.**
 
+### Post-Quantum Upgrade Pack
+
+Six new physics-inspired computational toys are available via the CLI. Full descriptions live in [docs/POST_QUANTUM_GUIDE.md](quantacap/docs/POST_QUANTUM_GUIDE.md).
+
+```bash
+# Fields (sub-quantum)
+python -m quantacap.cli pq-fields --gif
+# Topological
+python -m quantacap.cli pq-topo --braid "s1 s2^-1 s1" --noise 0.03
+# Relativistic
+python -m quantacap.cli pq-relativity --nodes 64 --edges 256 --beta 0.6
+# Holographic
+python -m quantacap.cli pq-holo --N 64 --samples 50
+# Bio toy
+python -m quantacap.cli pq-biotoy --N 128 --T 500 --gif
+# Hyperdim
+python -m quantacap.cli pq-hyperdim --N 48 --chi 32 --depth 40
+```
+
+**What to run first (my picks)**
+
+- Fields (sub-quantum):
+  ```bash
+  python -m quantacap.cli pq-fields --N 256 --T 400 --gif
+  ```
+  You should see crisp interference-logic and a visibility score.
+- Topo (braid logic):
+  ```bash
+  python -m quantacap.cli pq-topo --braid "s1 s2^-1 s1" --shots 8192 --noise 0.03
+  ```
+  Fidelity stays high even with path jitter → “knot logic” robustness.
+- Relativity (time-speedup):
+  ```bash
+  python -m quantacap.cli pq-relativity --nodes 64 --edges 256 --beta 0.6
+  ```
+  Reported “proper-time speedup” vs classical timing.
+- Holography (area law):
+  ```bash
+  python -m quantacap.cli pq-holo --N 64 --samples 50
+  ```
+  Plot H vs Area; look for near-linear fit + residuals.
+- BioToy (dream replay):
+  ```bash
+  python -m quantacap.cli pq-biotoy --N 128 --T 500 --gif
+  ```
+  Watch replay.gif—if PSNR is high with low energy, you just demo’d “wetware-like” memory.
+- Hyperdim (tensors):
+  ```bash
+  python -m quantacap.cli pq-hyperdim --N 48 --chi 32 --depth 40
+  ```
+  Overlap vs χ chart shows how hyperbits scale.
+
 ## 🛠️ Quick Start
 
 ### 1. System Requirements
