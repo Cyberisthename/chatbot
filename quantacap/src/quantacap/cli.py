@@ -36,7 +36,12 @@ def _summarize_artifacts_cmd(args: argparse.Namespace) -> None:
     zip_path = Path(getattr(args, 'zip_path', os.path.join('artifacts', 'quion_experiment.zip')))
     artifacts_dir = Path(getattr(args, 'artifacts_dir', 'artifacts'))
     summary_path = Path(getattr(args, 'summary_path', os.path.join('artifacts', 'summary_results.json')))
-    summarize_quantum_artifacts(zip_path, artifacts_dir, summary_path)
+    module = optional_import(
+        "quantacap.scripts.summarize_quantum_artifacts",
+        purpose="summarize stored quantum artifacts",
+    )
+    summarize = getattr(module, "summarize_quantum_artifacts")
+    summarize(zip_path, artifacts_dir, summary_path)
 
 
 def _report_phase_transition_cmd(args: argparse.Namespace) -> None:
@@ -237,7 +242,6 @@ from quantacap.primitives.ggraph import GGraph
 from quantacap.primitives.ybit import YBit
 from quantacap.primitives.zbit import ZBit
 from quantacap.utils.optional_import import optional_import
-from scripts.summarize_quantum_artifacts import summarize_quantum_artifacts
 
 
 def _forward_cli(module: str, purpose: str, argv: list[str] | None) -> None:
@@ -324,6 +328,138 @@ def _virtual_element_cmd(args: argparse.Namespace) -> None:
             indent=2,
         )
     )
+
+
+def _pq_fields_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-fields experiment")
+    from quantacap.pq.fields import run
+
+    result = run(
+        N=args.N,
+        T=args.T,
+        src=args.src,
+        seed=args.seed,
+        gif=args.gif,
+    )
+    metrics = result.get("metrics", {})
+    print("✓ Fields experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Field array: {result.get('field_path')}")
+    print(f"  Interference plot: {result.get('plot_path') or 'n/a'}")
+    if result.get("gif_path"):
+        print(f"  Evolution GIF: {result['gif_path']}")
+    print(f"  Visibility: {metrics.get('visibility', float('nan')):.4f}")
+    print(f"  Mutual info: {metrics.get('mutual_information', 0.0):.4f} bits")
+    print(f"  Energy: {metrics.get('energy', 0.0):.4f}")
+
+
+def _pq_topo_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-topo experiment")
+    from quantacap.pq.topo import run
+
+    result = run(
+        braid=args.braid,
+        shots=args.shots,
+        noise=args.noise,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Topological braid experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Unitary: {result.get('unitary_path')}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  Fidelity: {metrics.get('fidelity', 0.0):.4f}")
+    print(f"  Topo stability: {metrics.get('topo_stability', 0.0):.4f}")
+
+
+def _pq_relativity_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-relativity experiment")
+    from quantacap.pq.relativity import run
+
+    result = run(
+        nodes=args.nodes,
+        edges=args.edges,
+        beta=args.beta,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Relativistic computing experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  Speedup: {metrics.get('speedup', float('nan')):.4f}×")
+    print(f"  γ mean: {metrics.get('gamma_mean', float('nan')):.4f}")
+
+
+def _pq_holo_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-holo experiment")
+    from quantacap.pq.holo import run
+
+    result = run(
+        N=args.N,
+        samples=args.samples,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Holographic entropy experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  k_fit: {metrics.get('k_fit', 0.0):.6f}")
+    print(f"  R²: {metrics.get('r_squared', 0.0):.4f}")
+
+
+def _pq_biotoy_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-biotoy experiment")
+    from quantacap.pq.biotoy import run
+
+    result = run(
+        N=args.N,
+        T=args.T,
+        lam=args.lam,
+        seed=args.seed,
+        gif=args.gif,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ BioToy neural dynamics experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    psnr = metrics.get('psnr', 0.0)
+    if math.isinf(psnr):
+        print(f"  PSNR: inf (perfect match)")
+    else:
+        print(f"  PSNR: {psnr:.2f} dB")
+    print(f"  Memory halftime: {metrics.get('memory_halftime', 0.0):.2f}")
+
+
+def _pq_hyperdim_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-hyperdim experiment")
+    from quantacap.pq.hyperdim import run
+
+    result = run(
+        N=args.N,
+        chi=args.chi,
+        depth=args.depth,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_path = result.get("plot_path")
+    print("✓ Hyperdimensional tensor network experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Accuracy plot: {plot_path or 'n/a'}")
+    print(f"  Overlap: {metrics.get('overlap', 0.0):.6f}")
+    memory_bytes = metrics.get('memory_bytes', 0)
+    print(f"  Memory: {memory_bytes / (1024 ** 2):.2f} MB")
 
 
 def _timecrystal_cmd(args: argparse.Namespace) -> None:
@@ -874,6 +1010,61 @@ def main() -> None:
         help="Output JSON path",
     )
     exotic_atom_parser.set_defaults(func=_exotic_atom_cmd)
+
+    pq_fields_parser = sub.add_parser(
+        "pq-fields", help="Run post-quantum fields interference toy"
+    )
+    pq_fields_parser.add_argument("--N", type=int, default=256, help="Grid size")
+    pq_fields_parser.add_argument("--T", type=int, default=400, help="Time steps")
+    pq_fields_parser.add_argument("--src", type=int, default=2, help="Number of field sources")
+    pq_fields_parser.add_argument("--seed", type=int, default=424242)
+    pq_fields_parser.add_argument("--gif", action="store_true", help="Generate evolution GIF")
+    pq_fields_parser.set_defaults(func=_pq_fields_cmd)
+
+    pq_topo_parser = sub.add_parser(
+        "pq-topo", help="Run post-quantum topological braid logic toy"
+    )
+    pq_topo_parser.add_argument("--braid", default="s1 s2^-1 s1", help="Braid word")
+    pq_topo_parser.add_argument("--shots", type=int, default=8192)
+    pq_topo_parser.add_argument("--noise", type=float, default=0.03, help="Noise jitter amplitude")
+    pq_topo_parser.add_argument("--seed", type=int, default=424242)
+    pq_topo_parser.set_defaults(func=_pq_topo_cmd)
+
+    pq_rel_parser = sub.add_parser(
+        "pq-relativity", help="Run post-quantum relativistic computing toy"
+    )
+    pq_rel_parser.add_argument("--nodes", type=int, default=64)
+    pq_rel_parser.add_argument("--edges", type=int, default=256)
+    pq_rel_parser.add_argument("--beta", type=float, default=0.6, help="Max velocity as fraction of c")
+    pq_rel_parser.add_argument("--seed", type=int, default=424242)
+    pq_rel_parser.set_defaults(func=_pq_relativity_cmd)
+
+    pq_holo_parser = sub.add_parser(
+        "pq-holo", help="Run post-quantum holographic entropy toy"
+    )
+    pq_holo_parser.add_argument("--N", type=int, default=64, help="Voxel grid size")
+    pq_holo_parser.add_argument("--samples", type=int, default=50, help="Number of region samples")
+    pq_holo_parser.add_argument("--seed", type=int, default=424242)
+    pq_holo_parser.set_defaults(func=_pq_holo_cmd)
+
+    pq_biotoy_parser = sub.add_parser(
+        "pq-biotoy", help="Run post-quantum BioToy neural matter toy"
+    )
+    pq_biotoy_parser.add_argument("--N", type=int, default=128, help="Grid size")
+    pq_biotoy_parser.add_argument("--T", type=int, default=500, help="Simulation steps")
+    pq_biotoy_parser.add_argument("--lambda", dest="lam", type=float, default=0.01, help="Regularisation strength")
+    pq_biotoy_parser.add_argument("--seed", type=int, default=424242)
+    pq_biotoy_parser.add_argument("--gif", action="store_true", help="Generate dream replay GIF")
+    pq_biotoy_parser.set_defaults(func=_pq_biotoy_cmd)
+
+    pq_hyperdim_parser = sub.add_parser(
+        "pq-hyperdim", help="Run post-quantum hyperdimensional tensor toy"
+    )
+    pq_hyperdim_parser.add_argument("--N", type=int, default=48, help="Number of sites")
+    pq_hyperdim_parser.add_argument("--chi", type=int, default=32, help="MPS bond dimension")
+    pq_hyperdim_parser.add_argument("--depth", type=int, default=40, help="Circuit depth")
+    pq_hyperdim_parser.add_argument("--seed", type=int, default=424242)
+    pq_hyperdim_parser.set_defaults(func=_pq_hyperdim_cmd)
 
     qcr_atom_parser = sub.add_parser(
         "qcr-atom", help="Run QCR (Quantum Coordinate Reconstruction) atom reconstruction"
