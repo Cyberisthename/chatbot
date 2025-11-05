@@ -30,6 +30,18 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **cache-system/** - Redis-like caching implementation
 - **monitoring/** - Performance and health monitoring
 
+## 🌌 Full 3D Atom Model Suite
+
+The `atomsim` package introduces a deterministic FFT-based toolkit for real-space hydrogen and helium simulations, field perturbations, and inverse imaging. Key capabilities include:
+
+- Split-operator imaginary-time propagation for hydrogen ground and excited orbitals (`python -m atomsim.cli hyd-ground --out artifacts/atom3d/h1s`, `hyd-excited --nlm 2,1,0 --out artifacts/atom3d/h2p`).
+- Mean-field Hartree helium solver with DIIS-style mixing (`python -m atomsim.cli he-ground --out artifacts/atom3d/he`).
+- External Stark/Zeeman field shifts and first-order fine-structure corrections (`hyd-field --mode stark --in artifacts/atom3d/h2p --out artifacts/atom3d/h2p_E`, `hyd-fstructure`).
+- Synthetic tomography pipeline with filtered back-projection and SSIM/PSNR reports (`hyd-tomo --in artifacts/atom3d/h1s --out artifacts/atom3d/h1s_tomo`).
+- Rich visualizations and artifacts (MIPs, radial profiles, glTF isosurfaces, orbit MP4s).
+
+See [docs/ATOM_RUNBOOK.md](docs/ATOM_RUNBOOK.md) for command walk-throughs and artifact descriptions.
+
 ## 🔬 Quantum Experiments
 
 This repo includes powerful physics experiments that prove quantum-like behavior and solve fundamental problems:
