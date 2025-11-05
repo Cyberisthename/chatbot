@@ -11,6 +11,15 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy import special
 
+try:  # SciPy 1.15+
+    _sph_harm_y = special.sph_harm_y
+
+    def spherical_harm(m, l, phi, theta):
+        return _sph_harm_y(l, m, theta, phi)
+
+except AttributeError:  # Older SciPy
+    spherical_harm = special.sph_harm
+
 from ..numerics.backend import asnumpy, get_array_module
 from ..numerics.fftlaplacian import kinetic_propagator
 from ..numerics.grids import cartesian_grid, k_grid, radial_coordinates
@@ -85,7 +94,7 @@ def initialize_excited_state(
     """Hydrogenic initial guess from spherical harmonics."""
 
     radial = hydrogenic_radial(n, l, r)
-    Y_lm = special.sph_harm(m, l, phi, theta)
+    Y_lm = spherical_harm(m, l, phi, theta)
     psi0 = np.nan_to_num(radial * Y_lm)
     norm = np.linalg.norm(psi0)
     if norm == 0:

@@ -248,8 +248,8 @@ def make_orbit_mp4(density: NDArray[np.floating], path: Path) -> None:
 
         fig.canvas.draw()
         w, h = fig.canvas.get_width_height()
-        buf = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        frame = buf.reshape((h, w, 3))
+        buffer = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
+        frame = buffer.reshape((h, w, 4))[..., :3]
         frames.append(frame)
         plt.close(fig)
 

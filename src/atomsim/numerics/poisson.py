@@ -24,7 +24,8 @@ def hartree_potential(rho: np.ndarray, L: float, eps: float = 1e-12) -> np.ndarr
     rho_k = xp.fft.fftn(rho, norm="ortho")
     _, _, _, k2 = k_grid(N, L, xp=xp)
 
-    inv_k2 = xp.where(k2 < eps, 0.0, 1.0 / k2)
+    inv_k2 = xp.zeros_like(k2)
+    xp.divide(1.0, k2, out=inv_k2, where=k2 >= eps)
     factor = 4.0 * math.pi
     V_k = factor * rho_k * inv_k2
     V = xp.fft.ifftn(V_k, norm="ortho")
