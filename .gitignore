@@ -164,3 +164,11 @@ cython_debug/
 #.idea/
 # Node modules
 node_modules/
+
+# Temporary files from experiments
+_tmp_frame.png
+_tmp_qcr_slice.png
+
+# Large artifacts (>100MB) - regenerate locally if needed
+artifacts/real_atom_3d/*_N256.npy
+artifacts/real_atom_3d/*_N512.npy

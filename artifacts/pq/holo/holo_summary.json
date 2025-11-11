@@ -1,0 +1,12 @@
+{
+  "N": 24,
+  "samples": 6,
+  "samples_processed": 6,
+  "seed": 2,
+  "k_fit": 0.0004948967333667447,
+  "r_squared": -24337.296018817608,
+  "holo_ratio": 6.164178662817267,
+  "residual_std": 0.4926706252294585,
+  "mean_entropy": 0.9980322188397305,
+  "mean_area": 1156.0
+}

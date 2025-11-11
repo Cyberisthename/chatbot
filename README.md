@@ -30,6 +30,105 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **cache-system/** - Redis-like caching implementation
 - **monitoring/** - Performance and health monitoring
 
+## 🌌 Full 3D Atom Model Suite
+
+The `atomsim` package introduces a deterministic FFT-based toolkit for real-space hydrogen and helium simulations, field perturbations, and inverse imaging. Key capabilities include:
+
+- Split-operator imaginary-time propagation for hydrogen ground and excited orbitals (`python -m atomsim.cli hyd-ground --out artifacts/atom3d/h1s`, `hyd-excited --nlm 2,1,0 --out artifacts/atom3d/h2p`).
+- Mean-field Hartree helium solver with DIIS-style mixing (`python -m atomsim.cli he-ground --out artifacts/atom3d/he`).
+- External Stark/Zeeman field shifts and first-order fine-structure corrections (`hyd-field --mode stark --in artifacts/atom3d/h2p --out artifacts/atom3d/h2p_E`, `hyd-fstructure`).
+- Synthetic tomography pipeline with filtered back-projection and SSIM/PSNR reports (`hyd-tomo --in artifacts/atom3d/h1s --out artifacts/atom3d/h1s_tomo`).
+- Rich visualizations and artifacts (MIPs, radial profiles, glTF isosurfaces, orbit MP4s).
+
+See [docs/ATOM_RUNBOOK.md](docs/ATOM_RUNBOOK.md) for command walk-throughs and artifact descriptions.
+
+## 🔬 Quantum Experiments
+
+This repo includes powerful physics experiments that prove quantum-like behavior and solve fundamental problems:
+
+### 1. Digital Double-Slit Experiment
+**Proves adapter systems show quantum-like interference**
+```bash
+python -m experiments.adapter_double_slit
+# or
+python cli.py adapter-double-slit
+```
+**Results**: `artifacts/adapter_double_slit/interference.png` shows clear fringes proving quantum superposition.
+
+### 2. Physics-First Atom Solver
+**Generates atom images by solving Schrödinger equation (no guessing!)**
+```bash
+python cli.py atom-from-constants
+```
+**Results**: `artifacts/real_atom/atom_mip.png` shows the real electron density from pure physics.
+
+### 3. 3D Atom Discovery (NEW!)
+**Discovers atomic structure from first principles using imaginary time evolution**
+```bash
+python cli.py atom-3d-discovery
+```
+**Results**: 
+- `artifacts/real_atom_3d/density_N256.npy` - Full 3D electron density (256³ = 16.7M voxels)
+- `artifacts/real_atom_3d/atom_mip_*.png` - 4K resolution visualizations
+- `artifacts/real_atom_3d/atom_spin.gif` - 360° rotating animation
+- Ground state energy: -0.399 hartree (79.7% of theoretical)
+
+📖 **See [QUICK_START_ATOM_3D.md](QUICK_START_ATOM_3D.md) for detailed guide.**
+
+📖 **See [EXPERIMENTS_GUIDE.md](EXPERIMENTS_GUIDE.md) for full documentation.**
+
+### Post-Quantum Upgrade Pack
+
+Six new physics-inspired computational toys are available via the CLI. Full descriptions live in [docs/POST_QUANTUM_GUIDE.md](quantacap/docs/POST_QUANTUM_GUIDE.md).
+
+```bash
+# Fields (sub-quantum)
+python -m quantacap.cli pq-fields --gif
+# Topological
+python -m quantacap.cli pq-topo --braid "s1 s2^-1 s1" --noise 0.03
+# Relativistic
+python -m quantacap.cli pq-relativity --nodes 64 --edges 256 --beta 0.6
+# Holographic
+python -m quantacap.cli pq-holo --N 64 --samples 50
+# Bio toy
+python -m quantacap.cli pq-biotoy --N 128 --T 500 --gif
+# Hyperdim
+python -m quantacap.cli pq-hyperdim --N 48 --chi 32 --depth 40
+```
+
+**What to run first (my picks)**
+
+- Fields (sub-quantum):
+  ```bash
+  python -m quantacap.cli pq-fields --N 256 --T 400 --gif
+  ```
+  You should see crisp interference-logic and a visibility score.
+- Topo (braid logic):
+  ```bash
+  python -m quantacap.cli pq-topo --braid "s1 s2^-1 s1" --shots 8192 --noise 0.03
+  ```
+  Fidelity stays high even with path jitter → “knot logic” robustness.
+- Relativity (time-speedup):
+  ```bash
+  python -m quantacap.cli pq-relativity --nodes 64 --edges 256 --beta 0.6
+  ```
+  Reported “proper-time speedup” vs classical timing.
+- Holography (area law):
+  ```bash
+  python -m quantacap.cli pq-holo --N 64 --samples 50
+  ```
+  Plot H vs Area; look for near-linear fit + residuals.
+- BioToy (dream replay):
+  ```bash
+  python -m quantacap.cli pq-biotoy --N 128 --T 500 --gif
+  ```
+  Watch replay.gif—if PSNR is high with low energy, you just demo’d “wetware-like” memory.
+- Hyperdim (tensors):
+  ```bash
+  python -m quantacap.cli pq-hyperdim --N 48 --chi 32 --depth 40
+  ```
+  Overlap vs χ chart shows how hyperbits scale.
+
 ## 🛠️ Quick Start
 
 ### 1. System Requirements
@@ -267,8 +366,9 @@ The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from
 The `experiments/` directory contains standalone quantum physics demonstrations:
 - **Double-Slit Interference** (`quick_interference.py`): Classic demonstration of wave-particle duality with bright/dark fringes
 - **Quantum Uncertainty Collapse**: Visual demonstration of quantum decoherence (see root-level `uncertainty_experiment*.py` files)
+- **Physics-First Atom Solver**: Solves the Schrödinger equation from first principles to compute real atomic wavefunctions (see [PHYSICS_FIRST_ATOM_SOLVER.md](PHYSICS_FIRST_ATOM_SOLVER.md))
 
-Run `python3 experiments/quick_interference.py` for a quick double-slit simulation, or see [experiments/README.md](experiments/README.md) for the full catalog. All experiments save results to `artifacts/` for easy analysis.
+Run `python3 experiments/quick_interference.py` for a quick double-slit simulation, or `python3 quantacap/examples/demo_solve_atom.py` for hydrogen atom ground state calculations. See [experiments/README.md](experiments/README.md) for the full catalog. All experiments save results to `artifacts/` for easy analysis.
 
 ### Experiment Results Snapshot
 A consolidated set of quantitative findings from the latest CHSH, Atom-1D, and π-phase stability experiments is available in [`quantacap/docs/experiment_results.md`](quantacap/docs/experiment_results.md). The document links directly to the generated artifacts so every number can be replayed from the stored adapters.

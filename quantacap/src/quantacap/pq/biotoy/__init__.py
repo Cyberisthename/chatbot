@@ -1,0 +1,7 @@
+"""Bio/consciousness computing toy dynamics."""
+
+from __future__ import annotations
+
+from .experiment import run
+
+__all__ = ["run"]
