@@ -1,4 +1,4 @@
-# J.A.R.V.I.S. AI System - Complete Local Implementation
+UNDER DEVELOPMENT THE FOLLOWING IS WHAT WILL BE ALSO IM ALL OVER THE PLACE SO A BUNCH OF THIS PROJECT IS MIXED WITH OTHERS# J.A.R.V.I.S. AI System - Complete Local Implementation
 
 ## Overview
 J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runnable AI assistant with GGUF quantized models, built-in inference engine, and web interface.
