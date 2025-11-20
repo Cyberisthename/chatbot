@@ -6,7 +6,7 @@ import time
 from typing import Any, Callable, Dict, List, Optional
 
 from .adapter_cluster import AdapterCluster
-from .config import DEFAULT_CONFIG, Jarvis5090XConfig
+from .config import DEFAULT_CONFIG, EXTREME_CONFIG, Jarvis5090XConfig
 from .flop_compression import FlopCompressionLayer
 from .infinite_cache import InfiniteMemoryCache
 from .quantum_layer import QuantumApproximationLayer
@@ -29,6 +29,16 @@ except Exception:  # pragma: no cover - device manager optional
 
 class Jarvis5090X:
     """Unified orchestrator that powers the Jarvis-5090X virtual GPU."""
+
+    @classmethod
+    def build_extreme(
+        cls,
+        devices: List[AdapterDevice],
+        **kwargs: Any,
+    ) -> "Jarvis5090X":
+        """Create an orchestrator using the EXTREME_CONFIG profile."""
+        kwargs.pop("config", None)
+        return cls(devices, config=EXTREME_CONFIG, **kwargs)
 
     def __init__(
         self,

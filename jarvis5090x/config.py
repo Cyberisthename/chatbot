@@ -14,3 +14,15 @@ class Jarvis5090XConfig:
 
 
 DEFAULT_CONFIG = Jarvis5090XConfig()
+
+
+EXTREME_CONFIG = Jarvis5090XConfig(
+    compression_max_bases=20000,
+    compression_stability_threshold=3,
+    compression_tolerance=1e-6,
+    cache_max_items=1_000_000,
+    quantum_max_branches=128,
+    quantum_seed=42,
+    adapter_scheduler_interval=0.005,
+    benchmark_hook_enabled=True,
+)

@@ -55,6 +55,41 @@ payload = {
 result = jarvis.submit("linalg", "matmul_demo", payload)
 ```
 
+## Extreme Mode
+
+For maximum throughput, instantiate Jarvis-5090X using the Extreme configuration:
+
+```python
+from jarvis5090x import Jarvis5090X, EXTREME_CONFIG
+
+jarvis = Jarvis5090X.build_extreme(devices)
+```
+
+This enables:
+
+- 20,000 compression bases
+- 1,000,000-item infinite cache
+- 128 quantum branches per spawn
+
+## Virtual GPU API
+
+Interact with the orchestrator using the simple facade:
+
+```python
+from jarvis5090x import Jarvis5090X, VirtualGPU
+
+jarvis = Jarvis5090X.build_extreme(devices)
+vgpu = VirtualGPU(jarvis)
+
+payload = {
+    "matrix": [1.0, 2.0],
+    "vector": [3.0, 4.0],
+    "operation": "matmul",
+}
+
+result = vgpu.submit("linalg", "matmul_demo", payload)
+```
+
 ## Benchmarks
 
 To gather benchmarks:
@@ -64,4 +99,10 @@ stats = jarvis.benchmark_stats()
 print(stats)
 ```
 
-Expected outputs will include the number of total operations, cache hits, compression operations, and estimated TFLOPs (higher than a traditional RTX 5090).
+Run the comprehensive benchmark suite:
+
+```bash
+python3 jarvis5090x_benchmark.py
+```
+
+Expected outputs will include total operations, cache hits, compression operations, estimated TFLOPs, and the effective speedup over an RTX 5090.

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .adapter_cluster import AdapterCluster
-from .config import DEFAULT_CONFIG, Jarvis5090XConfig
+from .config import DEFAULT_CONFIG, EXTREME_CONFIG, Jarvis5090XConfig
 from .flop_compression import FlopCompressionLayer
 from .infinite_cache import InfiniteMemoryCache
 from .orchestrator import Jarvis5090X
@@ -25,4 +25,5 @@ __all__ = [
     "OperationRequest",
     "Jarvis5090XConfig",
     "DEFAULT_CONFIG",
+    "EXTREME_CONFIG",
 ]
