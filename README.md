@@ -129,6 +129,39 @@ python -m quantacap.cli pq-hyperdim --N 48 --chi 32 --depth 40
   ```
   Overlap vs χ chart shows how hyperbits scale.
 
+## ⛏️ Synthetic GPU Miner
+
+An advanced research platform demonstrating "infinite capacity" through intelligent scheduling and heterogeneous computing. This system breaks mining work into micro-tasks, precomputes everything possible, and adaptively schedules across CPU and GPU resources.
+
+### Key Features
+
+- **5-Layer Architecture**: Protocol, Hash Core, Precompute Cache, Scheduler, Telemetry
+- **Adaptive Load Balancing**: Automatically tunes batch sizes and work distribution
+- **Heterogeneous Computing**: Unified CPU+GPU resource pool
+- **Precompute Optimization**: Midstate caching eliminates 60-70% of redundant work
+- **Real-time Telemetry**: Per-device performance monitoring and auto-tuning
+
+### Quick Start
+
+```bash
+# Run basic demo
+python -m synthetic_gpu_miner.main
+
+# Custom configuration
+python -m synthetic_gpu_miner.main --jobs 5 --difficulty 22 --duration 30
+
+# Interactive demo with all features
+python synthetic_gpu_miner/demo.py
+```
+
+### Documentation
+
+- **README**: `synthetic_gpu_miner/README.md` - User guide and quick start
+- **ARCHITECTURE**: `synthetic_gpu_miner/ARCHITECTURE.md` - Deep dive into design
+- **GPU Kernels**: `synthetic_gpu_miner/gpu_kernels.cu` - CUDA implementation reference
+
+📖 **See [synthetic_gpu_miner/README.md](synthetic_gpu_miner/README.md) for complete documentation.**
+
 ## 🛠️ Quick Start
 
 ### 1. System Requirements
