@@ -1,0 +1,185 @@
+{
+  "name": "REAL-ATOM-3D-DISCOVERY-V1",
+  "note": "derived from Schr\u00f6dinger equation in imaginary time; no precomputed orbitals",
+  "facts_only": true,
+  "config": {
+    "N_stages": [
+      64,
+      128,
+      256
+    ],
+    "box": 12.0,
+    "Z": 1.0,
+    "softening": 0.3,
+    "dt": 0.002,
+    "steps_per_stage": 400,
+    "save_every": 50,
+    "centers": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "seed": 424242
+  },
+  "stages": [
+    {
+      "stage": 0,
+      "N": 64,
+      "final_energy": -0.38856897880976277,
+      "energies": [
+        {
+          "step": 0,
+          "E": -0.2191843045484141
+        },
+        {
+          "step": 50,
+          "E": -0.36828498101930296
+        },
+        {
+          "step": 100,
+          "E": -0.3748797172115137
+        },
+        {
+          "step": 150,
+          "E": -0.37916478333259485
+        },
+        {
+          "step": 200,
+          "E": -0.38216660065169294
+        },
+        {
+          "step": 250,
+          "E": -0.3843837252138724
+        },
+        {
+          "step": 300,
+          "E": -0.38609381625325057
+        },
+        {
+          "step": 350,
+          "E": -0.38746169846870937
+        },
+        {
+          "step": 399,
+          "E": -0.38856897880976277
+        }
+      ]
+    },
+    {
+      "stage": 1,
+      "N": 128,
+      "final_energy": -0.3954717374554064,
+      "energies": [
+        {
+          "step": 0,
+          "E": -0.39370109836898554
+        },
+        {
+          "step": 50,
+          "E": -0.39399055987056286
+        },
+        {
+          "step": 100,
+          "E": -0.3942316330847102
+        },
+        {
+          "step": 150,
+          "E": -0.39446153645111715
+        },
+        {
+          "step": 200,
+          "E": -0.39468137356120564
+        },
+        {
+          "step": 250,
+          "E": -0.39489200114176415
+        },
+        {
+          "step": 300,
+          "E": -0.3950941415588992
+        },
+        {
+          "step": 350,
+          "E": -0.3952884246787868
+        },
+        {
+          "step": 399,
+          "E": -0.3954717374554064
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "N": 256,
+      "final_energy": -0.39855770312061073,
+      "energies": [
+        {
+          "step": 0,
+          "E": -0.39820203793879966
+        },
+        {
+          "step": 50,
+          "E": -0.39825402774499896
+        },
+        {
+          "step": 100,
+          "E": -0.3982988545676875
+        },
+        {
+          "step": 150,
+          "E": -0.3983432211306101
+        },
+        {
+          "step": 200,
+          "E": -0.39838714018384197
+        },
+        {
+          "step": 250,
+          "E": -0.3984306225660888
+        },
+        {
+          "step": 300,
+          "E": -0.3984736780303077
+        },
+        {
+          "step": 350,
+          "E": -0.3985163155931767
+        },
+        {
+          "step": 399,
+          "E": -0.39855770312061073
+        }
+      ]
+    }
+  ],
+  "artifacts": {
+    "densities": [
+      "artifacts/real_atom_3d/density_N64.npy",
+      "artifacts/real_atom_3d/density_N128.npy",
+      "artifacts/real_atom_3d/density_N256.npy"
+    ],
+    "wavefunctions": [
+      "artifacts/real_atom_3d/psi_N64.npy",
+      "artifacts/real_atom_3d/psi_N128.npy",
+      "artifacts/real_atom_3d/psi_N256.npy"
+    ],
+    "potentials": [
+      "artifacts/real_atom_3d/potential_N64.npy",
+      "artifacts/real_atom_3d/potential_N128.npy",
+      "artifacts/real_atom_3d/potential_N256.npy"
+    ],
+    "energies": [
+      "artifacts/real_atom_3d/energy_N64.json",
+      "artifacts/real_atom_3d/energy_N128.json",
+      "artifacts/real_atom_3d/energy_N256.json"
+    ],
+    "renders": {
+      "mip_xy": "artifacts/real_atom_3d/atom_mip_xy.png",
+      "mip_xz": "artifacts/real_atom_3d/atom_mip_xz.png",
+      "mip_yz": "artifacts/real_atom_3d/atom_mip_yz.png",
+      "spin_gif": "artifacts/real_atom_3d/atom_spin.gif"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "braid": "s1",
+  "braid_length": 1,
+  "shots": 128,
+  "noise": 0.01,
+  "fidelity": 0.9998627189048932,
+  "topo_stability": -0.4141624895305076,
+  "counts": {
+    "0": 64,
+    "1": 64
+  },
+  "seed": 5
+}

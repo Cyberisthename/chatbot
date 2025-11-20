@@ -36,7 +36,12 @@ def _summarize_artifacts_cmd(args: argparse.Namespace) -> None:
     zip_path = Path(getattr(args, 'zip_path', os.path.join('artifacts', 'quion_experiment.zip')))
     artifacts_dir = Path(getattr(args, 'artifacts_dir', 'artifacts'))
     summary_path = Path(getattr(args, 'summary_path', os.path.join('artifacts', 'summary_results.json')))
-    summarize_quantum_artifacts(zip_path, artifacts_dir, summary_path)
+    module = optional_import(
+        "quantacap.scripts.summarize_quantum_artifacts",
+        purpose="summarize stored quantum artifacts",
+    )
+    summarize = getattr(module, "summarize_quantum_artifacts")
+    summarize(zip_path, artifacts_dir, summary_path)
 
 
 def _report_phase_transition_cmd(args: argparse.Namespace) -> None:
@@ -226,6 +231,7 @@ from quantacap.experiments.atom1d import run_atom1d
 from quantacap.experiments.chsh import run_chsh
 from quantacap.experiments.chsh_rehearsal import run_chsh_scan
 from quantacap.experiments.chsh_ybit import run_chsh_y
+from quantacap.experiments.exotic_atom_floquet import run_exotic_atom_floquet
 from quantacap.experiments.pi_phase import run_pi_phase
 from quantacap.quantum.backend import create_circuit
 from quantacap.quantum.bell import bell_counts
@@ -236,7 +242,6 @@ from quantacap.primitives.ggraph import GGraph
 from quantacap.primitives.ybit import YBit
 from quantacap.primitives.zbit import ZBit
 from quantacap.utils.optional_import import optional_import
-from scripts.summarize_quantum_artifacts import summarize_quantum_artifacts
 
 
 def _forward_cli(module: str, purpose: str, argv: list[str] | None) -> None:
@@ -323,6 +328,138 @@ def _virtual_element_cmd(args: argparse.Namespace) -> None:
             indent=2,
         )
     )
+
+
+def _pq_fields_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-fields experiment")
+    from quantacap.pq.fields import run
+
+    result = run(
+        N=args.N,
+        T=args.T,
+        src=args.src,
+        seed=args.seed,
+        gif=args.gif,
+    )
+    metrics = result.get("metrics", {})
+    print("✓ Fields experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Field array: {result.get('field_path')}")
+    print(f"  Interference plot: {result.get('plot_path') or 'n/a'}")
+    if result.get("gif_path"):
+        print(f"  Evolution GIF: {result['gif_path']}")
+    print(f"  Visibility: {metrics.get('visibility', float('nan')):.4f}")
+    print(f"  Mutual info: {metrics.get('mutual_information', 0.0):.4f} bits")
+    print(f"  Energy: {metrics.get('energy', 0.0):.4f}")
+
+
+def _pq_topo_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-topo experiment")
+    from quantacap.pq.topo import run
+
+    result = run(
+        braid=args.braid,
+        shots=args.shots,
+        noise=args.noise,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Topological braid experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Unitary: {result.get('unitary_path')}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  Fidelity: {metrics.get('fidelity', 0.0):.4f}")
+    print(f"  Topo stability: {metrics.get('topo_stability', 0.0):.4f}")
+
+
+def _pq_relativity_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-relativity experiment")
+    from quantacap.pq.relativity import run
+
+    result = run(
+        nodes=args.nodes,
+        edges=args.edges,
+        beta=args.beta,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Relativistic computing experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  Speedup: {metrics.get('speedup', float('nan')):.4f}×")
+    print(f"  γ mean: {metrics.get('gamma_mean', float('nan')):.4f}")
+
+
+def _pq_holo_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-holo experiment")
+    from quantacap.pq.holo import run
+
+    result = run(
+        N=args.N,
+        samples=args.samples,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ Holographic entropy experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    print(f"  k_fit: {metrics.get('k_fit', 0.0):.6f}")
+    print(f"  R²: {metrics.get('r_squared', 0.0):.4f}")
+
+
+def _pq_biotoy_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-biotoy experiment")
+    from quantacap.pq.biotoy import run
+
+    result = run(
+        N=args.N,
+        T=args.T,
+        lam=args.lam,
+        seed=args.seed,
+        gif=args.gif,
+    )
+    metrics = result.get("metrics", {})
+    plot_paths = result.get("plot_paths", {})
+    print("✓ BioToy neural dynamics experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    for name, path in plot_paths.items():
+        label = name.replace('_', ' ').title()
+        print(f"  {label}: {path or 'n/a'}")
+    psnr = metrics.get('psnr', 0.0)
+    if math.isinf(psnr):
+        print(f"  PSNR: inf (perfect match)")
+    else:
+        print(f"  PSNR: {psnr:.2f} dB")
+    print(f"  Memory halftime: {metrics.get('memory_halftime', 0.0):.2f}")
+
+
+def _pq_hyperdim_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="pq-hyperdim experiment")
+    from quantacap.pq.hyperdim import run
+
+    result = run(
+        N=args.N,
+        chi=args.chi,
+        depth=args.depth,
+        seed=args.seed,
+    )
+    metrics = result.get("metrics", {})
+    plot_path = result.get("plot_path")
+    print("✓ Hyperdimensional tensor network experiment complete:")
+    print(f"  Summary: {result['summary_path']}")
+    print(f"  Accuracy plot: {plot_path or 'n/a'}")
+    print(f"  Overlap: {metrics.get('overlap', 0.0):.6f}")
+    memory_bytes = metrics.get('memory_bytes', 0)
+    print(f"  Memory: {memory_bytes / (1024 ** 2):.2f} MB")
 
 
 def _timecrystal_cmd(args: argparse.Namespace) -> None:
@@ -484,6 +621,123 @@ def _quantum_tunneling_cmd(args: argparse.Namespace) -> None:
         "out": result["artifacts"]["json"],
         "plot": result["artifacts"].get("plot"),
     }, indent=2))
+
+
+def _exotic_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="exotic atom Floquet experiment")
+    
+    result = run_exotic_atom_floquet(
+        N=args.N,
+        steps=args.steps,
+        dt=args.dt,
+        drive_amp=args.drive_amp,
+        drive_freq=args.drive_freq,
+        J_nn=args.J_nn,
+        J_lr=args.J_lr,
+        alpha=args.alpha,
+        seed=args.seed,
+        make_gif=not args.no_gif,
+        out_json=args.out,
+    )
+    
+    print(json.dumps({
+        "experiment": result["experiment"],
+        "out": args.out,
+        "artifacts": result["results"]["artifacts"],
+    }, indent=2))
+
+
+def _qcr_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="QCR atom reconstruction")
+    
+    from quantacap.experiments.qcr_atom_reconstruct import run_qcr_atom
+    
+    summary = run_qcr_atom(
+        N=args.N,
+        R=args.R,
+        iters=args.iters,
+        iso=args.iso,
+        n_qubits=args.n_qubits,
+        seed=args.seed,
+    )
+    
+    print(json.dumps(summary, indent=2))
+
+
+def _solve_atom_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="physics-first atom solver")
+    
+    from quantacap.experiments.solve_atom_from_constants import imaginary_time_solve, save_slices, save_energy
+    from pathlib import Path
+    
+    outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    
+    result = imaginary_time_solve(
+        N=args.N,
+        L=args.L,
+        Z=args.Z,
+        dt=args.dt,
+        steps=args.steps,
+        softening=args.softening,
+    )
+    
+    np.save(outdir / "psi.npy", result["psi"])
+    np.save(outdir / "density.npy", result["density"])
+    np.save(outdir / "V.npy", result["V"])
+    
+    descriptor = {
+        "name": "REAL-ATOM-FROM-SCHRODINGER-V1",
+        "grid": {
+            "N": args.N,
+            "L": args.L,
+            "dx": float(result["dx"]),
+            "coords": {
+                "x_min": float(result["x"][0]),
+                "x_max": float(result["x"][-1]),
+            },
+        },
+        "potential": {
+            "type": "coulomb",
+            "Z": args.Z,
+            "softening": args.softening,
+        },
+        "solver": {
+            "method": "imaginary_time",
+            "dt": args.dt,
+            "steps": args.steps,
+        },
+        "energies": [
+            {"step": int(s), "E": float(e)} for (s, e) in result["energies"]
+        ],
+        "artifacts": {
+            "psi": str(outdir / "psi.npy"),
+            "density": str(outdir / "density.npy"),
+            "potential": str(outdir / "V.npy"),
+            "slices": str(outdir / "slice_*.png"),
+            "mip": str(outdir / "atom_mip.png"),
+            "energy_plot": str(outdir / "energy_convergence.png"),
+        },
+        "notes": "Derived from constants; no hand-tuned orbitals.",
+    }
+    with open(outdir / "atom_descriptor.json", "w") as f:
+        json.dump(descriptor, f, indent=2)
+    
+    if args.plot:
+        try:
+            save_slices(result["density"], result["x"], result["y"], result["z"], outdir)
+            save_energy(result["energies"], outdir)
+        except Exception:
+            pass
+    
+    print(json.dumps(descriptor, indent=2))
+
+
+def _adapter_double_slit_cmd(args: argparse.Namespace) -> None:
+    optional_import("numpy", pip_name="numpy", purpose="adapter double-slit experiment")
+    
+    import runpy
+    runpy.run_module("experiments.adapter_double_slit", run_name="__main__")
 
 
 def _add_backend_flags(parser: argparse.ArgumentParser, *, allow_backend: bool = True) -> None:
@@ -736,6 +990,123 @@ def main() -> None:
         help="Generate evolution plot when matplotlib is available",
     )
     tunneling_parser.set_defaults(func=_quantum_tunneling_cmd)
+
+    exotic_atom_parser = sub.add_parser(
+        "exotic-atom", help="Run exotic atom Floquet experiment with long-range Hamiltonian"
+    )
+    exotic_atom_parser.add_argument("--N", type=int, default=8, help="Number of qubits")
+    exotic_atom_parser.add_argument("--steps", type=int, default=80, help="Number of evolution steps")
+    exotic_atom_parser.add_argument("--dt", type=float, default=0.05, help="Time step size")
+    exotic_atom_parser.add_argument("--drive-amp", dest="drive_amp", type=float, default=1.0, help="Drive amplitude")
+    exotic_atom_parser.add_argument("--drive-freq", dest="drive_freq", type=float, default=2.0, help="Drive frequency")
+    exotic_atom_parser.add_argument("--J-nn", dest="J_nn", type=float, default=1.0, help="Nearest-neighbor coupling")
+    exotic_atom_parser.add_argument("--J-lr", dest="J_lr", type=float, default=0.5, help="Long-range coupling strength")
+    exotic_atom_parser.add_argument("--alpha", type=float, default=1.5, help="Long-range decay exponent")
+    exotic_atom_parser.add_argument("--seed", type=int, default=424242)
+    exotic_atom_parser.add_argument("--no-gif", action="store_true", help="Skip GIF generation")
+    exotic_atom_parser.add_argument(
+        "--out",
+        default=os.path.join("artifacts", "exotic_atom_floquet.json"),
+        help="Output JSON path",
+    )
+    exotic_atom_parser.set_defaults(func=_exotic_atom_cmd)
+
+    pq_fields_parser = sub.add_parser(
+        "pq-fields", help="Run post-quantum fields interference toy"
+    )
+    pq_fields_parser.add_argument("--N", type=int, default=256, help="Grid size")
+    pq_fields_parser.add_argument("--T", type=int, default=400, help="Time steps")
+    pq_fields_parser.add_argument("--src", type=int, default=2, help="Number of field sources")
+    pq_fields_parser.add_argument("--seed", type=int, default=424242)
+    pq_fields_parser.add_argument("--gif", action="store_true", help="Generate evolution GIF")
+    pq_fields_parser.set_defaults(func=_pq_fields_cmd)
+
+    pq_topo_parser = sub.add_parser(
+        "pq-topo", help="Run post-quantum topological braid logic toy"
+    )
+    pq_topo_parser.add_argument("--braid", default="s1 s2^-1 s1", help="Braid word")
+    pq_topo_parser.add_argument("--shots", type=int, default=8192)
+    pq_topo_parser.add_argument("--noise", type=float, default=0.03, help="Noise jitter amplitude")
+    pq_topo_parser.add_argument("--seed", type=int, default=424242)
+    pq_topo_parser.set_defaults(func=_pq_topo_cmd)
+
+    pq_rel_parser = sub.add_parser(
+        "pq-relativity", help="Run post-quantum relativistic computing toy"
+    )
+    pq_rel_parser.add_argument("--nodes", type=int, default=64)
+    pq_rel_parser.add_argument("--edges", type=int, default=256)
+    pq_rel_parser.add_argument("--beta", type=float, default=0.6, help="Max velocity as fraction of c")
+    pq_rel_parser.add_argument("--seed", type=int, default=424242)
+    pq_rel_parser.set_defaults(func=_pq_relativity_cmd)
+
+    pq_holo_parser = sub.add_parser(
+        "pq-holo", help="Run post-quantum holographic entropy toy"
+    )
+    pq_holo_parser.add_argument("--N", type=int, default=64, help="Voxel grid size")
+    pq_holo_parser.add_argument("--samples", type=int, default=50, help="Number of region samples")
+    pq_holo_parser.add_argument("--seed", type=int, default=424242)
+    pq_holo_parser.set_defaults(func=_pq_holo_cmd)
+
+    pq_biotoy_parser = sub.add_parser(
+        "pq-biotoy", help="Run post-quantum BioToy neural matter toy"
+    )
+    pq_biotoy_parser.add_argument("--N", type=int, default=128, help="Grid size")
+    pq_biotoy_parser.add_argument("--T", type=int, default=500, help="Simulation steps")
+    pq_biotoy_parser.add_argument("--lambda", dest="lam", type=float, default=0.01, help="Regularisation strength")
+    pq_biotoy_parser.add_argument("--seed", type=int, default=424242)
+    pq_biotoy_parser.add_argument("--gif", action="store_true", help="Generate dream replay GIF")
+    pq_biotoy_parser.set_defaults(func=_pq_biotoy_cmd)
+
+    pq_hyperdim_parser = sub.add_parser(
+        "pq-hyperdim", help="Run post-quantum hyperdimensional tensor toy"
+    )
+    pq_hyperdim_parser.add_argument("--N", type=int, default=48, help="Number of sites")
+    pq_hyperdim_parser.add_argument("--chi", type=int, default=32, help="MPS bond dimension")
+    pq_hyperdim_parser.add_argument("--depth", type=int, default=40, help="Circuit depth")
+    pq_hyperdim_parser.add_argument("--seed", type=int, default=424242)
+    pq_hyperdim_parser.set_defaults(func=_pq_hyperdim_cmd)
+
+    qcr_atom_parser = sub.add_parser(
+        "qcr-atom", help="Run QCR (Quantum Coordinate Reconstruction) atom reconstruction"
+    )
+    qcr_atom_parser.add_argument("--N", type=int, default=64, help="Grid size per axis")
+    qcr_atom_parser.add_argument("--R", type=float, default=1.0, help="Spatial radius")
+    qcr_atom_parser.add_argument("--iters", type=int, default=100, help="Reconstruction iterations")
+    qcr_atom_parser.add_argument("--iso", type=float, default=0.35, help="Isosurface threshold")
+    qcr_atom_parser.add_argument("--n-qubits", dest="n_qubits", type=int, default=8, help="Synthetic qubit count")
+    qcr_atom_parser.add_argument("--seed", type=int, default=424242)
+    qcr_atom_parser.set_defaults(func=_qcr_atom_cmd)
+
+    solve_atom_parser = sub.add_parser(
+        "solve-atom", help="Physics-first atom solver via Schrödinger equation"
+    )
+    solve_atom_parser.add_argument("--N", type=int, default=64, help="Grid points per axis")
+    solve_atom_parser.add_argument("--L", type=float, default=12.0, help="Physical box size (a.u.)")
+    solve_atom_parser.add_argument("--Z", type=float, default=1.0, help="Nuclear charge")
+    solve_atom_parser.add_argument("--steps", type=int, default=600, help="Imaginary time steps")
+    solve_atom_parser.add_argument("--dt", type=float, default=0.002, help="Imaginary time step size")
+    solve_atom_parser.add_argument("--softening", type=float, default=0.3, help="Nuclear softening")
+    solve_atom_parser.add_argument("--outdir", default="artifacts/real_atom", help="Output directory")
+    solve_atom_parser.add_argument("--plot", action="store_true", help="Generate visualization plots")
+    solve_atom_parser.set_defaults(func=_solve_atom_cmd)
+
+    adapter_ds_parser = sub.add_parser(
+        "adapter-double-slit", help="Digital double-slit experiment showing adapter quantum-like interference"
+    )
+    adapter_ds_parser.set_defaults(func=_adapter_double_slit_cmd)
+
+    atom_from_constants_parser = sub.add_parser(
+        "atom-from-constants", help="Alias for solve-atom command"
+    )
+    atom_from_constants_parser.add_argument("--N", type=int, default=64, help="Grid points per axis")
+    atom_from_constants_parser.add_argument("--L", type=float, default=12.0, help="Physical box size (a.u.)")
+    atom_from_constants_parser.add_argument("--Z", type=float, default=1.0, help="Nuclear charge")
+    atom_from_constants_parser.add_argument("--steps", type=int, default=600, help="Imaginary time steps")
+    atom_from_constants_parser.add_argument("--dt", type=float, default=0.002, help="Imaginary time step size")
+    atom_from_constants_parser.add_argument("--softening", type=float, default=0.3, help="Nuclear softening")
+    atom_from_constants_parser.add_argument("--outdir", default="artifacts/real_atom", help="Output directory")
+    atom_from_constants_parser.add_argument("--plot", action="store_true", help="Generate visualization plots")
+    atom_from_constants_parser.set_defaults(func=_solve_atom_cmd)
 
     zip_parser = sub.add_parser(
         "zip-artifacts", help="Zip artifacts into artifacts/quion_experiment.zip"

@@ -1,0 +1,20 @@
+{
+  "name": "REAL-ATOM-3D-V2",
+  "description": "Physics-only 3D quantum atom from Schr\u00f6dinger equation",
+  "Z": 1.0,
+  "box": 20.0,
+  "softening": 0.15,
+  "N": 64,
+  "steps": 50,
+  "dt_initial": 0.001,
+  "save_every": 25,
+  "seed": 424242,
+  "E_final": -0.36744845143512656,
+  "norm": 1.0001746710916581,
+  "r_mean": 2.261096240661299,
+  "r2_mean": 6.050365577649852,
+  "analytic_overlap": 0.002224110576899596,
+  "facts_only": true,
+  "dx": 0.3125,
+  "dV": 0.030517578125
+}

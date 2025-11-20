@@ -1,0 +1,23 @@
+{
+  "nodes": 16,
+  "edges": 32,
+  "beta": 0.5,
+  "gamma_mean": 1.0536942277815795,
+  "gamma_max": 1.1259297931049859,
+  "gamma_min": 1.0004920551657537,
+  "speedup": 1.0581133135860752,
+  "critical_path": [
+    0,
+    3,
+    4,
+    10,
+    11,
+    13,
+    14,
+    15
+  ],
+  "time_newton": 9.383111881674546,
+  "time_relativistic": 8.8677760322985,
+  "causality_violations": 0,
+  "seed": 1
+}
