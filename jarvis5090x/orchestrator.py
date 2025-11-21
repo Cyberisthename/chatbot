@@ -209,6 +209,42 @@ class Jarvis5090X:
         return self._execute_generic(payload)
 
     def _execute_hashing(self, payload: Dict[str, Any], device: Optional[AdapterDevice]) -> Dict[str, Any]:
+        # Check if device is an ASIC simulation
+        is_asic = bool(device and device.metadata.get("asic_model")) if device else False
+        
+        # Extract common hashing parameters
+        header_prefix = self._normalize_header_prefix(payload.get("header_prefix"))
+        nonce_start = int(payload.get("nonce_start", 0))
+        nonce_count = max(1, int(payload.get("nonce_count", 1)))
+        target = int(payload.get("target", (1 << 224) - 1))
+        
+        # If ASIC simulation, use performance model
+        if is_asic:
+            # Compute one real hash for correctness
+            nonce_bytes = nonce_start.to_bytes(4, "little", signed=False)
+            hash_hex = hashlib.sha256(header_prefix + nonce_bytes).hexdigest()
+
+            # ASIC performance model
+            F = float(device.metadata.get("hashes_per_second", 1e9))  # default 1 GH/s
+            if F <= 0:
+                F = 1e-9  # avoid division by zero and enforce minimal throughput
+            overhead_ms = float(device.metadata.get("latency_overhead_ms", 0.1))
+
+            simulated_time_s = nonce_count / F
+            simulated_time_ms = simulated_time_s * 1000 + overhead_ms
+
+            return {
+                "hash": hash_hex,
+                "hashes_processed": nonce_count,
+                "device_id": device.id,
+                "simulated": True,
+                "asic_model": device.metadata.get("asic_model"),
+                "simulated_latency_ms": simulated_time_ms,
+                "effective_hashrate_hs": F,
+                "algorithm": "sha256",
+            }
+        
+        # If no HashCore available, fallback to simple hashing
         if self._hash_core is None or Batch is None or WorkUnit is None or DeviceType is None:
             data = payload.get("header_prefix") or payload.get("data") or str(payload)
             if isinstance(data, bytes):
@@ -223,11 +259,7 @@ class Jarvis5090X:
             digest = hashlib.sha256(raw).hexdigest()
             return {"hash": digest, "algorithm": "sha256"}
 
-        header_prefix = self._normalize_header_prefix(payload.get("header_prefix"))
-        nonce_start = int(payload.get("nonce_start", 0))
-        nonce_count = max(1, int(payload.get("nonce_count", 1)))
-        target = int(payload.get("target", (1 << 224) - 1))
-
+        # Use HashCore for real GPU/CPU execution
         work_unit = WorkUnit(
             job_id=payload.get("job_id", "jarvis5090x_job"),
             midstate_id=payload.get("midstate_id", "midstate_default"),

@@ -18,6 +18,7 @@ from jarvis5090x import (
     InfiniteMemoryCache,
     Jarvis5090X,
     QuantumApproximationLayer,
+    format_hashrate,
 )
 from jarvis5090x.types import OperationKind
 
@@ -50,6 +51,19 @@ def demo_setup() -> Jarvis5090X:
             capabilities={OperationKind.HASHING, OperationKind.LINALG},
         ),
         AdapterDevice(
+            id="asic_0",
+            label="Virtual ASIC Miner",
+            kind=DeviceKind.VIRTUAL,
+            perf_score=10_000.0,
+            max_concurrency=128,
+            capabilities={OperationKind.HASHING},
+            metadata={
+                "asic_model": "VA-1",
+                "hashes_per_second": 1e12,
+                "latency_overhead_ms": 0.1,
+            },
+        ),
+        AdapterDevice(
             id="quantum_0",
             label="Quantum Adapter",
             kind=DeviceKind.VIRTUAL,
@@ -61,7 +75,9 @@ def demo_setup() -> Jarvis5090X:
 
     print(f"  ✓ Created {len(devices)} virtual devices:")
     for device in devices:
-        print(f"    - {device.label} ({device.kind.value}), perf={device.perf_score}")
+        hashrate = device.metadata.get("hashes_per_second", 0)
+        hashrate_str = f" ({format_hashrate(hashrate)})" if hashrate else ""
+        print(f"    - {device.label} ({device.kind.value}), perf={device.perf_score}{hashrate_str}")
 
     compression = FlopCompressionLayer(max_bases=100, stability_threshold=3, tolerance=0.01)
     cache = InfiniteMemoryCache(max_items=1000)
@@ -90,6 +106,34 @@ def demo_mining_job(jarvis: Jarvis5090X) -> None:
         print(f"    Nonce {nonce}: hash={result['hash'][:16]}... ({elapsed*1000:.2f}ms)")
 
     print("  ✓ All mining operations complete")
+
+
+def demo_asic(jarvis: Jarvis5090X) -> None:
+    print_section("🔩 DEMO 1B: Virtual ASIC Miner")
+
+    payload = {
+        "header_prefix": b"\x01" * 76,
+        "nonce_start": 0,
+        "nonce_count": 1_000_000,
+        "target": (1 << 224) - 1,
+    }
+
+    result = jarvis.submit("hashing", "asic_demo", payload)
+
+    print(f"  Device:        {result.get('device_id')}")
+    hashes_processed = result.get('hashes_processed')
+    if hashes_processed is not None:
+        print(f"  Hashes:        {hashes_processed:,}")
+    print(f"  Simulated:     {result.get('simulated')}")
+    print(f"  ASIC model:    {result.get('asic_model')}")
+    latency = result.get('simulated_latency_ms')
+    if latency is not None:
+        print(f"  Sim latency:   {latency:.3f} ms")
+    hashrate = result.get('effective_hashrate_hs')
+    if hashrate is not None:
+        print(f"  Hashrate:      {format_hashrate(hashrate)}")
+    print(f"  Hash:          {result.get('hash')[:32]}...")
+    print("  ✓ ASIC simulation complete")
 
 
 def demo_quantum_simulation(jarvis: Jarvis5090X) -> None:
@@ -207,6 +251,7 @@ def main() -> None:
     jarvis = demo_setup()
 
     demo_mining_job(jarvis)
+    demo_asic(jarvis)
     demo_quantum_simulation(jarvis)
     demo_linalg_job(jarvis)
     demo_cache_hits(jarvis)
