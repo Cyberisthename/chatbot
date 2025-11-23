@@ -172,3 +172,8 @@ _tmp_qcr_slice.png
 # Large artifacts (>100MB) - regenerate locally if needed
 artifacts/real_atom_3d/*_N256.npy
 artifacts/real_atom_3d/*_N512.npy
+
+# Jarvis-2v-main.zip and extracted contents
+Jarvis-2v-main.zip
+Jarvis-2v-main/*
+!Jarvis-2v-main/README.md
