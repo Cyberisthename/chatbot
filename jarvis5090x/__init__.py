@@ -19,8 +19,24 @@ from .flop_compression import FlopCompressionLayer
 from .infinite_cache import InfiniteMemoryCache
 from .orchestrator import Jarvis5090X
 from .virtual_gpu import VirtualGPU
-from .quantum_layer import Branch, QuantumApproximationLayer
+from .quantum_layer import Branch, QuantumApproximationLayer, QuantumExperimentHooks
 from .types import AdapterDevice, DeviceKind, OperationKind, OperationRequest
+from .phase_logger import PhaseLogger, ExperimentRecord, LayerLog
+from .phase_features import extract_features, feature_names
+from .phase_replay import PhaseReplay
+from .phase_detector import (
+    PhaseDetector,
+    PhaseExperimentConfig,
+    ExperimentHandle,
+    configure_phase_detector,
+    get_phase_detector,
+    run_phase_experiment,
+    log_phase_features,
+    replay_experiment,
+    classify_phase,
+)
+from .phase_dataset import PhaseDataset, PhaseExample, dataset_from_records
+from .phase_classifier import SimplePhaseClassifier, CentroidPhaseClassifier
 
 __version__ = "1.0.0"
 
@@ -30,6 +46,7 @@ __all__ = [
     "FlopCompressionLayer",
     "InfiniteMemoryCache",
     "QuantumApproximationLayer",
+    "QuantumExperimentHooks",
     "Branch",
     "AdapterCluster",
     "AdapterDevice",
@@ -50,4 +67,24 @@ __all__ = [
     "format_hashrate",
     "format_time",
     "analyze_mining_performance",
+    "PhaseLogger",
+    "ExperimentRecord",
+    "LayerLog",
+    "extract_features",
+    "feature_names",
+    "PhaseReplay",
+    "PhaseDetector",
+    "PhaseExperimentConfig",
+    "ExperimentHandle",
+    "configure_phase_detector",
+    "get_phase_detector",
+    "run_phase_experiment",
+    "log_phase_features",
+    "replay_experiment",
+    "classify_phase",
+    "PhaseDataset",
+    "PhaseExample",
+    "dataset_from_records",
+    "SimplePhaseClassifier",
+    "CentroidPhaseClassifier",
 ]

@@ -17,14 +17,33 @@ class Branch:
         return abs(self.amplitude) ** 2
 
 
+@dataclass
+class QuantumExperimentHooks:
+    on_spawn: Optional[Callable[[List[Branch], Dict[str, Any]], None]] = None
+    on_interfere: Optional[Callable[[List[Branch], Dict[str, Any]], None]] = None
+    on_collapse: Optional[Callable[[List[Branch], Dict[str, Any]], None]] = None
+
+
 class QuantumApproximationLayer:
     """Quantum-inspired approximation layer with deterministic behaviour."""
 
-    def __init__(self, max_branches: int = 64, seed: int = 42) -> None:
+    def __init__(
+        self,
+        max_branches: int = 64,
+        seed: int = 42,
+        event_hooks: Optional[QuantumExperimentHooks] = None,
+    ) -> None:
         self.max_branches = max_branches
         self.seed = seed
+        self._hooks = event_hooks
 
-    def spawn(self, base_state: Dict[str, Any], variations: List[Dict[str, Any]]) -> List[Branch]:
+    def spawn(
+        self,
+        base_state: Dict[str, Any],
+        variations: List[Dict[str, Any]],
+        metadata: Optional[Dict[str, Any]] = None,
+        hooks: Optional[QuantumExperimentHooks] = None,
+    ) -> List[Branch]:
         variations = variations[: max(0, self.max_branches - 1)]
         total = len(variations) + 1
         if total == 0:
@@ -43,12 +62,15 @@ class QuantumApproximationLayer:
             branches.append(Branch(amplitude=amplitude, state=merged_state))
 
         branches = self._normalize_branches(branches)
+        self._emit(hooks, "on_spawn", branches, metadata or {})
         return branches
 
     def interfere(
         self,
         branches: List[Branch],
         scoring_fn: Callable[[Dict[str, Any]], float],
+        metadata: Optional[Dict[str, Any]] = None,
+        hooks: Optional[QuantumExperimentHooks] = None,
     ) -> List[Branch]:
         if not branches:
             return []
@@ -67,9 +89,17 @@ class QuantumApproximationLayer:
             Branch(amplitude=combined[sig], state=representative[sig])
             for sig in sorted(combined.keys())
         ]
-        return self._normalize_branches(interfered)
+        result = self._normalize_branches(interfered)
+        self._emit(hooks, "on_interfere", result, metadata or {})
+        return result
 
-    def collapse(self, branches: List[Branch], top_k: int = 1) -> Dict[str, Any]:
+    def collapse(
+        self,
+        branches: List[Branch],
+        top_k: int = 1,
+        metadata: Optional[Dict[str, Any]] = None,
+        hooks: Optional[QuantumExperimentHooks] = None,
+    ) -> Dict[str, Any]:
         if not branches:
             return {}
 
@@ -78,14 +108,24 @@ class QuantumApproximationLayer:
         selected = ordered[: max(1, top_k)]
 
         if top_k <= 1:
-            return copy.deepcopy(selected[0].state)
+            collapsed = copy.deepcopy(selected[0].state)
+        else:
+            weights = [branch.probability() for branch in selected]
+            weight_sum = sum(weights)
+            if weight_sum <= 0:
+                collapsed = copy.deepcopy(selected[0].state)
+            else:
+                normalized_weights = [w / weight_sum for w in weights]
+                collapsed = self._blend_states(
+                    (branch.state for branch in selected),
+                    normalized_weights,
+                )
 
-        weights = [branch.probability() for branch in selected]
-        weight_sum = sum(weights)
-        if weight_sum <= 0:
-            return copy.deepcopy(selected[0].state)
-        normalized_weights = [w / weight_sum for w in weights]
-        return self._blend_states((branch.state for branch in selected), normalized_weights)
+        collapse_metadata = dict(metadata or {})
+        collapse_metadata.setdefault("top_k", top_k)
+        collapse_metadata["collapsed_state"] = copy.deepcopy(collapsed)
+        self._emit(hooks, "on_collapse", selected, collapse_metadata)
+        return collapsed
 
     def _blend_states(
         self,
@@ -144,3 +184,21 @@ class QuantumApproximationLayer:
         if isinstance(value, (str, bool)) or value is None:
             return value
         return str(value)
+
+    def _emit(
+        self,
+        hooks: Optional[QuantumExperimentHooks],
+        event_name: str,
+        branches: List[Branch],
+        metadata: Dict[str, Any],
+    ) -> None:
+        hook_set = hooks or self._hooks
+        if hook_set is None:
+            return
+        hook_fn = getattr(hook_set, event_name, None)
+        if hook_fn and callable(hook_fn):
+            safe_branches = [
+                Branch(amplitude=branch.amplitude, state=copy.deepcopy(branch.state))
+                for branch in branches
+            ]
+            hook_fn(safe_branches, copy.deepcopy(metadata))

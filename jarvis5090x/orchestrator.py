@@ -294,13 +294,27 @@ class Jarvis5090X:
         variations = copy.deepcopy(payload.get("variations", []))
         top_k = max(1, int(payload.get("top_k", 1)))
         scoring_fn = self._build_scoring_fn(payload)
+        hooks = payload.get("__hooks__")
+        experiment_metadata = copy.deepcopy(payload.get("__experiment_metadata__", {}))
 
-        branches = self.quantum.spawn(base_state, variations)
-        interfered = self.quantum.interfere(branches, scoring_fn)
-        collapsed = self.quantum.collapse(interfered, top_k=top_k)
+        spawn_metadata = dict(experiment_metadata)
+        spawn_metadata.setdefault("stage", "spawn")
+        spawn_metadata.setdefault("layer_index", 0)
+        branches = self.quantum.spawn(base_state, variations, metadata=spawn_metadata, hooks=hooks)
+
+        interfere_metadata = dict(experiment_metadata)
+        interfere_metadata.setdefault("stage", "interfere")
+        interfere_metadata.setdefault("layer_index", 1)
+        interfered = self.quantum.interfere(branches, scoring_fn, metadata=interfere_metadata, hooks=hooks)
+
+        collapse_metadata = dict(experiment_metadata)
+        collapse_metadata.setdefault("stage", "collapse")
+        collapse_metadata.setdefault("layer_index", 2)
+        collapsed = self.quantum.collapse(interfered, top_k=top_k, metadata=collapse_metadata, hooks=hooks)
 
         return {
             "branch_count": len(branches),
+            "interfered_count": len(interfered),
             "collapsed_state": collapsed,
             "result": collapsed,
         }
