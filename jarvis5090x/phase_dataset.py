@@ -42,6 +42,26 @@ class PhaseDataset:
     def save_json(self, path: str) -> None:
         Path(path).write_text(json.dumps(self.to_dict(), indent=2))
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "PhaseDataset":
+        dataset = cls()
+        for example_dict in data.get("examples", []):
+            dataset.add_example(
+                PhaseExample(
+                    experiment_id=example_dict.get("experiment_id", ""),
+                    phase_label=example_dict.get("phase_label", "unknown"),
+                    feature_vector=list(example_dict.get("feature_vector", [])),
+                    params=dict(example_dict.get("params", {})),
+                )
+            )
+        return dataset
+
+    @classmethod
+    def load_json(cls, path: str) -> "PhaseDataset":
+        raw = Path(path).read_text()
+        data = json.loads(raw)
+        return cls.from_dict(data)
+
     def __len__(self) -> int:
         return len(self.examples)
 

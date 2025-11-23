@@ -12,6 +12,7 @@ from .orchestrator import Jarvis5090X
 from .phase_classifier import CentroidPhaseClassifier
 from .phase_dataset import PhaseDataset, dataset_from_records
 from .phase_features import extract_features
+from .phase_mlp_classifier import MLPPhaseClassifier
 from .phase_logger import ExperimentRecord, PhaseLogger
 from .phase_replay import PhaseReplay
 from .quantum_layer import QuantumExperimentHooks
@@ -335,12 +336,32 @@ class PhaseDetector:
         self.generators = dict(generators or DEFAULT_GENERATORS)
         self.registry: Dict[str, ExperimentHandle] = {}
         self.replay_engine = PhaseReplay(self.logger)
-        self.classifier = CentroidPhaseClassifier()
+        self.centroid_classifier = CentroidPhaseClassifier()
+        self.mlp_classifier: Optional[MLPPhaseClassifier]
+        try:
+            self.mlp_classifier = MLPPhaseClassifier()
+        except RuntimeError:
+            self.mlp_classifier = None
+        self.classifier = self.centroid_classifier
         self._classifier_trained = False
+        self._centroid_classifier_trained = False
+        self._mlp_classifier_trained = False
 
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+
+    def use_mlp_classifier(self) -> None:
+        if self.mlp_classifier is None or not self.mlp_classifier.is_available():
+            raise RuntimeError(
+                "MLPPhaseClassifier unavailable. Install torch to enable the neural classifier."
+            )
+        self.classifier = self.mlp_classifier
+        self._classifier_trained = self._mlp_classifier_trained
+
+    def use_centroid_classifier(self) -> None:
+        self.classifier = self.centroid_classifier
+        self._classifier_trained = self._centroid_classifier_trained
 
     def run_phase_experiment(
         self,
@@ -455,10 +476,20 @@ class PhaseDetector:
         if not dataset.examples:
             raise ValueError("No dataset available for classification")
 
+        if self.classifier is self.mlp_classifier:
+            if self.mlp_classifier is None or not self.mlp_classifier.is_available():
+                raise RuntimeError(
+                    "MLPPhaseClassifier unavailable. Install torch or switch to centroid classifier."
+                )
+
         training_report = None
         if retrain or not self._classifier_trained:
             training_report = self.classifier.train(dataset)
             self._classifier_trained = True
+            if self.classifier is self.centroid_classifier:
+                self._centroid_classifier_trained = True
+            elif self.classifier is self.mlp_classifier:
+                self._mlp_classifier_trained = True
 
         label, confidence = self.classifier.predict(feature_vector)
         return {
@@ -476,8 +507,19 @@ class PhaseDetector:
         dataset = dataset or self.build_dataset()
         if not dataset.examples:
             raise ValueError("Cannot train classifier with empty dataset")
+
+        if self.classifier is self.mlp_classifier:
+            if self.mlp_classifier is None or not self.mlp_classifier.is_available():
+                raise RuntimeError(
+                    "MLPPhaseClassifier unavailable. Install torch or switch to centroid classifier."
+                )
+
         report = self.classifier.train(dataset)
         self._classifier_trained = True
+        if self.classifier is self.centroid_classifier:
+            self._centroid_classifier_trained = True
+        elif self.classifier is self.mlp_classifier:
+            self._mlp_classifier_trained = True
         return report
 
     # ------------------------------------------------------------------
