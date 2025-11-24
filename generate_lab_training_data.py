@@ -1,407 +1,256 @@
 #!/usr/bin/env python3
 """
-Generate JSONL training data from Ben Lab documentation.
+Generate JSONL training data from live Jarvis Lab API experiments.
 
-This script reads markdown files from lab_corpus/ and generates
-instruction/output pairs for fine-tuning a lab-aware LLM.
+This script calls the Jarvis Lab API to run thousands of quantum phase experiments
+and turns them into instruction-style training samples for LLM fine-tuning.
 """
+from __future__ import annotations
+
 import json
-import os
-import re
+import random
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import Any, Dict, List
+
+import requests
+
+JARVIS_LAB_URL = "http://127.0.0.1:8000"
+
+OUT_PATH = Path("data/lab_instructions.jsonl")
+OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
-def extract_sections(md_content: str, filename: str) -> List[Dict[str, str]]:
-    """Extract meaningful sections from markdown content."""
-    sections = []
-    
-    # Split by headers (## and ### level)
-    lines = md_content.split('\n')
-    current_header = filename.replace('.md', '').replace('_', ' ')
-    current_content = []
-    
-    for line in lines:
-        # Check for headers
-        header_match = re.match(r'^(#{1,3})\s+(.+)$', line)
-        if header_match:
-            # Save previous section if it has content
-            if current_content:
-                content_text = '\n'.join(current_content).strip()
-                if content_text:
-                    sections.append({
-                        'header': current_header,
-                        'content': content_text
-                    })
-            
-            # Start new section
-            current_header = header_match.group(2).strip()
-            current_content = []
-        else:
-            # Add line to current section
-            current_content.append(line)
-    
-    # Add final section
-    if current_content:
-        content_text = '\n'.join(current_content).strip()
-        if content_text:
-            sections.append({
-                'header': current_header,
-                'content': content_text
-            })
-    
-    return sections
+def call(endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Call Jarvis Lab API endpoint."""
+    resp = requests.post(f"{JARVIS_LAB_URL}/{endpoint}", json=payload, timeout=300)
+    resp.raise_for_status()
+    return resp.json()
 
 
-def generate_qa_pairs(sections: List[Dict[str, str]], doc_name: str) -> List[Dict[str, str]]:
-    """Generate instruction/output pairs from document sections."""
-    pairs = []
-    
-    for section in sections:
-        header = section['header']
-        content = section['content']
-        
-        if not content or len(content) < 50:
-            continue
-        
-        # Generate multiple question types for each section
-        
-        # 1. "Explain X" format
-        pairs.append({
-            'instruction': f"Explain {header} in the Ben Lab system.",
-            'output': content[:800]  # Truncate very long content
-        })
-        
-        # 2. "What is X?" format
-        if len(content) > 100:
-            pairs.append({
-                'instruction': f"What is {header}?",
-                'output': content[:600]
-            })
-        
-        # 3. "Summarize X" format
-        if len(content) > 300:
-            pairs.append({
-                'instruction': f"Summarize the {header} concept from the lab.",
-                'output': content[:400]
-            })
-        
-        # 4. Context-specific questions based on keywords
-        if 'TRI' in content or 'Time-Reversal Instability' in content:
-            pairs.append({
-                'instruction': "How do I measure time-reversal instability in a phase?",
-                'output': f"To measure TRI (Time-Reversal Instability):\n{content[:500]}"
-            })
-        
-        if 'RSI' in content or 'Replay Sensitivity' in content:
-            pairs.append({
-                'instruction': "What is RSI and how does it characterize phases?",
-                'output': f"RSI (Replay Sensitivity Index):\n{content[:500]}"
-            })
-        
-        if 'clustering' in content.lower() or 'unsupervised' in content.lower():
-            pairs.append({
-                'instruction': "How do I discover phases without labels?",
-                'output': f"Unsupervised phase discovery:\n{content[:500]}"
-            })
-        
-        if 'PhaseDetector' in content:
-            pairs.append({
-                'instruction': "How do I use PhaseDetector to run experiments?",
-                'output': content[:600]
-            })
-        
-        if 'Ising' in content and 'symmetry' in content.lower():
-            pairs.append({
-                'instruction': "What is an Ising symmetry-breaking phase?",
-                'output': content[:500]
-            })
-        
-        if 'SPT' in content or 'topological' in content.lower():
-            pairs.append({
-                'instruction': "Explain SPT phases in the lab.",
-                'output': content[:500]
-            })
-        
-        if 'Jarvis-5090X' in content or 'orchestrator' in content.lower():
-            pairs.append({
-                'instruction': "What is Jarvis-5090X?",
-                'output': content[:600]
-            })
-        
-        if 'cache' in content.lower() and 'recompute' in content.lower():
-            pairs.append({
-                'instruction': "How does the infinite cache work?",
-                'output': content[:500]
-            })
-        
-        if 'compression' in content.lower() and 'FLOP' in content:
-            pairs.append({
-                'instruction': "Explain FLOP compression in Jarvis-5090X.",
-                'output': content[:500]
-            })
-        
-        if 'Y-bit' in content or 'Z-bit' in content or 'G-graph' in content:
-            pairs.append({
-                'instruction': "What are the bit systems used in Ben Lab?",
-                'output': content[:600]
-            })
-    
-    return pairs
+def make_sample(instruction: str, response: str, meta: Dict[str, Any]) -> Dict[str, Any]:
+    """Basic instruction-tuning sample schema."""
+    return {
+        "instruction": instruction,
+        "input": "",
+        "output": response,
+        "meta": meta,
+    }
 
 
-def generate_practical_qa() -> List[Dict[str, str]]:
-    """Generate practical how-to questions."""
-    return [
-        {
-            'instruction': "How do I run a phase experiment with PhaseDetector?",
-            'output': """To run a phase experiment:
-
-1. Create Jarvis5090X orchestrator with devices
-2. Initialize PhaseDetector with the orchestrator
-3. Call run_phase_experiment() with parameters:
-   - phase_type: 'ising_symmetry_breaking', 'spt_cluster', 'trivial_product', or 'pseudorandom'
-   - system_size: number of qubits (e.g., 32)
-   - depth: circuit depth (e.g., 8)
-   - seed: random seed for reproducibility
-
-Example:
-```python
-detector = PhaseDetector(orchestrator)
-result = detector.run_phase_experiment(
-    phase_type="ising_symmetry_breaking",
-    system_size=32,
-    depth=8,
-    seed=42
-)
-```"""
-        },
-        {
-            'instruction': "Design an experiment to maximize TRI.",
-            'output': """To maximize TRI (Time-Reversal Instability):
-
-1. Choose a directional phase: Ising symmetry-breaking works best
-2. Use high bias (~0.7-0.8) to amplify directionality
-3. Use sufficient depth (12-16 layers) for features to diverge
-4. Run forward (bias) and reverse (1-bias) experiments
-5. Compare feature vectors with L2 distance
-
-Example parameters:
-- phase_type: 'ising_symmetry_breaking'
-- bias: 0.7
-- depth: 12
-- system_size: 32
-
-Expected: TRI > 0.05 indicates strong directional sensitivity."""
-        },
-        {
-            'instruction': "What depth should I use for phase experiments?",
-            'output': """Depth recommendations by goal:
-
-**Quick testing**: depth = 4-8
-- Fast execution
-- Good for debugging
-
-**Standard experiments**: depth = 8-12
-- Balanced runtime vs signal
-- Recommended for TRI, classification
-
-**Deep scaling studies**: depth = 12-20+
-- Used for RSI measurements
-- Reveals thermalization behavior
-- Higher computational cost
-
-**Phase-specific**:
-- Trivial product: depth = 4-8 (saturates quickly)
-- Ising/SPT: depth = 8-12 (moderate complexity)
-- Pseudorandom: depth = 12+ (high scrambling)"""
-        },
-        {
-            'instruction': "How do I interpret TRI values?",
-            'output': """TRI (Time-Reversal Instability) interpretation:
-
-**Low TRI (0.0001 - 0.001)**:
-- Phase is time-symmetric
-- Features barely change under bias reversal
-- Example: Trivial product states
-
-**Medium TRI (0.01 - 0.05)**:
-- Moderate directional sensitivity
-- Some asymmetry in phase structure
-
-**High TRI (0.05+)**:
-- Strong directional sensitivity
-- Phase has built-in arrow of time
-- Example: Ising symmetry-breaking with bias=0.7
-
-Physical meaning: High TRI phases have asymmetric correlation structure that depends on bias direction."""
-        },
-        {
-            'instruction': "What are the four phase types in Ben Lab?",
-            'output': """The four synthetic phase types:
-
-1. **Ising Symmetry Breaking** (ising_symmetry_breaking)
-   - High magnetization
-   - Broken symmetry (symmetry_indicator = 1.0)
-   - Low entropy, medium correlation
-   - Use case: Directional TRI studies
-
-2. **SPT Cluster** (spt_cluster)
-   - High string order (~0.85)
-   - Edge mode imbalance
-   - Topological indicators
-   - Use case: Protected edge studies
-
-3. **Trivial Product** (trivial_product)
-   - Near-zero string order
-   - Low correlation length
-   - Minimal entanglement
-   - Use case: Baseline/control experiments
-
-4. **Pseudorandom** (pseudorandom)
-   - High entropy, high scrambling
-   - Uniform probability distribution
-   - Maximally scrambled
-   - Use case: Complexity scaling studies"""
-        },
-        {
-            'instruction': "Explain the feature vector dimensions.",
-            'output': """The 16-dimensional phase feature vector:
-
-**Entropy metrics (4)**:
-1. entropy_mean - Average entropy across layers
-2. entropy_max - Peak entropy observed
-3. entropy_min - Minimum entropy
-4. entropy_final - Final layer entropy
-
-**Branch count metrics (4)**:
-5. branch_count_mean - Average branches
-6. branch_count_max - Peak branch count
-7. branch_count_min - Minimum branches
-8. branch_count_final - Final branches
-
-**Correlation metrics (4)**:
-9. scrambling_score - Probability uniformity
-10. correlation_mean - Average correlation
-11. correlation_max - Peak correlation
-12. correlation_min - Minimum correlation
-
-**System parameters (4)**:
-13. layer_count - Total logged layers
-14. execution_time - Runtime
-15. system_size - Number of qubits
-16. depth - Circuit depth"""
-        },
-        {
-            'instruction': "How do I run the full Discovery Suite?",
-            'output': """Run all three discovery experiments:
-
-```bash
-python experiments/discovery_suite.py
-```
-
-This runs:
-
-**Experiment A: Time-Reversal Instability (TRI)**
-- Tests bias reversal sensitivity
-- Quantifies directional fragility
-
-**Experiment B: Unsupervised Clustering**
-- K-means on raw features (no labels)
-- Discovers emergent phase structure
-
-**Experiment C: Replay Drift Scaling (RSI)**
-- Measures feature drift vs depth
-- Characterizes complexity growth
-
-Output: Console reports + potential artifacts in ./artifacts/
-
-Customization: Edit discovery_suite.py to adjust phases, sample counts, depth ranges."""
-        },
-        {
-            'instruction': "What is QPR-R?",
-            'output': """QPR-R: Quantum Phase Recognition with Replay
-
-**Traditional Model (Hard)**:
-- Only measurement access to quantum states
-- Phase recognition is exponentially hard
-- Limited to output statistics
-
-**QPR-R Model (Efficient)**:
-- Full logging of internal state evolution
-- Deterministic replay capability
-- Polynomial-time phase recognition
-- Feature extraction scales as O(layers × features)
-
-**Key Insight**: By allowing synthetic logging and replay, we bypass hardness assumptions from real quantum hardware constraints.
-
-**Practical Meaning**: In Ben Lab, we can log branch probabilities, correlations, and scrambling at every layer - impossible with real quantum computers - enabling efficient phase classification."""
-        },
-        {
-            'instruction': "How does the Quantum Approximation Layer work?",
-            'output': """Quantum Approximation Layer workflow:
-
-**1. Spawn**: Create branches from base state
-   - Generates N variations with equal amplitudes
-   - Each branch has unique phase
-   - Example: protein folding explores conformations
-
-**2. Interfere**: Adjust amplitudes via scoring
-   - Evaluate each branch with scoring function
-   - Update amplitudes based on scores
-   - Normalizes to maintain probability = 1
-
-**3. Collapse**: Select top-k branches
-   - Weighted selection by probability
-   - Blend states of top branches
-   - Returns final collapsed state
-
-**Determinism**: Uses fixed seeds for reproducibility
-
-**Use in PhaseDetector**: Simulates quantum phase evolution with branch/interference dynamics."""
-        }
+def generate_phase_samples(n_per_phase: int = 30) -> List[Dict[str, Any]]:
+    """Generate samples from single phase experiments."""
+    phases = [
+        "ising_symmetry_breaking",
+        "spt_cluster",
+        "trivial_product",
+        "pseudorandom",
     ]
+    system_sizes = [16, 24, 32]
+    depths = [4, 8, 12]
+    biases = [None, 0.6, 0.7, 0.8]
+
+    samples: List[Dict[str, Any]] = []
+
+    for phase in phases:
+        for _ in range(n_per_phase):
+            params = {
+                "phase_type": phase,
+                "system_size": random.choice(system_sizes),
+                "depth": random.choice(depths),
+                "seed": random.randint(1, 100000),
+                "bias": random.choice(biases),
+            }
+            result = call("run_phase_experiment", params)
+
+            instruction = (
+                f"Explain the behavior of a {phase} experiment with "
+                f"system_size={params['system_size']}, depth={params['depth']}, "
+                f"bias={params['bias']} (if given). Describe what the feature vector "
+                f"and summary tell us about the phase."
+            )
+
+            summary = result.get("summary", {})
+            fv = result.get("feature_vector", [])
+
+            response = (
+                "Here is an analysis of the experiment:\n\n"
+                f"- Phase type: {phase}\n"
+                f"- Parameters: {params}\n"
+                f"- Feature vector (truncated): {fv[:8]} ...\n"
+                f"- Summary stats: {summary}\n\n"
+                "Interpretation:\n"
+                "- Connect entropy / magnetization / correlations to what this phase means.\n"
+                "- Describe whether this looks ordered, disordered, topological, or pseudorandom.\n"
+                "- Mention how depth and bias influence the structure."
+            )
+
+            samples.append(make_sample(instruction, response, meta={"kind": "phase", "params": params}))
+    return samples
 
 
-def main():
-    corpus_dir = Path("lab_corpus")
-    output_file = Path("lab_training_data.jsonl")
+def generate_tri_samples(n: int = 50) -> List[Dict[str, Any]]:
+    """Generate samples from TRI (Time-Reversal Instability) experiments."""
+    phases = [
+        "ising_symmetry_breaking",
+        "spt_cluster",
+        "trivial_product",
+        "pseudorandom",
+    ]
+    samples: List[Dict[str, Any]] = []
+
+    for _ in range(n):
+        phase = random.choice(phases)
+        params = {
+            "phase_type": phase,
+            "system_size": 32,
+            "depth": random.choice([6, 8, 10, 12]),
+            "bias": random.choice([0.6, 0.7, 0.8]),
+            "seed": random.randint(1, 100000),
+        }
+        result = call("tri", params)
+
+        tri = result.get("TRI")
+        if tri is None:
+            tri_display = "nan"
+        else:
+            tri_display = f"{tri:.4f}"
+        instruction = (
+            f"For phase '{phase}', we ran a Time-Reversal Instability (TRI) test with "
+            f"bias={params['bias']} and depth={params['depth']}. "
+            "Explain what the TRI value means and what it tells us about time-reversal "
+            "fragility or symmetry of this phase."
+        )
+
+        response = (
+            f"The TRI result for this configuration is TRI ≈ {tri_display}.\n\n"
+            "Interpretation:\n"
+            "- Explain what a high TRI vs low TRI implies.\n"
+            "- Relate it to directional behavior / broken symmetries.\n"
+            "- Compare how Ising vs SPT vs trivial vs pseudorandom usually behave."
+        )
+
+        samples.append(make_sample(instruction, response, meta={"kind": "tri", "params": params, "tri": tri}))
+    return samples
+
+
+def generate_discovery_samples(n_runs: int = 10) -> List[Dict[str, Any]]:
+    """Generate samples from unsupervised discovery/clustering experiments."""
+    samples: List[Dict[str, Any]] = []
+
+    for _ in range(n_runs):
+        phases = [
+            "ising_symmetry_breaking",
+            "spt_cluster",
+            "trivial_product",
+            "pseudorandom",
+        ]
+        payload = {
+            "phases": phases,
+            "num_per_phase": random.randint(10, 25),
+            "k": len(phases),
+            "iterations": 25,
+        }
+        result = call("discovery", payload)
+        clusters = result.get("cluster_label_stats", [])
+
+        instruction = (
+            "We ran an unsupervised k-means clustering experiment on synthetic quantum phases.\n"
+            f"Phases included: {phases}.\n"
+            f"Cluster label stats: {clusters}.\n\n"
+            "Explain what this tells us about how these phases group in feature space, "
+            "which clusters are clean, where mixing happens, and what kind of hidden "
+            "structure or phase boundaries this might reveal."
+        )
+
+        response = (
+            "Interpretation of clustering results:\n"
+            "- Identify which clusters are dominated by a single phase label.\n"
+            "- Point out any clusters with significant mixing.\n"
+            "- Hypothesize why some phases overlap in feature space.\n"
+            "- Discuss how this validates or challenges the feature design."
+        )
+
+        samples.append(make_sample(instruction, response, meta={"kind": "discovery", "clusters": clusters}))
+    return samples
+
+
+def generate_replay_drift_samples(n: int = 30) -> List[Dict[str, Any]]:
+    """Generate samples from replay drift scaling experiments."""
+    phases = [
+        "ising_symmetry_breaking",
+        "spt_cluster",
+        "trivial_product",
+        "pseudorandom",
+    ]
+    samples: List[Dict[str, Any]] = []
+
+    for _ in range(n):
+        phase = random.choice(phases)
+        payload = {
+            "phase_type": phase,
+            "system_size": 32,
+            "base_depth": random.choice([4, 6, 8]),
+            "seed": random.randint(1, 100000),
+            "depth_factors": [1, 2, 3, 4],
+        }
+        result = call("replay_drift", payload)
+        runs = result.get("runs", [])
+
+        instruction = (
+            f"We ran replay drift scaling for phase '{phase}' with base depth "
+            f"{payload['base_depth']} and depth factors {payload['depth_factors']}.\n"
+            f"Runs (depth, drift): {[ (r['depth'], r['drift']) for r in runs ]}\n\n"
+            "Explain how drift grows with depth for this phase and what that implies about "
+            "its complexity, stability, or chaotic behavior."
+        )
+
+        response = (
+            "Interpretation of replay drift:\n"
+            "- Describe whether drift growth is roughly linear, sublinear, or superlinear.\n"
+            "- Connect this to stability vs scrambling.\n"
+            "- Compare how you expect this behavior to differ between trivial, SPT, Ising, and pseudorandom phases."
+        )
+
+        samples.append(make_sample(instruction, response, meta={"kind": "replay_drift", "runs": runs}))
+    return samples
+
+
+def main() -> None:
+    print("🔬 Generating training data from live Jarvis Lab API experiments...")
+    print(f"📡 Connecting to {JARVIS_LAB_URL}")
+    print()
+
+    all_samples: List[Dict[str, Any]] = []
     
-    if not corpus_dir.exists():
-        print(f"Error: {corpus_dir} not found")
-        print("Please create lab_corpus/ and add documentation files.")
-        return
+    print("Phase experiments...")
+    all_samples += generate_phase_samples(n_per_phase=40)
+    print(f"  ✓ Generated {len(all_samples)} phase samples")
     
-    all_pairs = []
+    print("TRI experiments...")
+    tri_samples = generate_tri_samples(n=60)
+    all_samples += tri_samples
+    print(f"  ✓ Generated {len(tri_samples)} TRI samples")
     
-    # Process each markdown file
-    for md_file in corpus_dir.glob("*.md"):
-        print(f"Processing {md_file.name}...")
-        content = md_file.read_text()
-        sections = extract_sections(content, md_file.stem)
-        pairs = generate_qa_pairs(sections, md_file.stem)
-        all_pairs.extend(pairs)
-        print(f"  Generated {len(pairs)} Q&A pairs from {len(sections)} sections")
+    print("Discovery/clustering experiments...")
+    discovery_samples = generate_discovery_samples(n_runs=15)
+    all_samples += discovery_samples
+    print(f"  ✓ Generated {len(discovery_samples)} discovery samples")
     
-    # Add practical questions
-    practical = generate_practical_qa()
-    all_pairs.extend(practical)
-    print(f"Added {len(practical)} practical Q&A pairs")
-    
-    # Write JSONL
-    with open(output_file, 'w') as f:
-        for pair in all_pairs:
-            json.dump(pair, f)
-            f.write('\n')
-    
-    print(f"\n✅ Generated {len(all_pairs)} training pairs")
-    print(f"📄 Output: {output_file}")
-    print(f"\nNext steps:")
-    print(f"1. Review {output_file} for quality")
-    print(f"2. Use this dataset to fine-tune a base model (qwen2.5:1.5b, llama3.2, phi3)")
-    print(f"3. Convert fine-tuned model to GGUF")
-    print(f"4. Create Ollama Modelfile (see ollama/Modelfile.example)")
-    print(f"5. Run: ollama create ben-lab -f ollama/Modelfile")
+    print("Replay drift experiments...")
+    drift_samples = generate_replay_drift_samples(n=40)
+    all_samples += drift_samples
+    print(f"  ✓ Generated {len(drift_samples)} replay drift samples")
+
+    print()
+    print(f"📊 Total: {len(all_samples)} training samples")
+
+    with OUT_PATH.open("w", encoding="utf-8") as f:
+        for ex in all_samples:
+            f.write(json.dumps(ex, ensure_ascii=False) + "\n")
+
+    print(f"💾 Saved to {OUT_PATH}")
+    print()
+    print("Next step: Run fine-tuning with finetune_ben_lab.py")
 
 
 if __name__ == "__main__":
