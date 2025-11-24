@@ -36,6 +36,12 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - Verify your environment with `python verify_setup.py` before starting the lab
 - Learn more about the integration in [JARVIS_OLLAMA_BRIDGE.md](JARVIS_OLLAMA_BRIDGE.md)
 
+### 🔁 New: Fine-tune Ben Lab LLM from Live Experiments
+- Run `python jarvis_api.py` and then `python generate_lab_training_data.py`
+- Fine-tune with `python finetune_ben_lab.py`
+- Convert/install via `./train_and_install.sh`
+- Full guide: [BEN_LAB_LORA_OLLAMA.md](BEN_LAB_LORA_OLLAMA.md) & Quick start: [QUICK_START_BEN_LAB_LORA.md](QUICK_START_BEN_LAB_LORA.md)
+
 ## 🌌 Full 3D Atom Model Suite
 
 The `atomsim` package introduces a deterministic FFT-based toolkit for real-space hydrogen and helium simulations, field perturbations, and inverse imaging. Key capabilities include:

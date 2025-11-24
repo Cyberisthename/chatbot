@@ -59,16 +59,24 @@ This document provides a complete reference to all files related to the Jarvis L
 | File | Purpose |
 |------|---------|
 | **OLLAMA_FINETUNE_GUIDE.md** | Complete fine-tuning guide |
+| **BEN_LAB_LORA_OLLAMA.md** | Live experiment → LoRA → Ollama pipeline |
+| **QUICK_START_BEN_LAB_LORA.md** | TL;DR quickstart for Ben Lab LoRA |
 | **ollama/README.md** | Ollama integration details |
-| **generate_lab_training_data.py** | Generate training data from docs |
+| **generate_lab_training_data.py** | Generate training data from live Jarvis experiments |
+| **generate_lab_doc_training_data.py** | Legacy documentation-based dataset generator |
+| **finetune_ben_lab.py** | Fine-tune base model with LoRA |
+| **train_and_install.sh** | One-shot automation for data → LoRA → Ollama |
 
 ## 🛠️ Utility Scripts
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
 | **verify_setup.py** | Check installation | `python verify_setup.py` |
+| **test_ben_lab_setup.py** | Check LoRA pipeline setup | `python test_ben_lab_setup.py` |
 | **install_lab_deps.sh** | Install dependencies | `./install_lab_deps.sh` |
 | **start_lab_chat.sh** | Launch lab + chat | `./start_lab_chat.sh` |
+| **demo_ben_lab_lora.py** | Interactive LoRA pipeline demo | `python demo_ben_lab_lora.py` |
+| **train_and_install.sh** | Run full data → LoRA → Ollama pipeline | `./train_and_install.sh` |
 
 ## 📦 Ollama Integration
 
@@ -118,7 +126,8 @@ python rl_scientist.py --trials 100
 3. **Architecture:** `JARVIS_OLLAMA_BRIDGE.md` - Learn how it works
 4. **Lab Details:** `PHASE_DETECTOR.md` - Understand the physics
 5. **Experiments:** `EXPERIMENTS_GUIDE.md` - Run different experiments
-6. **Fine-tuning:** `OLLAMA_FINETUNE_GUIDE.md` - Train your own model
+6. **Fine-tuning (docs):** `OLLAMA_FINETUNE_GUIDE.md` - Train on documentation
+7. **Fine-tuning (live):** `BEN_LAB_LORA_OLLAMA.md` - Train on live experiments with LoRA
 
 ## 🔍 Quick Reference
 
@@ -160,9 +169,16 @@ python rl_scientist.py --trials 100
 ├── verify_setup.py               # Setup verification
 ├── install_lab_deps.sh           # Dependency installer
 ├── start_lab_chat.sh             # All-in-one launcher
-├── generate_lab_training_data.py # Training data generator
+├── generate_lab_training_data.py       # Training data from Jarvis API
+├── generate_lab_doc_training_data.py   # Legacy doc-based dataset generator
+├── finetune_ben_lab.py                 # LoRA fine-tuning script
+├── train_and_install.sh                # One-shot data → LoRA → Ollama pipeline
+├── BEN_LAB_LORA_OLLAMA.md              # Full live fine-tuning guide
+├── QUICK_START_BEN_LAB_LORA.md         # Quickstart for LoRA pipeline
+├── demo_ben_lab_lora.py                # Interactive demo of pipeline
+├── test_ben_lab_setup.py               # Setup verification for LoRA pipeline
 │
-├── jarvis5090x/                  # Lab engine
+├── jarvis5090x/                        # Lab engine
 │   ├── __init__.py
 │   ├── phase_detector.py
 │   ├── orchestrator.py
@@ -218,15 +234,27 @@ python experiments/build_phase_dataset.py
 python experiments/rl_scientist.py
 ```
 
-### 4. Fine-tuning Pipeline
+### 4. Fine-tuning Pipeline (Documentation-based)
 ```bash
-python generate_lab_training_data.py
+python generate_lab_doc_training_data.py
 # Upload to cloud GPU
 # Fine-tune (see OLLAMA_FINETUNE_GUIDE.md)
 # Download GGUF
 ollama create ben-lab -f ollama/Modelfile.example
 # Edit chat_with_lab.py to use ben-lab
 ./start_lab_chat.sh
+```
+
+### 5. Fine-tuning Pipeline (Live Experiments with LoRA)
+```bash
+# One-shot automation
+./train_and_install.sh
+
+# Or step-by-step
+python jarvis_api.py              # Terminal 1
+python generate_lab_training_data.py  # Terminal 2
+python finetune_ben_lab.py
+# Convert and install (see BEN_LAB_LORA_OLLAMA.md)
 ```
 
 ## 📊 File Dependencies
