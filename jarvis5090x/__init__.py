@@ -1,0 +1,93 @@
+from __future__ import annotations
+
+from .adapter_cluster import AdapterCluster
+from .asic_utils import (
+    analyze_mining_performance,
+    bruteforce_threshold_bits,
+    combine_hashrates_real,
+    compute_scale_factor,
+    estimate_daily_reward,
+    estimate_time_to_crack,
+    format_hashrate,
+    format_time,
+    is_bruteforce_feasible,
+    run_mining_job,
+    to_real_hashrate,
+)
+from .config import DEFAULT_CONFIG, EXTREME_CONFIG, Jarvis5090XConfig
+from .flop_compression import FlopCompressionLayer
+from .infinite_cache import InfiniteMemoryCache
+from .orchestrator import Jarvis5090X
+from .virtual_gpu import VirtualGPU
+from .quantum_layer import Branch, QuantumApproximationLayer, QuantumExperimentHooks
+from .types import AdapterDevice, DeviceKind, OperationKind, OperationRequest
+from .phase_logger import PhaseLogger, ExperimentRecord, LayerLog
+from .phase_features import extract_features, feature_names
+from .phase_replay import PhaseReplay
+from .phase_detector import (
+    PhaseDetector,
+    PhaseExperimentConfig,
+    ExperimentHandle,
+    configure_phase_detector,
+    get_phase_detector,
+    run_phase_experiment,
+    log_phase_features,
+    replay_experiment,
+    classify_phase,
+)
+from .phase_dataset import PhaseDataset, PhaseExample, dataset_from_records
+from .phase_classifier import SimplePhaseClassifier, CentroidPhaseClassifier
+from .phase_mlp_classifier import MLPPhaseClassifier, PhaseMLP
+
+__version__ = "1.0.0"
+
+__all__ = [
+    "Jarvis5090X",
+    "VirtualGPU",
+    "FlopCompressionLayer",
+    "InfiniteMemoryCache",
+    "QuantumApproximationLayer",
+    "QuantumExperimentHooks",
+    "Branch",
+    "AdapterCluster",
+    "AdapterDevice",
+    "DeviceKind",
+    "OperationKind",
+    "OperationRequest",
+    "Jarvis5090XConfig",
+    "DEFAULT_CONFIG",
+    "EXTREME_CONFIG",
+    "is_bruteforce_feasible",
+    "bruteforce_threshold_bits",
+    "run_mining_job",
+    "compute_scale_factor",
+    "to_real_hashrate",
+    "combine_hashrates_real",
+    "estimate_daily_reward",
+    "estimate_time_to_crack",
+    "format_hashrate",
+    "format_time",
+    "analyze_mining_performance",
+    "PhaseLogger",
+    "ExperimentRecord",
+    "LayerLog",
+    "extract_features",
+    "feature_names",
+    "PhaseReplay",
+    "PhaseDetector",
+    "PhaseExperimentConfig",
+    "ExperimentHandle",
+    "configure_phase_detector",
+    "get_phase_detector",
+    "run_phase_experiment",
+    "log_phase_features",
+    "replay_experiment",
+    "classify_phase",
+    "PhaseDataset",
+    "PhaseExample",
+    "dataset_from_records",
+    "SimplePhaseClassifier",
+    "CentroidPhaseClassifier",
+    "MLPPhaseClassifier",
+    "PhaseMLP",
+]

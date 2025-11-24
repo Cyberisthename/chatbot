@@ -172,3 +172,20 @@ _tmp_qcr_slice.png
 # Large artifacts (>100MB) - regenerate locally if needed
 artifacts/real_atom_3d/*_N256.npy
 artifacts/real_atom_3d/*_N512.npy
+
+# Jarvis-2v-main.zip and extracted contents
+Jarvis-2v-main.zip
+Jarvis-2v-main/*
+!Jarvis-2v-main/README.md
+
+# Ollama fine-tuning artifacts
+*.gguf
+*.gguf.tmp
+*.safetensors
+ollama/*ben-lab*.gguf
+ollama/checkpoint-*
+ollama/runs/
+
+# LLM training checkpoints
+checkpoint-*/
+training_output/
