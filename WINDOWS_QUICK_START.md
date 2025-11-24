@@ -263,6 +263,36 @@ Use the CPU version explicitly:
 python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
+### Problem: llama-cpp-python build fails (CMake error)
+
+**Symptoms:**
+- Installation shows "Building wheel for llama-cpp-python... error"
+- CMake errors about NMake Makefiles or missing C++ compiler
+- "Visual Studio Build Tools" requirement mentioned
+
+**Fix:**
+The Windows installer now automatically tries to install pre-built wheels first. If you're installing manually:
+
+**Option 1: Use pre-built wheel (Easiest)**
+```powershell
+python -m pip install --only-binary=:all: llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+```
+
+**Option 2: Install Visual Studio Build Tools (If you need to build from source)**
+1. Download "Build Tools for Visual Studio" from [visualstudio.microsoft.com](https://visualstudio.microsoft.com/downloads/)
+2. Run the installer
+3. Select "Desktop development with C++"
+4. After installation completes, restart your terminal
+5. Try installing again:
+   ```powershell
+   python -m pip install llama-cpp-python
+   ```
+
+**Option 3: Skip it (Jarvis still works!)**
+- The installer will continue even if llama-cpp-python fails
+- Most features work without it
+- You can always install it later
+
 ### Problem: Scripts don't run (execution policy)
 
 **Fix:**

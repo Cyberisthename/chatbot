@@ -202,6 +202,34 @@ Then run the script again.
 
 Or: Skip to Option 1 (Quick Train)
 
+### Issue: llama-cpp-python build fails (CMake error)
+
+**Cause:** Missing Visual Studio Build Tools (C++ compiler)
+
+**What happens:**
+- The installer shows "Building wheel for llama-cpp-python... error"
+- CMake errors about NMake Makefiles or missing C++ support
+- **This is normal and expected on most Windows machines!**
+
+**Fix:**
+The installer handles this automatically:
+1. First tries to install pre-built wheels from official repository
+2. If that fails, attempts to build from source
+3. If build fails, continues anyway (most features work without it)
+
+**If you want to install it manually later:**
+```powershell
+# Option 1: Try pre-built wheel (easiest)
+python -m pip install --only-binary=:all: llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+
+# Option 2: Install Build Tools first, then build
+# Download "Build Tools for Visual Studio" from visualstudio.microsoft.com
+# Select "Desktop development with C++" during installation
+# Then run: python -m pip install llama-cpp-python
+```
+
+**Important:** You don't need llama-cpp-python for most features! The training and Ollama integration work fine without it.
+
 ### Issue: Script window closes immediately
 
 **Cause:** Python or other critical error
