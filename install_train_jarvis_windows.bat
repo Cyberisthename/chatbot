@@ -73,7 +73,43 @@ REM Install transformers and ML tools
 python -m pip install transformers datasets accelerate peft sentencepiece protobuf
 
 REM Install remaining dependencies
-python -m pip install -r requirements.txt
+echo.
+echo Installing remaining dependencies...
+python -m pip install websockets python-multipart aiofiles pillow sounddevice pyaudio speechrecognition pyttsx3 python-dotenv scipy imageio scikit-image imageio-ffmpeg
+
+REM Try to install llama-cpp-python last (may fail if no C++ compiler)
+echo.
+echo.
+echo ============================================
+echo Attempting to install llama-cpp-python...
+echo ============================================
+echo NOTE: This package requires Visual Studio Build Tools with C++ support.
+echo If the installation fails, don't worry - the training will still work!
+echo.
+python -m pip install "llama-cpp-python>=0.2.0"
+if errorlevel 1 (
+    echo.
+    echo ============================================
+    echo ⚠️  llama-cpp-python installation FAILED
+    echo ============================================
+    echo.
+    echo This is NORMAL if you don't have Visual Studio Build Tools installed.
+    echo Your training and most features will work fine without it.
+    echo.
+    echo To install llama-cpp-python later (optional):
+    echo   1. Install "Visual Studio Build Tools" from:
+    echo      https://visualstudio.microsoft.com/downloads/
+    echo   2. During installation, select:
+    echo      "Desktop development with C++"
+    echo   3. After installation, run:
+    echo      pip install llama-cpp-python
+    echo.
+    echo Continuing installation...
+    timeout /t 5 >nul
+) else (
+    echo.
+    echo ✅ llama-cpp-python installed successfully!
+)
 
 echo.
 echo OK - Dependencies installed!
