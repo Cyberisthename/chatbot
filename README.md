@@ -30,6 +30,12 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **cache-system/** - Redis-like caching implementation
 - **monitoring/** - Performance and health monitoring
 
+## 🧪 Jarvis Lab + Ollama Quickstart
+- Start with the 5-minute guide: [QUICKSTART_LAB.md](QUICKSTART_LAB.md)
+- Follow the end-to-end setup guide in [SETUP_JARVIS_LAB_OLLAMA.md](SETUP_JARVIS_LAB_OLLAMA.md)
+- Verify your environment with `python verify_setup.py` before starting the lab
+- Learn more about the integration in [JARVIS_OLLAMA_BRIDGE.md](JARVIS_OLLAMA_BRIDGE.md)
+
 ## 🌌 Full 3D Atom Model Suite
 
 The `atomsim` package introduces a deterministic FFT-based toolkit for real-space hydrogen and helium simulations, field perturbations, and inverse imaging. Key capabilities include:
