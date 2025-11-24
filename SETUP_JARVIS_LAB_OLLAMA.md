@@ -31,6 +31,8 @@ All files are correctly positioned! ✅
 
 ## 🔧 2. Install Dependencies
 
+> 💡 **Windows users:** You can run `install_train_jarvis_windows.bat` (or the PowerShell variant) for a guided flow that installs everything automatically.
+
 ### Option A: Using Virtual Environment (Recommended)
 
 #### On Linux/Mac:
