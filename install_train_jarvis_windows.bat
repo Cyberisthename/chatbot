@@ -86,30 +86,48 @@ echo ============================================
 echo NOTE: This package requires Visual Studio Build Tools with C++ support.
 echo If the installation fails, don't worry - the training will still work!
 echo.
-python -m pip install "llama-cpp-python>=0.2.0"
+
+REM First, try to install pre-built wheel only (no compilation)
+set "LLAMA_CPP_EXTRA_INDEX=https://abetlen.github.io/llama-cpp-python/whl/cpu"
+echo Trying pre-built wheel first (CPU) from !LLAMA_CPP_EXTRA_INDEX! ...
+python -m pip install --only-binary=:all: "llama-cpp-python>=0.2.0" --extra-index-url !LLAMA_CPP_EXTRA_INDEX!
 if errorlevel 1 (
     echo.
-    echo ============================================
-    echo ⚠️  llama-cpp-python installation FAILED
-    echo ============================================
+    echo Pre-built wheel not available, attempting to build from source...
+    echo This may take 5-10 minutes and requires Visual Studio Build Tools.
     echo.
-    echo This is NORMAL if you don't have Visual Studio Build Tools installed.
-    echo Your training and most features will work fine without it.
-    echo.
-    echo To install llama-cpp-python later (optional):
-    echo   1. Install "Visual Studio Build Tools" from:
-    echo      https://visualstudio.microsoft.com/downloads/
-    echo   2. During installation, select:
-    echo      "Desktop development with C++"
-    echo   3. After installation, run:
-    echo      pip install llama-cpp-python
-    echo.
-    echo Continuing installation...
-    timeout /t 5 >nul
+    python -m pip install "llama-cpp-python>=0.2.0" --extra-index-url !LLAMA_CPP_EXTRA_INDEX!
+    if errorlevel 1 (
+        echo.
+        echo ============================================
+        echo ⚠️  llama-cpp-python installation FAILED
+        echo ============================================
+        echo.
+        echo This is NORMAL if you don't have Visual Studio Build Tools installed.
+        echo Your training and most features will work fine without it.
+        echo.
+        echo To install llama-cpp-python later (optional):
+        echo   1. Install "Visual Studio Build Tools" from:
+        echo      https://visualstudio.microsoft.com/downloads/
+        echo   2. During installation, select:
+        echo      "Desktop development with C++"
+        echo   3. After installation, run:
+        echo      pip install llama-cpp-python --extra-index-url !LLAMA_CPP_EXTRA_INDEX!
+        echo.
+        echo Or download a wheel directly from:
+        echo   https://github.com/abetlen/llama-cpp-python/releases
+        echo.
+        echo Continuing installation...
+        timeout /t 5 >nul
+    ) else (
+        echo.
+        echo ✅ llama-cpp-python built and installed successfully!
+    )
 ) else (
     echo.
-    echo ✅ llama-cpp-python installed successfully!
+    echo ✅ llama-cpp-python pre-built wheel installed successfully!
 )
+set "LLAMA_CPP_EXTRA_INDEX="
 
 echo.
 echo OK - Dependencies installed!
