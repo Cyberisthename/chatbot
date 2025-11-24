@@ -52,10 +52,14 @@ ollama create ben-lab -f Modelfile
 ## Or Use One-Shot Script
 
 ```bash
+# macOS / Linux
 ./train_and_install.sh
+
+# Windows
+install_train_jarvis_windows.bat
 ```
 
-This runs all three steps automatically.
+Both launchers run all three steps automatically and install the model into Ollama when available.
 
 ## Test Your Model
 
