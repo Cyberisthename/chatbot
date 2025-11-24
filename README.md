@@ -36,6 +36,11 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - Verify your environment with `python verify_setup.py` before starting the lab
 - Learn more about the integration in [JARVIS_OLLAMA_BRIDGE.md](JARVIS_OLLAMA_BRIDGE.md)
 
+### 🪟 Windows One-Click Installer
+- Double-click `install_train_jarvis_windows.bat` for the guided experience (installs deps → trains → installs to Ollama)
+- Prefer PowerShell? Run `./install_train_jarvis_windows.ps1` from a PowerShell prompt for the same flow with rich logging
+- Need more details? See the dedicated [Windows Quick Start guide](WINDOWS_QUICK_START.md)
+
 ### 🔁 New: Fine-tune Ben Lab LLM from Live Experiments
 - Run `python jarvis_api.py` and then `python generate_lab_training_data.py`
 - Fine-tune with `python finetune_ben_lab.py`
