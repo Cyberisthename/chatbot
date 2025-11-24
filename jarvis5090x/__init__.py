@@ -37,6 +37,7 @@ from .phase_detector import (
 )
 from .phase_dataset import PhaseDataset, PhaseExample, dataset_from_records
 from .phase_classifier import SimplePhaseClassifier, CentroidPhaseClassifier
+from .phase_mlp_classifier import MLPPhaseClassifier, PhaseMLP
 
 __version__ = "1.0.0"
 
@@ -87,4 +88,6 @@ __all__ = [
     "dataset_from_records",
     "SimplePhaseClassifier",
     "CentroidPhaseClassifier",
+    "MLPPhaseClassifier",
+    "PhaseMLP",
 ]
