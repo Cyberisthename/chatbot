@@ -11,7 +11,8 @@ from transformers import (
     AutoTokenizer, 
     AutoModelForCausalLM,
     Trainer, 
-    TrainingArguments
+    TrainingArguments,
+    DataCollatorForLanguageModeling
 )
 from datasets import Dataset
 import json
@@ -68,18 +69,25 @@ except Exception as e:
 # --- Prepare Data ---
 print("\n🔄 Processing training data...")
 def tokenize_data(examples):
-    return tokenizer(
+    tokens = tokenizer(
         examples["text"],
         padding=True,
         truncation=True,
         max_length=512,
-        return_tensors="pt"
     )
+    tokens["labels"] = [ids[:] for ids in tokens["input_ids"]]
+    return tokens
 
 tokenized_data = dataset.map(
     tokenize_data,
     batched=True,
     remove_columns=dataset.column_names
+)
+
+# Create data collator for language modeling
+data_collator = DataCollatorForLanguageModeling(
+    tokenizer=tokenizer,
+    mlm=False  # We're doing causal language modeling, not masked LM
 )
 
 # --- Training Setup ---
@@ -98,6 +106,7 @@ trainer = Trainer(
     model=model,
     args=training_args,
     train_dataset=tokenized_data,
+    data_collator=data_collator,
 )
 
 # --- Start Training ---
