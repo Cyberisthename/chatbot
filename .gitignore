@@ -177,3 +177,15 @@ artifacts/real_atom_3d/*_N512.npy
 Jarvis-2v-main.zip
 Jarvis-2v-main/*
 !Jarvis-2v-main/README.md
+
+# Ollama fine-tuning artifacts
+*.gguf
+*.gguf.tmp
+*.safetensors
+ollama/*ben-lab*.gguf
+ollama/checkpoint-*
+ollama/runs/
+
+# LLM training checkpoints
+checkpoint-*/
+training_output/
