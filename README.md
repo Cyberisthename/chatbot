@@ -47,6 +47,12 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - Convert/install via `./train_and_install.sh`
 - Full guide: [BEN_LAB_LORA_OLLAMA.md](BEN_LAB_LORA_OLLAMA.md) & Quick start: [QUICK_START_BEN_LAB_LORA.md](QUICK_START_BEN_LAB_LORA.md)
 
+### ✨ New: Train Fill-in-the-Middle Code Completion Model
+- Run `python train_fim_model.py` to generate FIM data, fine-tune with LoRA, merge weights, and export a quantized `fim-model-q4_0.gguf`
+- Produces a ready-to-use `Modelfile.fim` for Ollama with prefix/suffix-aware completions
+- Ideal for IDE integrations that need smart code infilling across Python, JavaScript, SQL, and more
+- Reference guides: [FIM_README.md](FIM_README.md), [QUICK_START_FIM.md](QUICK_START_FIM.md), and [FIM_MODEL_GUIDE.md](FIM_MODEL_GUIDE.md)
+
 ## 🌌 Full 3D Atom Model Suite
 
 The `atomsim` package introduces a deterministic FFT-based toolkit for real-space hydrogen and helium simulations, field perturbations, and inverse imaging. Key capabilities include:

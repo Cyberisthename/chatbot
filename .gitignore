@@ -189,3 +189,12 @@ ollama/runs/
 # LLM training checkpoints
 checkpoint-*/
 training_output/
+
+# FIM model training artifacts
+fim-model-lora/
+fim-model-merged/
+ben-lab-lora/
+data/fim_training.jsonl
+data/lab_instructions.jsonl
+llama.cpp/
+Modelfile.fim
