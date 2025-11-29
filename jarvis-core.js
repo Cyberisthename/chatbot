@@ -138,10 +138,51 @@ class JarvisLLMEngine extends EventEmitter {
 
   async decode(tokens) {
     // Simple decoding (in real implementation, use proper tokenizer)
-    return "I am J.A.R.V.I.S., your advanced AI assistant. I'm here to help you with any questions or tasks you may have. My capabilities include natural language processing, reasoning, and providing detailed assistance across various domains.";
+    const responses = [
+      "I am J.A.R.V.I.S., your advanced AI assistant. I'm here to help you with any questions or tasks you may have. My capabilities include natural language processing, reasoning, and providing detailed assistance across various domains.",
+      "Hi! I'm J.A.R.V.I.S., ready to assist you with any inquiries or tasks.",
+      "Hello! J.A.R.V.I.S. here, at your service. What can I do for you?",
+      "Hi there! It's a pleasure to assist you. What would you like to know?",
+      "Greetings! I'm J.A.R.V.I.S., ready to help with any task or inquiry you have."
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
   }
 
   async chat(messages, options = {}) {
+    // Check for greetings in the last message
+    if (messages && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'user') {
+        const content = lastMessage.content.toLowerCase().trim();
+        const greetingPatterns = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening'];
+        
+        if (greetingPatterns.some(pattern => content === pattern || content.startsWith(pattern + ' '))) {
+          const greetingResponses = [
+            "Hi! I'm J.A.R.V.I.S., your advanced AI assistant. How may I help you today?",
+            "Hello! J.A.R.V.I.S. here, at your service. What can I do for you?",
+            "Hi there! It's a pleasure to assist you. What would you like to know?",
+            "Greetings! I'm J.A.R.V.I.S., ready to help with any task or inquiry you have.",
+            "Hi! Nice to connect with you. I'm here to provide any assistance you need."
+          ];
+          const response = greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
+          
+          return {
+            message: {
+              role: 'assistant',
+              content: response
+            },
+            usage: {
+              promptTokens: content.split(' ').length,
+              completionTokens: response.split(' ').length,
+              totalTokens: content.split(' ').length + response.split(' ').length
+            },
+            confidence: 0.95,
+            timestamp: new Date()
+          };
+        }
+      }
+    }
+    
     // Format messages into prompt
     const prompt = this.formatMessages(messages);
     
