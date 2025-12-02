@@ -30,6 +30,13 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **cache-system/** - Redis-like caching implementation
 - **monitoring/** - Performance and health monitoring
 
+### 🖥️ Desktop Assistant
+- **cortana-shell/** - Electron-based Cortana 2.0 desktop assistant built with React, Electron, and TypeScript
+  - Uses wake word models and branding extracted from the legacy Cortana APK
+  - Integrates directly with the J.A.R.V.I.S. REST API (`http://localhost:3001/api/chat`)
+  - Supports voice interaction, configurable hotkeys, and productivity tools
+  - See [`cortana-shell/README.md`](cortana-shell/README.md) for detailed setup instructions
+
 ## 🛠️ Quick Start
 
 ### 1. System Requirements
@@ -69,6 +76,7 @@ kill $(pgrep -f "node server.js") $(pgrep -f "streamlit run streamlit_app.py")
 ### 4. Access J.A.R.V.I.S.
 - Web UI/API: [http://localhost:3001](http://localhost:3001)
 - Streamlit Chatbot: [http://localhost:8501](http://localhost:8501)
+- Cortana Shell: Launch the desktop assistant (see [cortana-shell/](cortana-shell/) for setup)
 
 ## 🎯 Usage Examples
 
