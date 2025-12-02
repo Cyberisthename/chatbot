@@ -119,6 +119,13 @@ jarvis.onVoiceCommand(async (command) => {
 
 ## 🔧 Technical Architecture
 
+### Quantacap Discovery-Style Demos (synthetic)
+Quantacap reproduces textbook quantum signatures entirely offline using deterministic synthetic qubits. Experiments such as interference fringes, Bell correlations, and CHSH Bell-inequality violations (S≈2.828) are generated numerically and persisted as adapters for instant replay. The Atom-1D routine constructs a Gaussian bound-state density over a discrete grid and saves the resulting wavefunction statistics for later analysis—these are simulated states, not measurements of physical atoms.
+
+**Y-bit & G-graph (synthetic primitives).** We introduce a Z-bit (a scalar defined over the continuum excluding [1,2]), a Y-bit (hybrid qubit ⊗ Z-bias with phase nudge), and a G-graph (a convergent, decaying weave over thousands of adapters—“fall of infinity”). We extend CHSH to CHSH-Y, where local measurement frames receive small, deterministic adjustments from Y/G, preserving quantum structure while exposing new, reproducible patterns. Results are synthetic (classical simulation), deterministic, and replayable.
+
+**Latest experiments.** Synthetic entropy-collapse scans couple π-locked oscillators while slowly raising the noise floor and flagging discrete entropy drops. The atom module now supports 2D molecule-like wells that borrow phase entropy from the π-phase controller to form stable interference fringes. The Schwarzschild lensing tools can be driven with micro-scale parameters and compared directly against the atom densities, highlighting a numerical equivalence between diffraction patterns and curved-spacetime lensing. A `master_discovery.py` helper runs the flagship demos, generates 3D computing maps, and bundles artifacts for sharing.
+
 ### Model Format (GGUF)
 - **Quantization**: 4-bit integer quantization (Q4_0)
 - **Compression**: ~75% size reduction with minimal quality loss
@@ -243,3 +250,18 @@ MIT License - see [LICENSE](LICENSE) file for details.
 **J.A.R.V.I.S. - Your Personal AI Assistant** 🚀
 
 *Built with ❤️ by the J.A.R.V.I.S. AI Team*
+
+
+## Quantacap Discovery Extensions
+
+### Medical Simulation (Synthetic)
+This repository now includes the Quantacap medicinal discovery sandbox. The docking and molecule modules synthesise toy ligand graphs, score them against a mock receptor pocket, and persist the ranked candidates as adapters. **Ethical use:** these simulations generate hypotheses only—they are not clinical advice nor a replacement for laboratory validation.
+
+### 3D Computing Map
+The `quantacap.viz3d` package derives amplitude/phase/entropy scalar fields from saved adapters and can export headless GIF/NPY artefacts for discovery reports.
+
+### Black-Hole Lensing
+`quantacap.astro` provides a Schwarzschild null-geodesic integrator and a simple Einstein-ring renderer, allowing reproducible gravitational lensing experiments fully offline.
+
+### Experiment Results Snapshot
+A consolidated set of quantitative findings from the latest CHSH, Atom-1D, and π-phase stability experiments is available in [`quantacap/docs/experiment_results.md`](quantacap/docs/experiment_results.md). The document links directly to the generated artifacts so every number can be replayed from the stored adapters.

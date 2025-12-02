@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "results": [
+    {
+      "guid": "abcd",
+      "actions": [
+        {
+          "actionType": 7,
+          "reminders": [
+            {
+              "title": "Time to take your prescription.",
+              "type": 1,
+              "occurrence": {
+                "timeWindow": {},
+                "frequency": 0,
+                "interval": 1
+              },
+              "range": {
+                "type": 1,
+                "startDate": 636767446012332672,
+                "endDate": 633718944000000000
+              }
+            }
+          ]
+        },
+        {
+          "actionType": 1,
+          "title": "LIPITOR 20 MG. 20MG",
+          "noteText": "Refills la BETHESDA, I0 RIVER RX AT KENWOOD BETHESDA, MD OFA: FR0540195 (301 5257 RIVER ROAD #30 LIPITOR 20 MG. 20MG Discard After: 3/06/09 Dr. SMITH, JOE HPPL-T NEW 1 CAP SEAL IS BROKEN TAKE ONE TABLET DAILY For: JOHN DOE 123 ANYWHERE ST Rx# 7000 18 20816 recycle please THEP REFRIGERATED"
+        },
+        {
+          "actionType": 2,
+          "events": [
+            {
+              "title": "Rx# 7000 18 For: JOHN DOE TAKE ONE TABLET DAILY",
+              "eventType": 1,
+              "timeRanges": [
+                {
+                  "startTime": 633718944000000000,
+                  "endTime": 633719807990000000,
+                  "isAllDayEvent": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

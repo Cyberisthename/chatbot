@@ -1,0 +1,16 @@
+{
+  "name": "acetate",
+  "atoms": [
+    {"id": "C1", "charge": 0.3, "hydrophobicity": 0.5, "hbond_donor": false, "hbond_acceptor": false},
+    {"id": "C2", "charge": 0.1, "hydrophobicity": 0.4, "hbond_donor": false, "hbond_acceptor": false},
+    {"id": "O1", "charge": -0.5, "hydrophobicity": 0.2, "hbond_donor": false, "hbond_acceptor": true},
+    {"id": "O2", "charge": -0.45, "hydrophobicity": 0.2, "hbond_donor": false, "hbond_acceptor": true},
+    {"id": "H3", "charge": 0.15, "hydrophobicity": 0.6, "hbond_donor": true, "hbond_acceptor": false}
+  ],
+  "bonds": [
+    {"a": "C1", "b": "C2", "order": 1},
+    {"a": "C2", "b": "O1", "order": 2},
+    {"a": "C2", "b": "O2", "order": 1},
+    {"a": "C1", "b": "H3", "order": 1}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "time_s": 1.0,
+  "g_star": 10.75,
+  "T_MeV": 1.0,
+  "T_K": 11604500000.0,
+  "rho_J_m3": 7.3745449290152415e+25,
+  "rho_parametric_J_m3": 7.3745125054241475e+25,
+  "rho_modern_scaled_J_m3": 7.374544929015238e+25,
+  "rho_ratio_vs_modern_scaled": 1.0000000000000004,
+  "horizon_radius_m": 299792458.0,
+  "horizon_volume_m3": 1.12862773403637e+26,
+  "E_total_J": 8.323115932783875e+51,
+  "E_total_erg": 8.323115932783875e+58,
+  "notes": "Radiation dominated FRW model with T\u22481 MeV at t\u22481 s. Degrees of freedom g*=10.75 (photons, e\u00b1, \u03bd). Temperature conversion uses 1 MeV \u2248 1.16045e10 K."
+}

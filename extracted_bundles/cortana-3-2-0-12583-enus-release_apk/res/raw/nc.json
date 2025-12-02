@@ -1,0 +1,126 @@
+{
+	"Notifications": [{
+		"ID": "32094c15-4463-5860-8d30-7a5d76246edc",
+		"DaysNumber": 0,
+		"NotificationTime": "0",
+		"NotificationType": "Personalization",
+		"Title": "Color Picker",
+		"ContentInNC": "Customize me to match your favorite color. Check it out.",
+		"Deeplink": "ms-cortana://colorPicker",
+		"ShowWhere": 2
+	}, {
+		"ID": "d362d648-c5a1-5dba-a4a9-ec938d4e2849",
+		"DaysNumber": 0,
+		"NotificationTime": "120",
+		"NotificationType": "Personalization",
+		"Title": "Skills",
+		"ContentInNC": "I have lots of ways to make your life easier. Enable my new skills now.",
+		"Deeplink": "ms-cortana://skillscenter",
+		"ShowWhere": 2
+	}, {
+		"ID": "2813290f-7b08-56fc-a055-3b30147c1652",
+		"DaysNumber": 0,
+		"NotificationTime": "20:00",
+		"NotificationType": "Alarm",
+		"Title": "Alarm",
+		"ContentInNC": "Need help waking up tomorrow? Let's set up a morning alarm.",
+		"Deeplink": "ms-cortana://alarm/create",
+		"ShowWhere": 3,
+		"ContentPush": "Need help setting up a morning alarm? ",
+		"DeeplinkPush": "ms-cortana://notificationcenter",
+		"ConditionPush": "hasUnreadNC"
+	}, {
+		"ID": "9bd8556f-b97e-444d-8621-ecabeb9501bc.weather",
+		"DaysNumber": 1,
+		"NotificationTime": "8:00",
+		"NotificationType": "Weather",
+		"Title": "Weather",
+		"Command": "Weather",
+		"ContentInNC": "Set up your weather preferences now.",
+		"Deeplink": "ms-cortana://notebook?Interest=Weather",
+		"ShowWhere": 2
+	}, {
+		"ID": "64c68ca8-bbc3-54ed-bd47-3632ab858050",
+		"DaysNumber": 1,
+		"NotificationTime": "11:30",
+		"NotificationType": "Local",
+		"Title": "Restaurants",
+		"ContentInNC": "It’s almost lunch time. Show places to eat?",
+		"Deeplink": "ms-cortana://search/?q=restaurants+nearby",
+		"ShowWhere": 2
+	}, {
+		"ID": "6217a0b2-cdb6-5952-b1a5-ea16217108ca",
+		"DaysNumber": 1,
+		"NotificationTime": "20:00",
+		"NotificationType": "Events",
+		"Title": "Meetings",
+		"Command": "Meetings",
+		"ContentInNC": "I can track important meetings for you. Connect your calendar now.",
+		"Deeplink": "ms-cortana://connectedservices",
+		"ContentPush": "I can track important meetings for you.",
+		"DeeplinkPush": "ms-cortana://notificationcenter",
+		"ShowWhere": 3,
+		"ConditionPush": "hasUnreadNC"
+	}, {
+		"ID": "1b19047a-2517-40cc-a716-3c785805e66d.news",
+		"DaysNumber": 2,
+		"NotificationTime": "8:00",
+		"NotificationType": "News",
+		"Title": "Top News",
+		"ContentInNC": "Here are your daily news.",
+		"Deeplink": "ms-cortana://search/?q=top+news",
+		"ShowWhere": 2
+	}, {
+		"ID": "5402dbab-3208-5773-a17d-d57c993d5d84",
+		"DaysNumber": 2,
+		"NotificationTime": "11:30",
+		"NotificationType": "Entertainment",
+		"Title": "Movies",
+		"ContentInNC": "May I make a suggestion for a movie this week?",
+		"Deeplink": "ms-cortana://search/?q=new+movies",
+		"ShowWhere": 2
+	}, {
+		"ID": "55c50d6f-c276-5265-a3d4-69c40cd5ed10",
+		"DaysNumber": 2,
+		"NotificationTime": "20:00",
+		"NotificationType": "Commute",
+		"Title": "Transportation",
+		"ContentInNC": "Tell me your morning commute? I will remind you when to leave the house.",
+		"Deeplink": "ms-cortana://notebook?Interest=Transportation",
+		"ShowWhere": 3,
+		"ContentPush": "Tell me your morning commute?",
+		"DeeplinkPush": "ms-cortana://notificationcenter",
+		"ConditionPush": "hasUnreadNC"
+	}, {
+		"ID": "6f523bc6-f6b7-5fab-8405-867cac7b50e7",
+		"DaysNumber": 3,
+		"NotificationTime": "8:00",
+		"NotificationType": "News",
+		"Title": "Headline",
+		"ContentInNC": "What are your favorite news topics? Let’s set it up together.",
+		"Deeplink": "ms-cortana://news",
+		"ShowWhere": 2
+	}, {
+		"ID": "f6b3a03f-bb07-5a4e-8926-93f7103856e6",
+		"DaysNumber": 3,
+		"NotificationTime": "13:00",
+		"NotificationType": "Sports",
+		"Title": "Sports",
+		"ContentInNC": "Track your favorite teams and receive real-time updates. Get started.",
+		"Deeplink": "ms-cortana://notebook?Interest=Sports",
+		"ShowWhere": 2
+	}, {
+		"ID": "43b1f5bf-a5f7-5f89-90d3-435fcf62402e",
+		"DaysNumber": 3,
+		"NotificationTime": "20:00",
+		"NotificationType": "Finance",
+		"Title": "Finance",
+		"ContentInNC": "Track your favorite stocks?",
+		"Deeplink": "ms-cortana://notebook?Interest=Finance",
+		"ContentPush": "Track your favorite stocks?",
+		"DeeplinkPush": "ms-cortana://notificationcenter",
+		"ShowWhere": 3,
+		"ConditionPush": "hasUnreadNC"
+	}],
+	"Version": "1.0"
+}
