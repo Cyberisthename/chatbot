@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "results": [
+    {
+      "guid": "abc",
+      "actions": [
+        {
+          "actionType": 2,
+          "events": [
+            {
+              "title": "SPLASH",
+              "eventType": 1,
+              "timeRanges": [
+                {
+                  "startTime": 636928704000000000,
+                  "endTime": 636929567990000000,
+                  "isAllDayEvent": true
+                },
+                {
+                  "startTime": 636929568000000000,
+                  "endTime": 636930431990000000,
+                  "isAllDayEvent": true
+                },
+                {
+                  "startTime": 636930432000000000,
+                  "endTime": 636931295990000000,
+                  "isAllDayEvent": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "actionType": 1,
+          "title": "SPLASH",
+          "noteText": "Art Festival Campus Grounds May 8-10 MORRISON PRESENTS ART UNIVERSITY OF SPLASH"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Diagnostics</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./framework7.material.min.css">
+    <style type="text/css">
+    body {
+        overflow-y: visible;
+    }
+    .item-value {
+        font-size: 70%;
+        max-width: 70%;
+        word-wrap: break-word;
+        padding-left:5px;
+    }
+    
+    .list-block {
+        margin-top: 0;
+    }
+
+    .list-block .item-content {
+        min-height: 40px;
+    }
+
+    .list-block .item-inner {
+        min-height: 40px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-right: 6px;
+    }
+    .list-block li.diagnostics-item .item-inner{
+        display: block;
+    }
+    .list-block li.diagnostics-item .item-inner .item-value{
+        color:lightskyblue;
+        max-width: 100%;
+    }
+    .list-block li.cuheaders-item .item-inner{
+        padding-left: 15px;
+    }
+    .list-block li.cuheaders-item .item-inner .item-key{
+        font-size: 70%;
+    }
+    .list-block li.cuheaders-item .item-inner .item-value{
+        color:lightskyblue;
+        word-break: break-all;
+    }
+    .data_list {
+        overflow: hidden;
+        transition: height .3s ease-out;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="page-content">
+        <div class="list-block">
+            <div class="list-group" id="groups_div">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    (function init(_WIN) {
+
+        function parseJson(jsonStr) {
+            if (!jsonStr) {
+                return "Nothing can be got.";
+            }
+
+            try {
+                var resultObj = JSON.parse(jsonStr || {});
+                var isEmpty = true;
+                for (key in resultObj) {
+                    if (key) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
+                    return jsonStr;
+                } else {
+                    return resultObj;
+                }
+            } catch (e) {
+                return jsonStr;
+            }
+        }
+
+        /*
+        var CortanaApp = CortanaApp || {};
+        var CortanaDebug = CortanaDebug || {};
+        */
+
+        _WIN.info = {
+            Basic: {
+                SessionId: typeof CortanaApp.getSessionId === 'function'?CortanaApp.getSessionId(): null,
+                ImpressionId: typeof CortanaApp.getImpressionId === 'function' ? CortanaApp.getImpressionId() : null,
+                AppLanguage: typeof CortanaApp.getUiLanguage === 'function' ? CortanaApp.getUiLanguage() : null,
+                AppVersion: typeof CortanaDebug.getAppVersionName === 'function' ? CortanaDebug.getAppVersionName() : null,
+                LastDiagnosticsTicketId: typeof CortanaDebug.getDiagnosticsTicketId === 'function' ? CortanaDebug.getDiagnosticsTicketId() : null
+            },
+
+            Device: {
+                DeviceId: typeof CortanaDebug.getDeviceId === 'function' ? CortanaDebug.getDeviceId() : null,
+                DeviceModel: typeof CortanaDebug.getModel === 'function' ? CortanaDebug.getModel() : null,
+                DeviceDimensions: typeof CortanaDebug.getScreenResolution === 'function' ? CortanaDebug.getScreenResolution() : null,
+                APILevel: typeof CortanaApp.getAPILevel === 'function' ? CortanaApp.getAPILevel() : null,
+                OSLanguage: typeof CortanaDebug.getOSLanguage === 'function' ? CortanaDebug.getOSLanguage() : null,
+                TimeZone: typeof CortanaDebug.getTimeZone === 'function' ? CortanaDebug.getTimeZone() : null,
+                CdpDeviceId: typeof CortanaDebug.getCdpDeviceId === 'function' ? CortanaDebug.getCdpDeviceId() : null
+            },
+
+            Network: {
+                NetworkType: typeof CortanaDebug.getNetworkType === 'function' ? CortanaDebug.getNetworkType() : null,
+                NetworkProvider: typeof CortanaDebug.getNetworkProvider === 'function' ? CortanaDebug.getNetworkProvider() : null,
+                NetworkLatency: typeof CortanaDebug.getNetworkLatency === 'function' ? parseJson(CortanaDebug.getNetworkLatency()) : null
+            },
+
+            ProactiveHeaders: typeof CortanaDebug.getProactiveHeaders === 'function' ? parseJson(CortanaDebug.getProactiveHeaders()) : null,
+
+            Diagnostics: typeof CortanaDebug.getDiagnosticsJson === 'function' ? parseJson(CortanaDebug.getDiagnosticsJson()) : null
+        };
+
+
+        /*
+        * extract time from diagnostics log
+        */
+        function extractDiagnosticsTime(diagnosticsValue) {
+            if (!diagnosticsValue) {
+                return diagnosticsValue;
+            }
+
+            var regx = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}/;
+            return regx.exec(diagnosticsValue);
+        }
+
+        /*
+        * extract data from diagnostics log
+        */
+        function separateDiagnostics(diagnosticsValue, subStr) {
+            if (!subStr || subStr === null || subStr === "") {
+                return diagnosticsValue;
+            }
+
+            var timeIndex = diagnosticsValue.indexOf(subStr);
+            if (timeIndex === -1) {
+                return diagnosticsValue;
+            }
+
+            return diagnosticsValue.substring(0, timeIndex);
+        }
+
+        function isJsonComponent(str) {
+            return str === "cuheaders" ;
+        }
+
+        var htmlResult = "";
+        var recursiveLevel = 0;
+        var isDiagnostics = false;
+        var isCUHeader = false;
+        (function createHTMLForJson(jsonObj) {
+            for (key in jsonObj) {
+                if (typeof jsonObj[key] === "object" || isJsonComponent(key)) {
+                    var groupClass = "";
+                    var fontWeight = "";
+                    if (recursiveLevel === 0) {
+                        groupClass = "groupTitle";
+                        htmlResult += "<ul class=\"data_list\">";
+                        fontWeight = "; font-weight:900; font-size:18px; text-decoration:underline; cursor: pointer;";
+                        if (key === "Diagnostics") {
+                            isDiagnostics = true;
+                        } else {
+                            isDiagnostics = false;
+                        }
+                    } else {
+                        fontWeight = "; font-weight:900; font-size:16px;";
+                    }
+
+                    htmlResult += ("<li id = \""+ key + "\" class=\"list-group-title " + groupClass + "\"><span style=\"" + fontWeight + "\">" + key +"</span></li>");
+                    recursiveLevel++;
+
+                    isCUHeader = isJsonComponent(key);
+                    createHTMLForJson(parseJson(jsonObj[key]));
+                    isCUHeader = false;
+
+                    recursiveLevel --;
+                    if (recursiveLevel === 0) {
+                        htmlResult += "</ul>";
+                    }
+                } else {
+                    if (recursiveLevel === 0) {
+                        htmlResult += "<ul>";
+                    }
+
+                    var diagnosticsClass = "";
+                    var itemValue = jsonObj[key];
+                    var diagnosticsTime = "";
+                    if (isDiagnostics) {
+                        if (itemValue.indexOf("#") > -1) {
+                            itemValue = itemValue.replace(/#/ig, "<br/>");
+                        } else {
+                            diagnosticsClass = "class = \"diagnostics-item\"";
+                            diagnosticsTime = extractDiagnosticsTime(itemValue);
+                            itemValue = separateDiagnostics(itemValue, diagnosticsTime);
+                            if (diagnosticsTime) {
+                                diagnosticsTime = "<br/>" + diagnosticsTime;
+                            } else {
+                                diagnosticsTime = "";
+                            }
+                        }
+                    }
+
+                    if (isCUHeader) {
+                        diagnosticsClass = "class = \"cuheaders-item\"";
+                    }
+
+                    htmlResult += "<li " + diagnosticsClass + "> <div class=\"item-content\"> <a href=\"javascript:void(0)\" class=\"item-inner\" style= cursor:default;\"> <div class=\"item-key\">" + key + "</div>  <div class=\"item-value\" >" + itemValue + diagnosticsTime + "</div> </a>  </div>  </li>"
+
+
+                    if (recursiveLevel === 0) {
+                        htmlResult += "</ul>";
+                    }
+                }
+            }
+        })(info);
+
+        var groupsDiv = document.getElementById("groups_div");
+        groupsDiv.innerHTML = htmlResult;
+
+        var groupTitles = document.querySelectorAll(".data_list .groupTitle");
+        var bar = document.querySelectorAll(".data_list");
+
+        for(var j = 0, jLens = bar.length; j < jLens; j++){
+            (function(i){
+            bar[i].style.height = bar[i].clientHeight + 'px';
+            groupTitles[i].addEventListener('click', function(e){
+                var oldHeight = bar[i].clientHeight;
+                if (oldHeight <= groupTitles[i].clientHeight) {
+                    bar[i].style.height = this.dataset.oldHeight + 'px';
+                } else {
+                    this.dataset.oldHeight = oldHeight;
+                    bar[i].style.height = groupTitles[i].clientHeight + 'px';
+                }
+            });   
+            })(j);         
+        }
+
+
+    })(window);
+    </script>
+</body>
+
+</html>

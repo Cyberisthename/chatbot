@@ -1,0 +1,13 @@
+{
+    "timeReminder": [
+        {
+            "reminderId": "{82b9a53f-0d2b-43f8-b349-878d9c9bb8ee}",
+            "time": 1423036440151,
+            "detail": "turning lights off",
+            "title": "home",
+            "recurrence": "Daily",
+            "status": 1
+        }
+    ]
+}
+]

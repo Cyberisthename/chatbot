@@ -1,0 +1,8 @@
+<ClientConfig>
+    <Repository>
+        <RootUrl>https://download.cortana.cn.bing.com</RootUrl>
+    </Repository>
+    <Channel>enus-release</Channel>
+    <Branch>global</Branch>
+    <Validation></Validation>
+</ClientConfig>

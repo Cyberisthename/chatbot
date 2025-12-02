@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "results": [
+    {
+      "guid": "abc",
+      "actions": [
+        {
+          "actionType": 1,
+          "title": "actionTypes.ts",
+          "noteText": "ReminderTimeRecurrencePicker.tsx CaptureNavigator.tsx connectCaptureState.ts TS actions.ts actionTypes.ts constants.ts HomeScreen.tsx Ts reducer.ts Ts capture.d.ts @ CaptureApp.tsx index.tsx NoteScreen.tsx"
+        },
+        {
+          "actionType": 2,
+          "events": [
+            {
+              "title": "Ts capture.d.ts @ CaptureApp.tsx",
+              "eventType": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
