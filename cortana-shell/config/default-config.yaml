@@ -1,0 +1,51 @@
+# Cortana 2.0 Configuration
+
+# AI Mode: "jarvis" | "local" | "hybrid"
+mode: jarvis
+
+# Backend URLs
+jarvis_api_url: http://localhost:3001/api/chat
+local_llm_url: http://localhost:11434/api/generate
+infinite_capacity_url: http://localhost:9000/api/heavy
+
+# Voice Configuration
+voice:
+  wake_word_enabled: true
+  wake_word: "hey cortana"
+  stt_mode: whisper_local  # "whisper_local" | "whisper_http" | "windows"
+  stt_endpoint: http://localhost:9000/whisper/transcribe
+  tts_mode: windows  # "windows" | "custom"
+  tts_voice: Microsoft David Desktop
+
+# UI Configuration
+ui:
+  hotkey: CommandOrControl+Alt+C
+  theme: blue  # Classic Cortana blue
+  always_on_top: false
+  start_minimized: false
+  minimize_to_tray: true
+  window_opacity: 0.95
+
+# System Commands
+tools:
+  enabled: true
+  allowed_commands:
+    - open_app
+    - open_url
+    - control_volume
+    - control_media
+    - create_note
+    - set_reminder
+
+# Personality
+personality:
+  name: Cortana
+  greeting: "Hello! I'm Cortana 2.0, powered by your personal AI infrastructure."
+  prompt_prefix: "You are Cortana 2.0, a helpful AI assistant running on a custom AI stack. You are friendly, professional, and slightly witty. Provide clear, concise answers."
+
+# Advanced
+advanced:
+  context_messages: 10  # Number of previous messages to include
+  request_timeout: 30000  # milliseconds
+  retry_attempts: 3
+  log_level: info  # "debug" | "info" | "warn" | "error"

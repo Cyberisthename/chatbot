@@ -24,6 +24,13 @@ J.A.R.V.I.S. (Just A Rather Very Intelligent System) is a complete, locally-runn
 - **dashboard/** - System monitoring and analytics
 - **voice-interface/** - Speech-to-text and text-to-speech
 
+### 🟦 Cortana 2.0 – Jarvis Shell
+- **cortana-shell/** - Electron + React desktop assistant replicating classic Cortana
+- Fluent UI halo animation, hotkeys, Jarvis/Ollama/Infinite Capacity routing
+- Voice stack with wake-word, Whisper STT (pluggable), Windows TTS
+- Tool manager for OS commands, reminders, notes, media controls
+- See [`cortana-shell/README.md`](cortana-shell/README.md) and [`cortana-shell/SETUP.md`](cortana-shell/SETUP.md) for installation & usage
+
 ### ⚙️ System Components
 - **api-server/** - RESTful API server
 - **database/** - SQLite database with Prisma ORM

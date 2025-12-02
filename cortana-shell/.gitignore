@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+out/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Development
+.vite/
+.electron-vite/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# User data (for development)
+# In production, these go to app data directory
+config/user-config.yaml
+*.db
+*.sqlite
