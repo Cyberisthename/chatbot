@@ -1,0 +1,64 @@
+# JARVIS-2v Configuration
+# Modular Edge AI & Synthetic Quantum Lab
+
+# Core Engine Settings
+engine:
+  name: "JARVIS-2v"
+  version: "2.0.0"
+  mode: "standard"  # low_power, standard, jetson_orin
+  
+# Model Configuration
+model:
+  path: "./models/jarvis-7b-q4_0.gguf"
+  context_size: 2048
+  temperature: 0.7
+  max_tokens: 2048
+  gpu_layers: 0  # 0 for CPU, higher for GPU
+  device: "cpu"  # cpu, cuda, jetson
+  quantization: "Q4_0"
+
+# Adapter System
+adapters:
+  storage_path: "./adapters"
+  graph_path: "./adapters_graph.json"
+  auto_create: true
+  freeze_after_creation: true
+  
+# Y/Z/X Bit System
+bits:
+  y_bits: 16  # task/domain bits
+  z_bits: 8   # difficulty/precision bits  
+  x_bits: 8   # experimental toggles
+  persistence_path: "./bit_patterns.json"
+
+# Quantum Module
+quantum:
+  artifacts_path: "./quantum_artifacts"
+  simulation_mode: true
+  max_iterations: 1000
+  noise_level: 0.1
+  
+# Memory System
+memory:
+  file: "./jarvis_memory.json"
+  max_facts: 1000
+  max_chats: 1000
+  
+# API Server
+api:
+  host: "0.0.0.0"
+  port: 3001
+  enable_cors: true
+  max_request_size: "50mb"
+  
+# Edge Deployment
+edge:
+  jetson_cuda_arch: "72"  # Jetson Orin NX
+  low_power_mode: false
+  offline_mode: false
+  
+# UI Configuration
+ui:
+  dashboard_port: 3000
+  enable_graph_viz: true
+  theme: "dark"
