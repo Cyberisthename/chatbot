@@ -1,0 +1,62 @@
+# JARVIS-2v Jetson Orin Configuration
+# Optimized for NVIDIA Jetson Orin NX/AGX
+
+engine:
+  name: "JARVIS-2v-Jetson"
+  version: "2.0.0"
+  mode: "jetson_orin"  # low_power, standard, jetson_orin
+
+model:
+  path: "./models/jarvis-7b-q4_0.gguf"
+  context_size: 2048
+  temperature: 0.7
+  max_tokens: 2048
+  gpu_layers: 30  # 30 for Jetson Orin (tune between 20-40)
+  device: "cuda"  # Use CUDA on Jetson
+  quantization: "Q4_0"
+
+adapters:
+  storage_path: "./adapters"
+  graph_path: "./adapters_graph.json"
+  auto_create: true
+  freeze_after_creation: true
+
+bits:
+  y_bits: 16
+  z_bits: 8
+  x_bits: 8
+  persistence_path: "./bit_patterns.json"
+
+quantum:
+  artifacts_path: "./quantum_artifacts"
+  simulation_mode: true
+  max_iterations: 500  # Reduced for Jetson
+  noise_level: 0.1
+
+memory:
+  file: "./jarvis_memory.json"
+  max_facts: 500  # Reduced memory footprint
+  max_chats: 500
+
+api:
+  host: "0.0.0.0"
+  port: 3001
+  enable_cors: true
+  max_request_size: "10mb"  # Smaller requests for edge
+
+edge:
+  jetson_cuda_arch: "72"  # Jetson Orin architecture
+  low_power_mode: true
+  offline_mode: true  # No network needed
+
+ui:
+  dashboard_port: 3000
+  enable_graph_viz: true
+  theme: "dark"
+
+# Jetson-specific optimizations
+jetson:
+  power_mode: "MAXN"  # Use all cores
+  gpu_memory_fraction: 0.8  # Allocate 80% GPU memory
+  cpu_cores: 8  # Use all CPU cores
+  scheduler: "performance"  # Performance governor
