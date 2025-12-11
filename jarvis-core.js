@@ -43,7 +43,18 @@ class JarvisLLMEngine extends EventEmitter {
 
   async loadModel() {
     if (!fs.existsSync(this.config.modelPath)) {
-      throw new Error(`Model file not found: ${this.config.modelPath}`);
+      console.log(`⚠️  Model file not found: ${this.config.modelPath}`);
+      console.log('🔄 Running in demo/mock mode - responses will be simulated');
+      
+      // Create a mock model for demo purposes
+      this.model = {
+        path: this.config.modelPath,
+        size: 0,
+        loaded: false,
+        mock: true,
+        metadata: this.loadModelMetadata()
+      };
+      return;
     }
 
     // In a real implementation, this would load the GGUF model
@@ -54,6 +65,7 @@ class JarvisLLMEngine extends EventEmitter {
       path: this.config.modelPath,
       size: fs.statSync(this.config.modelPath).size,
       loaded: true,
+      mock: false,
       metadata: this.loadModelMetadata()
     };
   }
