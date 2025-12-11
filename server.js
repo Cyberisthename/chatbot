@@ -7,7 +7,18 @@ const http = require('http');
 const socketIo = require('socket.io');
 
 // Import J.A.R.V.I.S. components
-const { JarvisLLMEngine } = require('./llm-engine/jarvis-core.js');
+// Try to load from llm-engine directory first, fallback to root
+let JarvisLLMEngine;
+try {
+  JarvisLLMEngine = require('./llm-engine/jarvis-core.js').JarvisLLMEngine;
+} catch (e) {
+  try {
+    JarvisLLMEngine = require('./jarvis-core.js').JarvisLLMEngine;
+  } catch (e2) {
+    console.log('⚠️  LLM Engine not available. Running in demo mode.');
+    JarvisLLMEngine = null;
+  }
+}
 
 class JarvisServer {
   constructor(port = 3001) {
@@ -33,8 +44,21 @@ class JarvisServer {
     this.app.use(cors());
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-    this.app.use(express.static(path.join(__dirname, 'web-interface')));
-    this.app.use('/models', express.static(path.join(__dirname, 'models')));
+    
+    // Serve static files from root directory (where index.html is located)
+    this.app.use(express.static(__dirname));
+    
+    // Also serve from web-interface if it exists
+    const webInterfacePath = path.join(__dirname, 'web-interface');
+    if (fs.existsSync(webInterfacePath)) {
+      this.app.use(express.static(webInterfacePath));
+    }
+    
+    // Serve models directory if it exists
+    const modelsPath = path.join(__dirname, 'models');
+    if (fs.existsSync(modelsPath)) {
+      this.app.use('/models', express.static(modelsPath));
+    }
   }
 
   setupRoutes() {
@@ -137,7 +161,16 @@ class JarvisServer {
 
     // Serve main web interface
     this.app.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'web-interface', 'index.html'));
+      const indexPath = path.join(__dirname, 'index.html');
+      const webInterfaceIndexPath = path.join(__dirname, 'web-interface', 'index.html');
+      
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else if (fs.existsSync(webInterfaceIndexPath)) {
+        res.sendFile(webInterfaceIndexPath);
+      } else {
+        res.status(404).send('Web interface not found');
+      }
     });
 
     // Fallback for SPA routes
@@ -145,7 +178,17 @@ class JarvisServer {
       if (req.path.startsWith('/api/')) {
         return res.status(404).json({ error: 'API endpoint not found' });
       }
-      res.sendFile(path.join(__dirname, 'web-interface', 'index.html'));
+      
+      const indexPath = path.join(__dirname, 'index.html');
+      const webInterfaceIndexPath = path.join(__dirname, 'web-interface', 'index.html');
+      
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else if (fs.existsSync(webInterfaceIndexPath)) {
+        res.sendFile(webInterfaceIndexPath);
+      } else {
+        res.status(404).send('Page not found');
+      }
     });
   }
 
@@ -230,23 +273,35 @@ class JarvisServer {
       console.log(`📁 Working directory: ${__dirname}`);
       console.log(`🌐 Server will run on port ${this.port}`);
 
-      // Check if model files exist
-      const modelPath = path.join(__dirname, 'models', 'jarvis-7b-q4_0.gguf');
-      if (!fs.existsSync(modelPath)) {
-        console.log('⚠️  Model files not found. Using mock inference engine.');
-        console.log('📥 To use real AI models, place GGUF files in the models/ directory');
+      // Check if LLM Engine is available
+      if (JarvisLLMEngine) {
+        // Check if model files exist
+        const modelPath = path.join(__dirname, 'models', 'jarvis-7b-q4_0.gguf');
+        if (!fs.existsSync(modelPath)) {
+          console.log('⚠️  Model files not found. Using demo mode.');
+          console.log('📥 To use real AI models, place GGUF files in the models/ directory');
+        }
+
+        // Initialize LLM Engine
+        try {
+          this.llmEngine = new JarvisLLMEngine({
+            modelPath: modelPath,
+            contextSize: 2048,
+            temperature: 0.7,
+            maxTokens: 2048
+          });
+
+          // Initialize engine (this will use mock mode if model files don't exist)
+          await this.llmEngine.initialize();
+        } catch (engineError) {
+          console.log('⚠️  Could not initialize LLM engine:', engineError.message);
+          console.log('🌐 Running in web-only mode without AI inference');
+          this.llmEngine = null;
+        }
+      } else {
+        console.log('⚠️  LLM Engine module not available');
+        console.log('🌐 Running in web-only mode - serving UI only');
       }
-
-      // Initialize LLM Engine
-      this.llmEngine = new JarvisLLMEngine({
-        modelPath: modelPath,
-        contextSize: 2048,
-        temperature: 0.7,
-        maxTokens: 2048
-      });
-
-      // Initialize engine (this will use mock mode if model files don't exist)
-      await this.llmEngine.initialize();
 
       // Start HTTP server
       this.server.listen(this.port, () => {

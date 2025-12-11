@@ -153,6 +153,33 @@ python scripts/verify_adapter_isolation.py
 
 ## 🛠️ Deployment
 
+### 🌐 Web Deployment (Vercel/Netlify)
+
+**For a clean, lightweight web UI deployment without model files:**
+
+```bash
+# Use the deployment branch
+git checkout deploy/vercel-clean-webapp-no-lfs
+
+# Deploy to Vercel (recommended)
+# 1. Connect your GitHub repo to Vercel
+# 2. Select branch: deploy/vercel-clean-webapp-no-lfs
+# 3. Click Deploy - that's it!
+```
+
+📖 **Detailed Guide**: See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md) for complete instructions
+
+**What you get:**
+- ✅ Beautiful web chat interface
+- ✅ No Git LFS issues
+- ✅ Fast deployment (~30-60 seconds)
+- ✅ Works on Vercel's free tier
+- ✅ Demo/mock AI responses (no model files needed)
+
+**Branch Overview:**
+- `main` - Full system with models (for local development)
+- `deploy/vercel-clean-webapp-no-lfs` - Web UI only (for cloud deployment)
+
 ### Jetson Orin NX Deployment
 ```bash
 # 1. Install Jetson-specific dependencies
