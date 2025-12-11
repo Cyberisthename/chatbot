@@ -7,10 +7,11 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "echo 'Build complete - J.A.R.V.I.S. is ready!'",
+    "vercel-build": "echo 'Vercel build - no compilation needed'",
     "test": "node test/test-server.js",
     "setup": "npm install && echo 'Setup complete!'",
     "install-deps": "npm install",
-    "postinstall": "echo '✅ J.A.R.V.I.S. AI System installed successfully!' && echo '🚀 Run \"npm start\" to launch J.A.R.V.I.S.'"
+    "postinstall": "echo '✅ J.A.R.V.I.S. AI System installed successfully!'"
   },
   "keywords": [
     "ai",

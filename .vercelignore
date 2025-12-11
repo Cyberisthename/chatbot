@@ -1,0 +1,59 @@
+# Vercel Ignore - Exclude files from deployment
+
+# Large model files
+*.gguf
+*.gguf.incomplete
+*.bin
+*.safetensors
+*.pth
+*.pt
+
+# Artifacts and bundles
+quantacap/
+artifacts/
+extracted_bundles/
+releases/
+
+# Python-specific
+*.py
+requirements.txt
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Training data and models
+training-data/
+models/
+jarvis-model/
+
+# Development
+.git/
+.github/
+.devcontainer/
+logs/
+*.log
+
+# Documentation (optional - keep essential docs)
+docs/
+
+# Large archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Cortana desktop app (not needed for web deployment)
+cortana-shell/
+cortana.zip
+
+# Scripts not needed for web deployment
+scripts/
+*.sh
+install.sh
+start.sh
+
+# Test files
+test/
+*.test.js
+*.spec.js

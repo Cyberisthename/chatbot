@@ -164,3 +164,27 @@ cython_debug/
 #.idea/
 # Node modules
 node_modules/
+
+# Large model files and artifacts (not needed for web deployment)
+*.gguf
+*.gguf.incomplete
+*.bin
+*.safetensors
+quantacap/artifacts/
+artifacts/
+models/
+releases/
+extracted_bundles/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Vercel
+.vercel
+
+# Environment variables
+.env.local
+.env.production
