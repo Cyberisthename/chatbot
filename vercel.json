@@ -1,29 +1,28 @@
 {
   "version": 2,
-  "name": "jarvis-ai-chatbot",
+  "name": "jarvis-2v",
   "builds": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
+      "src": "frontend/package.json",
+      "use": "@vercel/next"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server.js"
+      "dest": "https://your-backend-url.com/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     },
     {
       "src": "/(.*)",
-      "dest": "/server.js"
+      "dest": "frontend/$1"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "server.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
+    "NEXT_PUBLIC_API_URL": "@api_url"
   }
 }

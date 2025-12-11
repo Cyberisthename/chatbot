@@ -188,3 +188,32 @@ build/
 # Environment variables
 .env.local
 .env.production
+
+# Backend runtime files
+backend_test.log
+backend_test2.log
+backend/requirements_installed.txt
+
+# Adapter and artifact storage
+/adapters/
+/quantum_artifacts/
+adapters_graph.json
+bit_patterns.json
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+/logs/
+*.log

@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 212, 255;
+  --background-rgb: 6, 9, 17;
+  --accent-rgb: 0, 255, 170;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgba(6, 9, 17, 0.95),
+      rgb(var(--background-rgb))
+    ),
+    radial-gradient(circle at 20% 50%, rgba(0, 136, 204, 0.1), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.08), transparent 50%);
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .text-jarvis {
+    color: rgb(0, 212, 255);
+  }
+
+  .bg-jarvis-dark {
+    background-color: rgba(10, 15, 28, 0.8);
+  }
+
+  .border-jarvis {
+    border-color: rgba(0, 212, 255, 0.3);
+  }
+
+  .glass {
+    background: rgba(10, 15, 28, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+  }
+
+  .glow {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+  }
+}
