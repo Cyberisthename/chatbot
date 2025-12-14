@@ -1,0 +1,101 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "adapter_5e8965d1",
+      "task_tags": [
+        "assistance"
+      ],
+      "y_bits": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "domain": "general",
+        "topics": [
+          "assistance"
+        ],
+        "complexity": 2,
+        "source": "training_data",
+        "confidence_score": 0.5,
+        "key_concepts": [
+          "created",
+          "assist",
+          "with",
+          "user:",
+          "assistant:",
+          "ben.",
+          "support",
+          "users",
+          "tasks",
+          "your"
+        ],
+        "profile": "standard",
+        "training_source": "knowledge_base",
+        "example_prompts": [
+          "Explain created clearly",
+          "Help me understand created",
+          "What can you tell me about created?",
+          "How do I approach problems related to created?"
+        ],
+        "example_responses": [
+          "Based on the information about created:",
+          "Here's what I can explain about created:",
+          "The key concepts you should understand about created are:"
+        ],
+        "lesson_source_chunks": [
+          "chunk_11495216abfc",
+          "chunk_2f4ed7657b6e"
+        ]
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1765729073.5017903,
+      "last_used": 1765729073.5017905,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "frozen",
+      "version": 1
+    }
+  ],
+  "edges": []
+}

@@ -44,6 +44,16 @@ memory:
   max_facts: 1000
   max_chats: 1000
   
+# Knowledge Base (RAG)
+knowledge_base:
+  data_path: "./data"
+  processed_path: "./data/processed"
+  raw_path: "./data/raw"
+  chunk_size: 500
+  chunk_overlap: 50
+  embedding_dim: 384
+  max_context_chars: 2000
+  
 # API Server
 api:
   host: "0.0.0.0"
