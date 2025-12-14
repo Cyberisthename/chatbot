@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""
+JARVIS-2v Training CLI
+Unified interface for all training operations
+"""
+
+import sys
+import argparse
+from pathlib import Path
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="JARVIS-2v Training CLI",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Train from local files
+  jarvis-train local --input data/raw
+  
+  # Stream from IDI dataset
+  jarvis-train idi --max-books 100
+  
+  # Ingest quick fact
+  jarvis-train ingest --fact "JARVIS uses Y/Z/X routing"
+  
+  # Show statistics
+  jarvis-train stats
+  
+For more information, see docs/TRAINING.md
+        """
+    )
+    
+    subparsers = parser.add_subparsers(dest='command', help='Training command')
+    
+    # Local training
+    local_parser = subparsers.add_parser('local', help='Train from local files')
+    local_parser.add_argument('--input', default='./data/raw', help='Input directory')
+    local_parser.add_argument('--recursive', action='store_true', default=True)
+    local_parser.add_argument('--chunk-size', type=int, default=512)
+    local_parser.add_argument('--extensions', nargs='+', default=['.txt', '.md', '.json', '.csv'])
+    
+    # IDI streaming
+    idi_parser = subparsers.add_parser('idi', help='Stream from IDI dataset')
+    idi_parser.add_argument('--max-books', type=int, default=100)
+    idi_parser.add_argument('--language', default='en')
+    idi_parser.add_argument('--min-length', type=int, default=1000)
+    idi_parser.add_argument('--chunk-size', type=int, default=512)
+    
+    # Knowledge ingestion
+    ingest_parser = subparsers.add_parser('ingest', help='Ingest knowledge')
+    ingest_parser.add_argument('--fact', help='Single fact to ingest')
+    ingest_parser.add_argument('--file', help='File to ingest')
+    ingest_parser.add_argument('--tags', nargs='+', help='Tags for facts')
+    
+    # Statistics
+    stats_parser = subparsers.add_parser('stats', help='Show training statistics')
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    if not args.command:
+        parser.print_help()
+        return
+    
+    # Execute command
+    if args.command == 'local':
+        print(f"🚀 Running local training...")
+        import subprocess
+        cmd = [
+            'python', 'scripts/train_adapters.py',
+            '--input', args.input,
+            '--chunk-size', str(args.chunk_size),
+            '--extensions', *args.extensions
+        ]
+        if args.recursive:
+            cmd.append('--recursive')
+        subprocess.run(cmd)
+    
+    elif args.command == 'idi':
+        print(f"🚀 Running IDI streaming training...")
+        import subprocess
+        cmd = [
+            'python', 'scripts/train_idi_stream.py',
+            '--max-books', str(args.max_books),
+            '--language', args.language,
+            '--min-length', str(args.min_length),
+            '--chunk-size', str(args.chunk_size)
+        ]
+        subprocess.run(cmd)
+    
+    elif args.command == 'ingest':
+        print(f"🚀 Running knowledge ingestion...")
+        import subprocess
+        cmd = ['python', 'scripts/ingest_knowledge.py']
+        if args.fact:
+            cmd.extend(['--fact', args.fact])
+        if args.file:
+            cmd.extend(['--file', args.file])
+        if args.tags:
+            cmd.extend(['--tags', *args.tags])
+        subprocess.run(cmd)
+    
+    elif args.command == 'stats':
+        print(f"\n📊 JARVIS-2v Training Statistics\n")
+        
+        # Adapter count
+        adapters_path = Path('./adapters')
+        adapter_count = len(list(adapters_path.glob('*.json'))) if adapters_path.exists() else 0
+        print(f"   Adapters: {adapter_count}")
+        
+        # Memory facts
+        import json
+        memory_file = Path('./jarvis_memory.json')
+        if memory_file.exists():
+            try:
+                with open(memory_file, 'r') as f:
+                    memory = json.load(f)
+                    print(f"   Facts: {len(memory.get('facts', []))}")
+                    print(f"   Chats: {len(memory.get('chats', []))}")
+                    print(f"   Topics: {len(memory.get('topics', {}))}")
+            except:
+                pass
+        
+        # IDI metadata
+        idi_file = Path('./idi_training_metadata.json')
+        if idi_file.exists():
+            try:
+                with open(idi_file, 'r') as f:
+                    idi = json.load(f)
+                    print(f"\n   IDI Training:")
+                    print(f"     Books processed: {len(idi.get('books_processed', []))}")
+                    print(f"     Total adapters: {idi.get('total_adapters', 0)}")
+                    print(f"     Total chunks: {idi.get('total_chunks', 0)}")
+            except:
+                pass
+        
+        # Local metadata
+        local_file = Path('./local_training_metadata.json')
+        if local_file.exists():
+            try:
+                with open(local_file, 'r') as f:
+                    local = json.load(f)
+                    print(f"\n   Local Training:")
+                    print(f"     Files processed: {len(local.get('files_processed', []))}")
+                    print(f"     Total adapters: {local.get('total_adapters', 0)}")
+            except:
+                pass
+        
+        # Quantum artifacts
+        artifacts_path = Path('./quantum_artifacts')
+        if artifacts_path.exists():
+            artifact_count = len(list(artifacts_path.glob('*.json')))
+            print(f"\n   Quantum Artifacts: {artifact_count}")
+        
+        print()
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  jarvis-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jarvis2v-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./adapters:/app/adapters
+      - ./quantum_artifacts:/app/quantum_artifacts
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./jarvis_memory.json:/app/jarvis_memory.json
+      - ./config.yaml:/app/config.yaml
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MOCK_MODE=${MOCK_MODE:-0}
+    command: python inference.py models/jarvis-7b-q4_0.gguf --port 8000
+    restart: unless-stopped
+    networks:
+      - jarvis-network
+
+  jarvis-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: jarvis2v-frontend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./index.html:/app/index.html
+      - ./server.js:/app/server.js
+      - ./jarvis-core.js:/app/jarvis-core.js
+    environment:
+      - NODE_ENV=production
+      - BACKEND_URL=http://jarvis-backend:8000
+    depends_on:
+      - jarvis-backend
+    restart: unless-stopped
+    networks:
+      - jarvis-network
+
+  # Optional: Training service (run on-demand)
+  jarvis-trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jarvis2v-trainer
+    volumes:
+      - ./adapters:/app/adapters
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+      - ./jarvis_memory.json:/app/jarvis_memory.json
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: tail -f /dev/null  # Keep container running
+    networks:
+      - jarvis-network
+    profiles:
+      - training
+
+networks:
+  jarvis-network:
+    driver: bridge
+
+volumes:
+  adapters:
+  quantum_artifacts:
+  models:
