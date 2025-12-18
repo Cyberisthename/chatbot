@@ -1,0 +1,7 @@
+{
+  "name": "J.A.R.V.I.S. Ollama Model",
+  "creator": "Ben",
+  "version": "1.0.0",
+  "base_model": "distilgpt2",
+  "description": "Custom-trained J.A.R.V.I.S. model for Ollama"
+}
