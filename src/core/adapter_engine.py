@@ -10,7 +10,6 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set, Tuple, Any
 from enum import Enum
-import networkx as nx
 from pathlib import Path
 
 
@@ -88,67 +87,103 @@ class Adapter:
 
 
 class AdapterGraph:
-    """Directed graph of adapters with route optimization"""
+    """Simplified adapter graph without heavy dependencies"""
     
     def __init__(self, storage_path: str):
         self.storage_path = Path(storage_path)
-        self.graph = nx.DiGraph()
+        self.nodes: Dict[str, Dict[str, Any]] = {}
+        self.edges: Dict[str, List[Tuple[str, float]]] = {}
         self._load_graph()
     
     def _load_graph(self):
-        """Load adapter graph from disk"""
-        if self.storage_path.exists():
-            try:
-                with open(self.storage_path, 'r') as f:
-                    data = json.load(f)
-                    self.graph = nx.node_link_graph(data)
-            except (json.JSONDecodeError, FileNotFoundError):
-                self.graph = nx.DiGraph()
+        """Load adapter graph from disk."""
+        if not self.storage_path.exists():
+            return
+
+        try:
+            with open(self.storage_path, "r") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, FileNotFoundError):
+            return
+
+        # Native lightweight format.
+        if isinstance(data.get("nodes"), dict) and isinstance(data.get("edges"), dict):
+            self.nodes = data.get("nodes", {})
+            self.edges = data.get("edges", {})
+            return
+
+        # Backward compatibility: networkx node_link_data format.
+        nodes_list = data.get("nodes")
+        links_list = data.get("links") or data.get("links")
+        if isinstance(nodes_list, list) and isinstance(links_list, list):
+            self.nodes = {}
+            for node in nodes_list:
+                node_id = node.get("id") or node.get("key")
+                if node_id is None:
+                    continue
+                self.nodes[str(node_id)] = dict(node)
+
+            self.edges = {}
+            for link in links_list:
+                src = link.get("source")
+                tgt = link.get("target")
+                if src is None or tgt is None:
+                    continue
+                w = float(link.get("weight", 1.0))
+                self.edges.setdefault(str(src), []).append([str(tgt), w])
+            return
     
     def _save_graph(self):
         """Save adapter graph to disk"""
         self.storage_path.parent.mkdir(parents=True, exist_ok=True)
-        data = nx.node_link_data(self.graph)
+        data = {
+            "nodes": self.nodes,
+            "edges": self.edges
+        }
         with open(self.storage_path, 'w') as f:
             json.dump(data, f, indent=2)
     
     def add_adapter(self, adapter: Adapter):
         """Add adapter as node to graph"""
-        self.graph.add_node(adapter.id, **adapter.to_dict())
+        self.nodes[adapter.id] = adapter.to_dict()
         self._save_graph()
     
     def add_dependency(self, parent_id: str, child_id: str, weight: float = 1.0):
         """Add dependency edge between adapters"""
-        self.graph.add_edge(parent_id, child_id, weight=weight)
+        if parent_id not in self.edges:
+            self.edges[parent_id] = []
+        self.edges[parent_id].append((child_id, weight))
         self._save_graph()
     
     def get_adapter(self, adapter_id: str) -> Optional[Adapter]:
         """Retrieve adapter from graph"""
-        if adapter_id in self.graph:
-            return Adapter.from_dict(self.graph.nodes[adapter_id])
+        if adapter_id in self.nodes:
+            return Adapter.from_dict(self.nodes[adapter_id])
         return None
     
     def find_best_path(self, target_adapter_id: str) -> List[str]:
-        """Find optimal adapter path using graph algorithms"""
-        # Get all active adapters
-        active_adapters = [
-            node for node, data in self.graph.nodes(data=True)
-            if data.get("status") == AdapterStatus.ACTIVE.value
-        ]
-        
-        if not active_adapters or target_adapter_id not in active_adapters:
+        """Find optimal adapter path"""
+        if target_adapter_id not in self.nodes:
             return []
         
-        # Find shortest path from "root" or highest-ranked node
-        # For now, return simple path with target adapter
-        return [target_adapter_id]
+        adapter_data = self.nodes[target_adapter_id]
+        if adapter_data.get("status") == AdapterStatus.ACTIVE.value:
+            return [target_adapter_id]
+        return []
     
     def get_related_adapters(self, adapter_id: str, depth: int = 1) -> List[str]:
         """Get related adapters within N hops"""
+        if adapter_id not in self.edges:
+            return []
+        
         related = set()
-        for neighbor in nx.single_source_shortest_path_length(self.graph, adapter_id, cutoff=depth):
-            related.add(neighbor)
-        return list(related - {adapter_id})
+        for child_id, _ in self.edges.get(adapter_id, []):
+            related.add(child_id)
+            if depth > 1:
+                for sub_child in self.get_related_adapters(child_id, depth - 1):
+                    related.add(sub_child)
+        
+        return list(related)
 
 
 class YZXBitRouter:
@@ -372,20 +407,28 @@ class AdapterEngine:
 
 class QuantumArtifact:
     """Synthetic quantum experiment artifact with adapter linkage"""
-    
-    def __init__(self, artifact_id: str, experiment_type: str, config: Dict[str, Any], 
-                 results: Dict[str, Any], linked_adapter_ids: List[str]):
+
+    def __init__(
+        self,
+        artifact_id: str,
+        experiment_type: str,
+        config: Dict[str, Any],
+        results: Dict[str, Any],
+        linked_adapter_ids: List[str],
+        created_at: Optional[float] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
         self.artifact_id = artifact_id
         self.experiment_type = experiment_type
         self.config = config
         self.results = results
         self.linked_adapter_ids = linked_adapter_ids
-        self.created_at = time.time()
-        self.metadata = {
+        self.created_at = created_at if created_at is not None else time.time()
+        self.metadata = metadata or {
             "synthetic_simulation": True,
-            "lab_data_source": "simulated"
+            "lab_data_source": "simulated",
         }
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "artifact_id": self.artifact_id,
@@ -394,7 +437,7 @@ class QuantumArtifact:
             "results": self.results,
             "linked_adapter_ids": self.linked_adapter_ids,
             "created_at": self.created_at,
-            "metadata": self.metadata
+            "metadata": self.metadata,
         }
 
 
