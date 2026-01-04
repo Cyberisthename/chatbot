@@ -1,0 +1,62 @@
+{
+  "id": "adapter_48cd5a78",
+  "task_tags": [
+    "quantum",
+    "interference",
+    "physics"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "experiment_type": "interference",
+    "mean_intensity": 0.4802678597504223,
+    "visibility": 1.255569576231297
+  },
+  "rules": [],
+  "prompts": [],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1765490320.161339,
+  "last_used": 1765490320.16134,
+  "success_count": 0,
+  "total_calls": 0,
+  "domains": [],
+  "status": "frozen",
+  "version": 1
+}
