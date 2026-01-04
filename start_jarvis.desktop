@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=JARVIS AI
+Comment=Start JARVIS AI Assistant
+Exec=bash -c "cd $(dirname %k) && ./run_ai.sh"
+Icon=applications-system
+Terminal=true
+Categories=Utility;Development;AI;
+Keywords=AI;Chat;Assistant;JARVIS;
