@@ -172,6 +172,8 @@ node_modules/
 *.safetensors
 quantacap/artifacts/
 artifacts/
+adapters_graph.json
+bit_patterns.json
 models/
 releases/
 extracted_bundles/

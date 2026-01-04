@@ -5,6 +5,7 @@ FastAPI-based REST API with modular architecture
 
 import os
 import sys
+import time
 import yaml
 import uvicorn
 from typing import Dict, List, Optional, Any
@@ -234,6 +235,8 @@ class JarvisAPI:
                     artifact = self.quantum_engine.run_chsh_test(config)
                 elif request.experiment_type == "noise_field_scan":
                     artifact = self.quantum_engine.run_noise_field_scan(config)
+                elif request.experiment_type == "negative_information_experiment":
+                    artifact = self.quantum_engine.run_negative_information_experiment(config)
                 else:
                     raise HTTPException(status_code=400, detail="Unknown experiment type")
                 

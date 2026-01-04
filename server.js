@@ -159,12 +159,15 @@ class JarvisServer {
       });
     });
 
-    // Serve main web interface
+    // Serve main web interface (prefer local_ai_ui.html)
     this.app.get('/', (req, res) => {
+      const localUiPath = path.join(__dirname, 'local_ai_ui.html');
       const indexPath = path.join(__dirname, 'index.html');
       const webInterfaceIndexPath = path.join(__dirname, 'web-interface', 'index.html');
       
-      if (fs.existsSync(indexPath)) {
+      if (fs.existsSync(localUiPath)) {
+        res.sendFile(localUiPath);
+      } else if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
       } else if (fs.existsSync(webInterfaceIndexPath)) {
         res.sendFile(webInterfaceIndexPath);
@@ -179,10 +182,13 @@ class JarvisServer {
         return res.status(404).json({ error: 'API endpoint not found' });
       }
       
+      const localUiPath = path.join(__dirname, 'local_ai_ui.html');
       const indexPath = path.join(__dirname, 'index.html');
       const webInterfaceIndexPath = path.join(__dirname, 'web-interface', 'index.html');
       
-      if (fs.existsSync(indexPath)) {
+      if (fs.existsSync(localUiPath)) {
+        res.sendFile(localUiPath);
+      } else if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
       } else if (fs.existsSync(webInterfaceIndexPath)) {
         res.sendFile(webInterfaceIndexPath);

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Local AI Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        /* Animation for typing indicator */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        .typing-dot {
+            animation: pulse 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        /* Gradient animation */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient {
+            background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Message animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .message-animate {
+            animation: slideIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-gray-800/80 backdrop-blur-lg border-b border-gray-700 sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 animated-gradient rounded-xl flex items-center justify-center">
+                            <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">JARVIS</h1>
+                            <p class="text-xs text-gray-400">Local AI Assistant</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <!-- Backend Status -->
+                        <div id="backend-status" class="flex items-center space-x-2 px-3 py-1.5 bg-gray-700/50 rounded-lg">
+                            <div class="w-2 h-2 rounded-full bg-yellow-500" id="status-indicator"></div>
+                            <span class="text-sm" id="status-text">Connecting...</span>
+                        </div>
+                        
+                        <!-- Settings Button -->
+                        <button id="settings-btn" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                            <i data-lucide="settings" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6 max-w-5xl">
+            <!-- Model Info Card -->
+            <div class="mb-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-1">AI Configuration</h2>
+                        <p class="text-sm text-gray-400" id="model-info">Select a backend to get started</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select id="backend-select" class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Backend...</option>
+                            <option value="ollama">Ollama</option>
+                            <option value="pinokio">Pinokio</option>
+                            <option value="local">Local Inference</option>
+                        </select>
+                        <button id="connect-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Connect
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Backend-specific settings -->
+                <div id="backend-settings" class="hidden mt-4 pt-4 border-t border-gray-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="model-name-container" class="hidden">
+                            <label class="block text-sm text-gray-400 mb-2">Model Name</label>
+                            <input type="text" id="model-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="llama3.2">
+                        </div>
+                        <div id="api-url-container" class="hidden">
+                            <label class="block text-sm text-gray-400 mb-2">API URL</label>
+                            <input type="text" id="api-url" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="http://localhost:11434">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl overflow-hidden">
+                <!-- Chat Messages -->
+                <div id="chat-messages" class="h-[500px] overflow-y-auto p-6 space-y-4">
+                    <!-- Welcome message -->
+                    <div class="message-animate bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800/30 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 animated-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-blue-300 mb-1">JARVIS</p>
+                                <p class="text-gray-300">Welcome! I'm your local AI assistant. To get started:</p>
+                                <ol class="list-decimal list-inside text-sm text-gray-400 mt-2 space-y-1">
+                                    <li>Select a backend (Ollama, Pinokio, or Local)</li>
+                                    <li>Click Connect to establish connection</li>
+                                    <li>Start chatting with me!</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Typing Indicator -->
+                <div id="typing-indicator" class="hidden px-6 pb-2">
+                    <div class="flex items-center space-x-2 text-gray-400">
+                        <div class="flex space-x-1">
+                            <div class="typing-dot w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div class="typing-dot w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div class="typing-dot w-2 h-2 bg-blue-500 rounded-full"></div>
+                        </div>
+                        <span class="text-sm">JARVIS is thinking...</span>
+                    </div>
+                </div>
+                
+                <!-- Chat Input -->
+                <div class="border-t border-gray-700 p-4">
+                    <div class="flex space-x-3">
+                        <div class="flex-1 relative">
+                            <input 
+                                type="text" 
+                                id="message-input" 
+                                placeholder="Type your message..."
+                                class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                disabled
+                            >
+                            <button id="voice-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors" disabled>
+                                <i data-lucide="mic" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <button 
+                            id="send-btn" 
+                            class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6 py-3 rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                            disabled
+                        >
+                            <span>Send</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Panel -->
+            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-blue-900/50 rounded-lg">
+                            <i data-lucide="message-square" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold" id="messages-count">0</p>
+                            <p class="text-xs text-gray-400">Messages</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-purple-900/50 rounded-lg">
+                            <i data-lucide="clock" class="w-5 h-5 text-purple-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold" id="response-time">0s</p>
+                            <p class="text-xs text-gray-400">Avg Response</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-green-900/50 rounded-lg">
+                            <i data-lucide="database" class="w-5 h-5 text-green-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold" id="tokens-count">0</p>
+                            <p class="text-xs text-gray-400">Tokens</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-pink-900/50 rounded-lg">
+                            <i data-lucide="activity" class="w-5 h-5 text-pink-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold" id="uptime">0m</p>
+                            <p class="text-xs text-gray-400">Session Time</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // JARVIS Local AI Interface
+        class LocalAIInterface {
+            constructor() {
+                this.backend = null;
+                this.connected = false;
+                this.messages = [];
+                this.stats = {
+                    messages: 0,
+                    tokens: 0,
+                    responseTimes: [],
+                    startTime: Date.now()
+                };
+                this.initializeEventListeners();
+                this.updateUptime();
+            }
+
+            initializeEventListeners() {
+                const sendBtn = document.getElementById('send-btn');
+                const messageInput = document.getElementById('message-input');
+                const voiceBtn = document.getElementById('voice-btn');
+                const connectBtn = document.getElementById('connect-btn');
+                const backendSelect = document.getElementById('backend-select');
+                const settingsBtn = document.getElementById('settings-btn');
+
+                sendBtn.addEventListener('click', () => this.sendMessage());
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+                voiceBtn.addEventListener('click', () => this.toggleVoice());
+                connectBtn.addEventListener('click', () => this.connect());
+                backendSelect.addEventListener('change', () => this.updateBackendSettings());
+            }
+
+            updateBackendSettings() {
+                const backend = document.getElementById('backend-select').value;
+                const settingsDiv = document.getElementById('backend-settings');
+                const modelNameContainer = document.getElementById('model-name-container');
+                const apiUrlContainer = document.getElementById('api-url-container');
+
+                if (backend) {
+                    settingsDiv.classList.remove('hidden');
+                    
+                    if (backend === 'ollama') {
+                        modelNameContainer.classList.remove('hidden');
+                        apiUrlContainer.classList.remove('hidden');
+                        document.getElementById('model-name').placeholder = 'llama3.2';
+                        document.getElementById('api-url').value = 'http://localhost:11434';
+                    } else if (backend === 'pinokio') {
+                        modelNameContainer.classList.remove('hidden');
+                        apiUrlContainer.classList.remove('hidden');
+                        document.getElementById('model-name').placeholder = 'model-name';
+                        document.getElementById('api-url').value = 'http://localhost:9090';
+                    } else if (backend === 'local') {
+                        modelNameContainer.classList.remove('hidden');
+                        apiUrlContainer.classList.add('hidden');
+                        document.getElementById('model-name').placeholder = 'jarvis-7b-q4_0.gguf';
+                    }
+                } else {
+                    settingsDiv.classList.add('hidden');
+                }
+            }
+
+            async connect() {
+                const backend = document.getElementById('backend-select').value;
+                
+                if (!backend) {
+                    alert('Please select a backend first');
+                    return;
+                }
+
+                const modelName = document.getElementById('model-name').value || 'default';
+                const apiUrl = document.getElementById('api-url').value || 'http://localhost:3001';
+
+                this.setConnecting();
+
+                try {
+                    if (backend === 'ollama') {
+                        await this.connectOllama(apiUrl, modelName);
+                    } else if (backend === 'pinokio') {
+                        await this.connectPinokio(apiUrl, modelName);
+                    } else if (backend === 'local') {
+                        await this.connectLocal(apiUrl);
+                    }
+                    
+                    this.connected = true;
+                    this.backend = backend;
+                    this.setConnected();
+                    this.enableChat();
+                    this.addSystemMessage(`Connected to ${backend} backend`);
+                } catch (error) {
+                    this.setDisconnected();
+                    alert(`Failed to connect: ${error.message}`);
+                }
+            }
+
+            async connectOllama(apiUrl, modelName) {
+                // Test connection to Ollama
+                const response = await fetch(`${apiUrl}/api/tags`);
+                if (!response.ok) {
+                    throw new Error('Cannot connect to Ollama service');
+                }
+                const data = await response.json();
+                this.apiUrl = apiUrl;
+                this.modelName = modelName;
+                this.availableModels = data.models;
+            }
+
+            async connectPinokio(apiUrl, modelName) {
+                // Test connection to Pinokio
+                try {
+                    const response = await fetch(`${apiUrl}/health`);
+                    if (!response.ok) throw new Error('Pinokio not responding');
+                } catch (e) {
+                    throw new Error('Cannot connect to Pinokio service');
+                }
+                this.apiUrl = apiUrl;
+                this.modelName = modelName;
+            }
+
+            async connectLocal(apiUrl) {
+                // Test connection to local inference backend
+                const response = await fetch(`${apiUrl}/api/health`);
+                if (!response.ok) {
+                    throw new Error('Cannot connect to local inference backend');
+                }
+                this.apiUrl = apiUrl;
+            }
+
+            setConnecting() {
+                const indicator = document.getElementById('status-indicator');
+                const text = document.getElementById('status-text');
+                indicator.className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
+                text.textContent = 'Connecting...';
+            }
+
+            setConnected() {
+                const indicator = document.getElementById('status-indicator');
+                const text = document.getElementById('status-text');
+                const modelInfo = document.getElementById('model-info');
+                indicator.className = 'w-2 h-2 rounded-full bg-green-500';
+                text.textContent = 'Connected';
+                modelInfo.textContent = `Backend: ${this.backend}${this.modelName ? ` | Model: ${this.modelName}` : ''}`;
+            }
+
+            setDisconnected() {
+                const indicator = document.getElementById('status-indicator');
+                const text = document.getElementById('status-text');
+                indicator.className = 'w-2 h-2 rounded-full bg-red-500';
+                text.textContent = 'Disconnected';
+            }
+
+            enableChat() {
+                const input = document.getElementById('message-input');
+                const sendBtn = document.getElementById('send-btn');
+                const voiceBtn = document.getElementById('voice-btn');
+                
+                input.disabled = false;
+                sendBtn.disabled = false;
+                voiceBtn.disabled = false;
+                input.focus();
+            }
+
+            async sendMessage() {
+                const input = document.getElementById('message-input');
+                const message = input.value.trim();
+                
+                if (!message || !this.connected) return;
+
+                this.addUserMessage(message);
+                input.value = '';
+                
+                this.showTyping();
+                const startTime = Date.now();
+
+                try {
+                    const response = await this.callAI(message);
+                    const responseTime = Date.now() - startTime;
+                    
+                    this.hideTyping();
+                    this.addAssistantMessage(response.text);
+                    
+                    // Update stats
+                    this.stats.messages += 2;
+                    this.stats.tokens += response.tokens || 0;
+                    this.stats.responseTimes.push(responseTime / 1000);
+                    
+                    this.updateStats();
+                } catch (error) {
+                    this.hideTyping();
+                    this.addSystemMessage(`Error: ${error.message}`);
+                }
+            }
+
+            async callAI(message) {
+                if (this.backend === 'ollama') {
+                    return await this.callOllama(message);
+                } else if (this.backend === 'pinokio') {
+                    return await this.callPinokio(message);
+                } else if (this.backend === 'local') {
+                    return await this.callLocal(message);
+                }
+            }
+
+            async callOllama(message) {
+                const response = await fetch(`${this.apiUrl}/api/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.modelName,
+                        prompt: message,
+                        stream: false
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ollama request failed');
+                }
+                
+                const data = await response.json();
+                return {
+                    text: data.response,
+                    tokens: data.eval_count || 0
+                };
+            }
+
+            async callPinokio(message) {
+                const response = await fetch(`${this.apiUrl}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.modelName,
+                        messages: [{ role: 'user', content: message }]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Pinokio request failed');
+                }
+                
+                const data = await response.json();
+                return {
+                    text: data.message?.content || data.response || 'No response',
+                    tokens: data.usage?.total_tokens || 0
+                };
+            }
+
+            async callLocal(message) {
+                const response = await fetch(`${this.apiUrl}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [{ role: 'user', content: message }]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Local inference request failed');
+                }
+                
+                const data = await response.json();
+                return {
+                    text: data.response || data.message || 'No response',
+                    tokens: data.tokens || 0
+                };
+            }
+
+            addUserMessage(content) {
+                this.addMessage('user', content);
+            }
+
+            addAssistantMessage(content) {
+                this.addMessage('assistant', content);
+            }
+
+            addSystemMessage(content) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-animate bg-gray-700/50 border border-gray-600 rounded-xl p-3 text-sm text-gray-400 text-center';
+                messageDiv.textContent = content;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            addMessage(role, content) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-animate';
+                
+                if (role === 'user') {
+                    messageDiv.innerHTML = `
+                        <div class="flex justify-end">
+                            <div class="bg-blue-600 rounded-xl rounded-tr-sm px-4 py-3 max-w-[80%]">
+                                <p class="text-sm">${this.escapeHtml(content)}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 animated-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                            </div>
+                            <div class="flex-1 bg-gray-700/50 border border-gray-600 rounded-xl rounded-tl-sm px-4 py-3">
+                                <p class="text-sm text-gray-200">${this.escapeHtml(content)}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Reinitialize icons for new elements
+                lucide.createIcons();
+            }
+
+            showTyping() {
+                document.getElementById('typing-indicator').classList.remove('hidden');
+            }
+
+            hideTyping() {
+                document.getElementById('typing-indicator').classList.add('hidden');
+            }
+
+            updateStats() {
+                document.getElementById('messages-count').textContent = this.stats.messages;
+                document.getElementById('tokens-count').textContent = this.stats.tokens;
+                
+                const avgTime = this.stats.responseTimes.length > 0
+                    ? (this.stats.responseTimes.reduce((a, b) => a + b, 0) / this.stats.responseTimes.length).toFixed(1)
+                    : '0';
+                document.getElementById('response-time').textContent = avgTime + 's';
+            }
+
+            updateUptime() {
+                setInterval(() => {
+                    const minutes = Math.floor((Date.now() - this.stats.startTime) / 60000);
+                    document.getElementById('uptime').textContent = minutes + 'm';
+                }, 60000);
+            }
+
+            toggleVoice() {
+                alert('Voice input feature coming soon! For now, use the text input.');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the interface
+        const jarvis = new LocalAIInterface();
+    </script>
+</body>
+</html>

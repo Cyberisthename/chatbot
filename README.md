@@ -6,11 +6,55 @@
 
 **A low-power, modular AI engine with adapter-based memory, synthetic quantum-style experiment modules, and a visual lab UI – designed to run on local hardware and edge devices like Jetson Orin / FeatherEdge.**
 
+---
+
+## 🎯 NEW! One-Command Startup!
+
+**Start JARVIS AI with ONE command:**
+
+```bash
+./run_ai.sh              # Linux/Mac
+run_ai.bat              # Windows
+```
+
+That's it! The script will:
+- ✅ Detect available AI backends (Ollama, Pinokio, Local)
+- 📋 Show you a menu to choose from
+- 🤖 Set up everything automatically
+- 🌐 Launch beautiful web UI at http://localhost:3001
+
+**📖 Read:** [START_HERE.md](START_HERE.md) | [GETTING_STARTED.md](GETTING_STARTED.md) | [BRANCH_README.md](BRANCH_README.md)
+
+---
+
 ## 🚀 Quick Start
+
+### 🎯 The Easy Way (Recommended for Everyone!)
+
+**One script to run everything:**
+
+```bash
+# Linux/Mac
+./run_ai.sh
+
+# Windows
+run_ai.bat
+```
+
+That's it! The script will:
+- ✅ Detect available AI backends (Ollama, Pinokio, Local)
+- 📋 Show you a menu to choose from
+- 🤖 Set up everything automatically
+- 🌐 Launch the web UI at http://localhost:3001
+
+**Learn more:** See [README_EASY_RUN.md](README_EASY_RUN.md) and [QUICKSTART_LOCAL_AI.md](QUICKSTART_LOCAL_AI.md)
+
+### 🔧 Manual Setup (Advanced)
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
+npm install
 
 # Run in standard mode
 ./scripts/start_local.sh
