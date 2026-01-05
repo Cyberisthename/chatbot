@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # Main JARVIS-2v API service
+  jarvis-2v:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3001:3001"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=3001
+      - ENGINE_MODE=standard
+      - ENABLE_CORS=true
+      - LOG_LEVEL=INFO
+    volumes:
+      - jarvis_data:/app/data
+      - jarvis_models:/app/models
+      - jarvis_adapters:/app/adapters
+      - jarvis_memory:/app
+      - ./config.yaml:/app/config.yaml:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - jarvis-network
+
+  # Optional: Ollama service for local inference
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./models:/app/models:ro
+    environment:
+      - OLLAMA_ORIGINS=*
+    restart: unless-stopped
+    networks:
+      - jarvis-network
+    profiles:
+      - ollama
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - jarvis-network
+    profiles:
+      - cache
+
+  # Nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - jarvis-2v
+    restart: unless-stopped
+    networks:
+      - jarvis-network
+    profiles:
+      - production
+
+volumes:
+  jarvis_data:
+    driver: local
+  jarvis_models:
+    driver: local
+  jarvis_adapters:
+    driver: local
+  jarvis_memory:
+    driver: local
+  ollama_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  jarvis-network:
+    driver: bridge

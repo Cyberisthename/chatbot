@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 import logging
 
 from ..core.adapter_engine import AdapterEngine, YZXBitRouter, AdapterStatus
+from ..core.knowledge_base import KnowledgeBase
 from ..quantum.synthetic_quantum import SyntheticQuantumEngine, ExperimentConfig
 from ...inference import JarvisInferenceBackend, load_memory, save_memory
 
@@ -39,6 +40,7 @@ class ChatResponse(BaseModel):
     performance: Dict[str, Any]
     adapters_used: List[str] = Field(default_factory=list)
     quantum_context: Optional[str] = None
+    kb_context_used: bool = False
 
 
 class AdapterRequest(BaseModel):
@@ -55,6 +57,32 @@ class ExperimentRequest(BaseModel):
     """Request model for quantum experiments"""
     experiment_type: str
     config: Dict[str, Any]
+
+
+class KBIngestRequest(BaseModel):
+    """Request model for knowledge base ingestion"""
+    file_path: str
+    metadata: Optional[Dict[str, Any]] = None
+
+
+class KBSearchRequest(BaseModel):
+    """Request model for knowledge base search"""
+    query: str
+    top_k: int = 5
+
+
+class KBIngestResponse(BaseModel):
+    """Response model for knowledge base ingestion"""
+    chunk_ids: List[str]
+    total_chunks: int
+    status: str
+
+
+class KBSearchResponse(BaseModel):
+    """Response model for knowledge base search"""
+    results: List[Dict[str, Any]]
+    total_results: int
+    query: str
 
 
 class HealthResponse(BaseModel):
@@ -113,6 +141,7 @@ class JarvisAPI:
         # Initialize components
         self.llm_engine = None
         self.adapter_engine = None
+        self.knowledge_base = None
         self.quantum_engine = None
         
         self._setup_middleware()
@@ -145,18 +174,32 @@ class JarvisAPI:
         
         @self.app.post("/chat", response_model=ChatResponse)
         async def chat(request: ChatRequest):
-            """Main chat endpoint with adapter routing"""
+            """Main chat endpoint with adapter routing and RAG"""
             if not self.llm_engine or not self.llm_engine.is_initialized:
                 raise HTTPException(status_code=503, detail="LLM engine not ready")
             
             try:
-                # Route task to adapters
+                # Get user message
                 last_message = request.messages[-1]["content"] if request.messages else ""
+                
+                # Route task to adapters
                 adapters = self.adapter_engine.route_task(last_message, request.options)
                 
-                # Generate response with adapters as context
-                adapted_prompt = self._enrich_with_adapters(request.messages, adapters)
-                result = self.llm_engine.chat(adapted_prompt, **request.options)
+                # Retrieve relevant knowledge if KB is available
+                kb_context = ""
+                if self.knowledge_base:
+                    try:
+                        kb_context = self.knowledge_base.get_context_for_query(last_message)
+                        if kb_context:
+                            logger.info(f"Retrieved KB context ({len(kb_context)} chars) for query")
+                    except Exception as e:
+                        logger.warning(f"KB retrieval failed: {e}")
+                
+                # Generate response with adapters and KB context
+                adapted_messages = self._enrich_with_adapters_and_kb(
+                    request.messages, adapters, kb_context
+                )
+                result = self.llm_engine.chat(adapted_messages, **request.options)
                 
                 # Update adapter metrics
                 for adapter in adapters:
@@ -168,7 +211,8 @@ class JarvisAPI:
                     message=result.get("message", {}),
                     usage=result.get("usage", {}),
                     performance=result.get("performance", {}),
-                    adapters_used=[a.id for a in adapters[:2]]
+                    adapters_used=[a.id for a in adapters[:2]],
+                    quantum_context=kb_context[:200] + "..." if len(kb_context) > 200 else kb_context
                 )
                 
             except Exception as e:
@@ -219,6 +263,108 @@ class JarvisAPI:
                 }
             except Exception as e:
                 logger.error(f"List adapters error: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.post("/kb/ingest", response_model=KBIngestResponse)
+        async def ingest_knowledge(request: KBIngestRequest):
+            """Ingest file into knowledge base"""
+            if not self.knowledge_base:
+                raise HTTPException(status_code=503, detail="Knowledge base not initialized")
+            
+            try:
+                chunk_ids = self.knowledge_base.ingest_file(
+                    request.file_path, 
+                    request.metadata
+                )
+                
+                return KBIngestResponse(
+                    chunk_ids=chunk_ids,
+                    total_chunks=len(chunk_ids),
+                    status="success"
+                )
+                
+            except Exception as e:
+                logger.error(f"KB ingest error: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.post("/kb/ingest/directory")
+        async def ingest_directory(directory_path: str, patterns: Optional[List[str]] = None):
+            """Ingest all files from directory into knowledge base"""
+            if not self.knowledge_base:
+                raise HTTPException(status_code=503, detail="Knowledge base not initialized")
+            
+            try:
+                if patterns is None:
+                    patterns = ["*.txt", "*.md", "*.pdf", "*.json", "*.csv"]
+                
+                chunk_ids = self.knowledge_base.ingest_directory(directory_path, patterns)
+                
+                return {
+                    "chunk_ids": chunk_ids,
+                    "total_chunks": len(chunk_ids),
+                    "status": "success",
+                    "patterns": patterns
+                }
+                
+            except Exception as e:
+                logger.error(f"KB directory ingest error: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.post("/kb/search", response_model=KBSearchResponse)
+        async def search_knowledge(request: KBSearchRequest):
+            """Search knowledge base for relevant information"""
+            if not self.knowledge_base:
+                raise HTTPException(status_code=503, detail="Knowledge base not initialized")
+            
+            try:
+                results = self.knowledge_base.search(request.query, request.top_k)
+                
+                # Format results for response
+                formatted_results = []
+                for chunk, score in results:
+                    formatted_results.append({
+                        "chunk_id": chunk.id,
+                        "content": chunk.content,
+                        "source_file": chunk.source_file,
+                        "source_type": chunk.source_type,
+                        "chunk_index": chunk.chunk_index,
+                        "relevance_score": score,
+                        "metadata": chunk.metadata
+                    })
+                
+                return KBSearchResponse(
+                    results=formatted_results,
+                    total_results=len(formatted_results),
+                    query=request.query
+                )
+                
+            except Exception as e:
+                logger.error(f"KB search error: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.get("/kb/stats")
+        async def get_kb_stats():
+            """Get knowledge base statistics"""
+            if not self.knowledge_base:
+                raise HTTPException(status_code=503, detail="Knowledge base not initialized")
+            
+            try:
+                return self.knowledge_base.get_stats()
+            except Exception as e:
+                logger.error(f"KB stats error: {e}")
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.app.post("/kb/context")
+        async def get_context_for_query(query: str, max_chars: int = 2000):
+            """Get contextual text for a query"""
+            if not self.knowledge_base:
+                raise HTTPException(status_code=503, detail="Knowledge base not initialized")
+            
+            try:
+                context = self.knowledge_base.get_context_for_query(query, max_chars)
+                return {"context": context, "query": query}
+            except Exception as e:
+                logger.error(f"KB context error: {e}")
                 raise HTTPException(status_code=500, detail=str(e))
         
         @self.app.post("/quantum/experiment")
@@ -296,18 +442,29 @@ class JarvisAPI:
                 logger.error(f"Clear memory error: {e}")
                 raise HTTPException(status_code=500, detail=str(e))
     
-    def _enrich_with_adapters(self, messages: List[Dict[str, str]], adapters: List[Any]) -> List[Dict[str, str]]:
-        """Enrich messages with adapter context"""
-        if not adapters:
+    def _enrich_with_adapters_and_kb(self, messages: List[Dict[str, str]], adapters: List[Any], kb_context: str = "") -> List[Dict[str, str]]:
+        """Enrich messages with adapter context and knowledge base retrieval"""
+        if not adapters and not kb_context:
             return messages
         
-        # Add adapter context to system prompt
-        system_prompt = f"""You are J.A.R.V.I.S. with modular adapter enhancements.
+        # Build system prompt with adapter and KB context
+        adapter_info = f"Active Adapters: {[a.id for a in adapters[:2]]}\nAdapter Capabilities: {[a.task_tags for a in adapters[:2]]}" if adapters else "No specialized adapters active"
         
-Active Adapters: {[a.id for a in adapters[:2]]}
-Adapter Capabilities: {[a.task_tags for a in adapters[:2]]}
+        system_prompt = f"""You are J.A.R.V.I.S., an advanced AI assistant trained on custom documents and specialized adapters.
 
-Use these specialized modules to enhance your responses."""
+{adapter_info}
+
+Use your knowledge base and adapter capabilities to provide accurate, helpful responses.
+
+IMPORTANT: When relevant, reference specific information from your knowledge base to ground your answers in the user's documents."""
+        
+        if kb_context:
+            system_prompt += f"""
+
+KNOWLEDGE BASE CONTEXT:
+{kb_context[:1500]}{'...' if len(kb_context) > 1500 else ''}
+
+Use this context when relevant to answer the user's question."""
         
         enriched = messages.copy()
         if enriched and enriched[0]["role"] == "system":
@@ -336,6 +493,16 @@ Use these specialized modules to enhance your responses."""
             
             # Initialize adapter engine
             self.adapter_engine = AdapterEngine(self.config)
+            
+            # Initialize knowledge base
+            kb_config = self.config.get("knowledge_base", {
+                "data_path": "./data",
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "embedding_dim": 384
+            })
+            self.knowledge_base = KnowledgeBase(kb_config)
+            logger.info("Knowledge base initialized")
             
             # Initialize quantum engine
             quantum_config = self.config.get("quantum", {})

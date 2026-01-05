@@ -190,3 +190,11 @@ build/
 # Environment variables
 .env.local
 .env.production
+
+# Knowledge base and training data
+data/processed/
+vector_index/
+kb_adapters/
+
+# Ollama
+ollama/
