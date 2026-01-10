@@ -10,6 +10,7 @@ import hashlib
 import json
 import time
 import random
+import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
@@ -21,7 +22,9 @@ from ..core.adapter_engine import Adapter, AdapterEngine, QuantumArtifact
 class BiologicalArtifact:
     """Stores a complete 'biological execution episode'"""
     artifact_id: str
-    context: Dict[str, Any]
+    raw_context: Dict[str, Any]
+    processed_context: Dict[str, Any]
+    context_hash: str
     gate_states: Dict[str, float]
     regulatory_paths: List[Tuple[str, str, float]]
     expression_results: Dict[str, float]
@@ -31,7 +34,9 @@ class BiologicalArtifact:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "artifact_id": self.artifact_id,
-            "context": self.context,
+            "raw_context": self.raw_context,
+            "processed_context": self.processed_context,
+            "context_hash": self.context_hash,
             "gate_states": self.gate_states,
             "regulatory_paths": self.regulatory_paths,
             "expression_results": self.expression_results,
@@ -234,7 +239,38 @@ class ExecutableGenomeFramework:
         if memory_file.exists():
             with open(memory_file, "r") as f:
                 data = json.load(f)
-                self.memory = [BiologicalArtifact(**a) for a in data]
+                self.memory = []
+                for a in data:
+                    # Migration/Compatibility
+                    if "context" in a and "raw_context" not in a:
+                        a["raw_context"] = a.pop("context")
+                        a["processed_context"] = a["raw_context"]
+                    if "context_hash" not in a:
+                        a["context_hash"] = self._compute_context_hash(a["raw_context"])
+                    
+                    # Ensure all fields are present for dataclass unpacking
+                    try:
+                        self.memory.append(BiologicalArtifact(**a))
+                    except TypeError:
+                        # Skip corrupted or incompatible entries
+                        continue
+
+    def _compute_context_hash(self, context: Dict[str, Any]) -> str:
+        """
+        Compute a stable hash of the context, ignoring transient fields.
+        """
+        # Create a copy to avoid mutating the original
+        clean_ctx = copy.deepcopy(context)
+        
+        # Fields to ignore
+        ignore_fields = ["timestamp", "processed_signals", "artifact_id", "runtime_ms", "name"]
+        for field in ignore_fields:
+            if field in clean_ctx:
+                del clean_ctx[field]
+        
+        # Stable sort for consistent hashing
+        ctx_json = json.dumps(clean_ctx, sort_keys=True)
+        return hashlib.md5(ctx_json.encode()).hexdigest()
 
     def _save_memory(self):
         memory_file = self.storage_path / "biological_memory.json"
@@ -246,14 +282,27 @@ class ExecutableGenomeFramework:
         Runs a biological execution episode.
         Genome -> Program -> Execution -> Memory
         """
-        # 1. Process environment/context
-        context = self.context_engine.process_environment(raw_context)
+        start_time = time.time()
+        
+        # 0. Replay Lookup
+        context_hash = self._compute_context_hash(raw_context)
+        cached_artifact = next((a for a in self.memory if a.context_hash == context_hash), None)
+        
+        if cached_artifact:
+            duration_ms = (time.time() - start_time) * 1000
+            print(f"✅ REPLAY_HIT: {cached_artifact.artifact_id} (hash: {context_hash}) [{duration_ms:.2f}ms]")
+            return cached_artifact
+            
+        print(f"🔄 REPLAY_MISS: Executing biological program... (hash: {context_hash})")
+
+        # 1. Process environment/context (work on a deep copy)
+        processed_context = self.context_engine.process_environment(copy.deepcopy(raw_context))
         
         # 2. Update epigenetic state based on context
-        self.epigenetics.update_gates(context)
+        self.epigenetics.update_gates(processed_context)
         
         # 3. Get initial signals from context (Transcription Factors)
-        initial_signals = context.get("processed_signals", {})
+        initial_signals = processed_context.get("processed_signals", {})
         
         # 4. Run expression dynamics
         trajectory = self.expression_engine.run_trajectory(initial_signals, self.epigenetics)
@@ -263,24 +312,27 @@ class ExecutableGenomeFramework:
         protein_levels = self.proteome.translate(final_expression)
         
         # 6. Score phenotype
-        scores = self.phenotype.score_outcome(protein_levels, context)
+        scores = self.phenotype.score_outcome(protein_levels, processed_context)
         
         # 7. Create Artifact
         artifact_id = f"episode_{hashlib.md5(str(time.time()).encode()).hexdigest()[:8]}"
         artifact = BiologicalArtifact(
             artifact_id=artifact_id,
-            context=context,
+            raw_context=raw_context,
+            processed_context=processed_context,
+            context_hash=context_hash,
             gate_states=self.epigenetics.gate_states.copy(),
             regulatory_paths=[], # Would be populated by graph traversal
             expression_results=final_expression,
             outcome_scores=scores
         )
         
-        # 8. Learn: Store successful executions
-        if scores["viability"] > 0.5:
-            self.memory.append(artifact)
-            self._save_memory()
+        # 8. Learn: Store execution (unconditional storage for experiments)
+        self.memory.append(artifact)
+        self._save_memory()
             
+        duration_ms = (time.time() - start_time) * 1000
+        print(f"🎬 Execution complete in {duration_ms:.2f}ms. Artifact: {artifact_id}")
         return artifact
 
     def replay_experience(self, artifact_id: str):
@@ -292,7 +344,7 @@ class ExecutableGenomeFramework:
         # Set state from artifact
         self.epigenetics.gate_states = artifact.gate_states.copy()
         # Re-execute with same context
-        return self.execute(artifact.context)
+        return self.execute(artifact.raw_context)
 
 
 if __name__ == "__main__":
