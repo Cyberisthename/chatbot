@@ -240,6 +240,7 @@ class ExecutableGenomeFramework:
         
         # Artifact Memory
         self.memory: List[BiologicalArtifact] = []
+        self.memory_index: Dict[str, BiologicalArtifact] = {}
         self._load_memory()
 
     def _load_memory(self):
@@ -248,6 +249,7 @@ class ExecutableGenomeFramework:
             with open(memory_file, "r") as f:
                 data = json.load(f)
                 self.memory = []
+                self.memory_index = {}
                 for a in data:
                     # Migration/Compatibility
                     if "context" in a and "raw_context" not in a:
@@ -258,7 +260,9 @@ class ExecutableGenomeFramework:
                     
                     # Ensure all fields are present for dataclass unpacking
                     try:
-                        self.memory.append(BiologicalArtifact(**a))
+                        artifact = BiologicalArtifact(**a)
+                        self.memory.append(artifact)
+                        self.memory_index[artifact.context_hash] = artifact
                     except TypeError:
                         # Skip corrupted or incompatible entries
                         continue
@@ -278,7 +282,7 @@ class ExecutableGenomeFramework:
         
         # Stable sort for consistent hashing
         ctx_json = json.dumps(clean_ctx, sort_keys=True)
-        return hashlib.md5(ctx_json.encode()).hexdigest()
+        return hashlib.sha256(ctx_json.encode()).hexdigest()
 
     def _save_memory(self):
         memory_file = self.storage_path / "biological_memory.json"
@@ -295,14 +299,14 @@ class ExecutableGenomeFramework:
         # 0. Replay Lookup
         context_hash = self._compute_context_hash(raw_context)
         if allow_replay:
-            cached_artifact = next((a for a in self.memory if a.context_hash == context_hash), None)
+            cached_artifact = self.memory_index.get(context_hash)
             
             if cached_artifact:
                 duration_ms = (time.time() - start_time) * 1000
-                print(f"✅ REPLAY_HIT: {cached_artifact.artifact_id} (hash: {context_hash}) [{duration_ms:.2f}ms]")
+                print(f"✅ REPLAY_HIT: {cached_artifact.artifact_id} (hash: {context_hash[:16]}...) [{duration_ms:.2f}ms]")
                 return cached_artifact
             
-        print(f"🔄 REPLAY_MISS: Executing biological program... (hash: {context_hash})")
+        print(f"🔄 REPLAY_MISS: Executing biological program... (hash: {context_hash[:16]}...)")
 
         # 1. Process environment/context (work on a deep copy)
         processed_context = self.context_engine.process_environment(copy.deepcopy(raw_context))
@@ -324,7 +328,7 @@ class ExecutableGenomeFramework:
         scores = self.phenotype.score_outcome(protein_levels, processed_context)
         
         # 7. Create Artifact
-        artifact_id = f"episode_{hashlib.md5(str(time.time()).encode()).hexdigest()[:8]}"
+        artifact_id = f"episode_{hashlib.sha256(str(time.time()).encode()).hexdigest()[:8]}"
         artifact = BiologicalArtifact(
             artifact_id=artifact_id,
             raw_context=raw_context,
@@ -338,6 +342,7 @@ class ExecutableGenomeFramework:
         
         # 8. Learn: Store execution (unconditional storage for experiments)
         self.memory.append(artifact)
+        self.memory_index[context_hash] = artifact
         self._save_memory()
             
         duration_ms = (time.time() - start_time) * 1000
