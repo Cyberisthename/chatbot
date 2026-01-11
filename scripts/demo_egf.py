@@ -47,13 +47,16 @@ def run_demo():
         }
     ]
     
-    for ctx in contexts:
+    for i, ctx in enumerate(contexts):
         print(f"\n🚀 Running Execution: {ctx['name']}")
         result = egf.execute(ctx)
         print(f"   Artifact ID: {result.artifact_id}")
         print(f"   Outcome: {result.outcome_scores}")
         print(f"   Key Expression: Insulin={result.expression_results.get('GENE_Insulin', 0):.4f}, "
               f"Uptake={result.expression_results.get('GENE_GlucoseUptake', 0):.4f}")
+        
+        if i == 0 and result.regulatory_paths:
+            print(f"   Execution Trace (first 3): {result.regulatory_paths[:3]}")
 
     # 4. Show Memory (Non-destructive learning)
     print(f"\n📚 Total episodes in memory: {len(egf.memory)}")

@@ -12,7 +12,7 @@ import time
 import random
 import copy
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any, Tuple, Set
 from pathlib import Path
 
 from ..core.adapter_engine import Adapter, AdapterEngine, QuantumArtifact
@@ -104,9 +104,10 @@ class RegulomeAdapter:
             self.edges[source] = []
         self.edges[source].append((target, influence))
 
-    def execute_logic(self, active_tfs: Dict[str, float], gates: EpigeneticGateAdapter) -> Dict[str, float]:
+    def execute_logic(self, active_tfs: Dict[str, float], gates: EpigeneticGateAdapter) -> Tuple[Dict[str, float], List[Tuple[str, str, float]]]:
         """Runs the regulatory logic to determine activation levels"""
         activations = active_tfs.copy()
+        execution_trace: List[Tuple[str, str, float]] = []
         
         # Simple iterative activation spread (mimics regulatory cascade)
         for _ in range(3): # Depth of cascade
@@ -118,9 +119,12 @@ class RegulomeAdapter:
                         gate_mult = gates.get_gate_multiplier(f"{src}->{dest}")
                         effective_influence = src_level * weight * gate_mult
                         new_activations[dest] = new_activations.get(dest, 0.0) + effective_influence
+                        
+                        if effective_influence != 0:
+                            execution_trace.append((src, dest, effective_influence))
             activations = new_activations
             
-        return activations
+        return activations, execution_trace
 
 
 class ContextAdapter:
@@ -133,7 +137,7 @@ class ContextAdapter:
         self.memory: List[Dict[str, Any]] = []
 
     def process_environment(self, raw_inputs: Dict[str, Any]) -> Dict[str, Any]:
-        self.current_context = raw_inputs
+        self.current_context = copy.deepcopy(raw_inputs)
         # Logic to activate initial TFs based on environment
         signals = raw_inputs.get("initial_signals", {}).copy()
         
@@ -154,20 +158,24 @@ class ExpressionDynamicsAdapter:
     def __init__(self, regulome: RegulomeAdapter):
         self.regulome = regulome
         self.trajectories: List[Dict[str, float]] = []
-        self.memory: List[List[Dict[str, float]]] = []
+        self.execution_traces: List[List[Tuple[str, str, float]]] = []
+        self.memory: List[Any] = []
 
-    def run_trajectory(self, initial_state: Dict[str, float], gates: EpigeneticGateAdapter, steps: int = 10):
+    def run_trajectory(self, initial_state: Dict[str, float], gates: EpigeneticGateAdapter, steps: int = 10) -> Tuple[List[Dict[str, float]], List[Tuple[str, str, float]]]:
         current_state = initial_state
         self.trajectories = [current_state]
+        combined_trace: List[Tuple[str, str, float]] = []
         
         for _ in range(steps):
-            current_state = self.regulome.execute_logic(current_state, gates)
+            current_state, step_trace = self.regulome.execute_logic(current_state, gates)
             # Apply decay/homeostasis
             current_state = {k: v * 0.9 for k, v in current_state.items()}
             self.trajectories.append(current_state)
+            combined_trace.extend(step_trace)
         
-        self.memory.append(self.trajectories)
-        return self.trajectories
+        self.execution_traces.append(combined_trace)
+        self.memory.append((self.trajectories, combined_trace))
+        return self.trajectories, combined_trace
 
 
 class ProteomeAdapter:
@@ -277,7 +285,7 @@ class ExecutableGenomeFramework:
         with open(memory_file, "w") as f:
             json.dump([a.to_dict() for a in self.memory], f, indent=2)
 
-    def execute(self, raw_context: Dict[str, Any]) -> BiologicalArtifact:
+    def execute(self, raw_context: Dict[str, Any], allow_replay: bool = True) -> BiologicalArtifact:
         """
         Runs a biological execution episode.
         Genome -> Program -> Execution -> Memory
@@ -286,12 +294,13 @@ class ExecutableGenomeFramework:
         
         # 0. Replay Lookup
         context_hash = self._compute_context_hash(raw_context)
-        cached_artifact = next((a for a in self.memory if a.context_hash == context_hash), None)
-        
-        if cached_artifact:
-            duration_ms = (time.time() - start_time) * 1000
-            print(f"✅ REPLAY_HIT: {cached_artifact.artifact_id} (hash: {context_hash}) [{duration_ms:.2f}ms]")
-            return cached_artifact
+        if allow_replay:
+            cached_artifact = next((a for a in self.memory if a.context_hash == context_hash), None)
+            
+            if cached_artifact:
+                duration_ms = (time.time() - start_time) * 1000
+                print(f"✅ REPLAY_HIT: {cached_artifact.artifact_id} (hash: {context_hash}) [{duration_ms:.2f}ms]")
+                return cached_artifact
             
         print(f"🔄 REPLAY_MISS: Executing biological program... (hash: {context_hash})")
 
@@ -305,7 +314,7 @@ class ExecutableGenomeFramework:
         initial_signals = processed_context.get("processed_signals", {})
         
         # 4. Run expression dynamics
-        trajectory = self.expression_engine.run_trajectory(initial_signals, self.epigenetics)
+        trajectory, execution_trace = self.expression_engine.run_trajectory(initial_signals, self.epigenetics)
         final_expression = trajectory[-1]
         
         # 5. Translate to proteome
@@ -322,7 +331,7 @@ class ExecutableGenomeFramework:
             processed_context=processed_context,
             context_hash=context_hash,
             gate_states=self.epigenetics.gate_states.copy(),
-            regulatory_paths=[], # Would be populated by graph traversal
+            regulatory_paths=execution_trace,
             expression_results=final_expression,
             outcome_scores=scores
         )
@@ -343,8 +352,8 @@ class ExecutableGenomeFramework:
             
         # Set state from artifact
         self.epigenetics.gate_states = artifact.gate_states.copy()
-        # Re-execute with same context
-        return self.execute(artifact.raw_context)
+        # Re-execute with same context, forcing recompute for "rehearsal"
+        return self.execute(artifact.raw_context, allow_replay=False)
 
 
 if __name__ == "__main__":
