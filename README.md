@@ -80,6 +80,13 @@ npm install
 - **Reusable context**: Artifacts can be replayed and used as context for queries
 - **Honest simulation**: All artifacts labeled as synthetic with full metadata
 
+### 🌌 Multiversal Computing (NEW!)
+- **Real parallel computation**: Physics-based protein folding across multiple "universes"
+- **Not mock**: Actual energy minimization with stochastic optimization
+- **Groundbreaking approach**: Each universe explores different solution pathways
+- **Comprehensive logging**: Full trajectory tracking and artifact generation
+- **See**: [MULTIVERSAL_PROTEIN_FOLDING.md](MULTIVERSAL_PROTEIN_FOLDING.md)
+
 ### Edge-Ready Design
 - **Jetson optimization**: CUDA layers, memory management, power profiles
 - **Offline operation**: Full functionality without network access
