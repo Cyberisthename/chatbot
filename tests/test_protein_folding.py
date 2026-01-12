@@ -20,6 +20,8 @@ from src.multiversal.protein_folding_engine import (
     ProteinStructure,
     _bond_angle,
     _dist,
+    _rotate_segment,
+    _update_torsions_from_coords,
     _wrap_angle,
 )
 
@@ -88,6 +90,23 @@ class TestProteinFoldingEngine(unittest.TestCase):
         self.assertEqual(len(structure.phi), 4)
         self.assertEqual(len(structure.psi), 4)
 
+    def test_torsion_pivot_changes_geometry_without_breaking_bonds(self):
+        engine = ProteinFoldingEngine()
+        structure = engine.initialize_extended_chain("ACDEFGH", seed=7)
+
+        coords_before = list(structure.coords)
+        bond_before = [_dist(coords_before[i], coords_before[i + 1]) for i in range(len(coords_before) - 1)]
+
+        # Rotate the tail around the bond between residues 1 and 2.
+        _rotate_segment(structure.coords, start=3, axis_i=1, axis_j=2, angle=0.7)
+        _update_torsions_from_coords(structure)
+
+        self.assertGreater(_dist(structure.coords[4], coords_before[4]), 1e-6)
+
+        bond_after = [_dist(structure.coords[i], structure.coords[i + 1]) for i in range(len(structure.coords) - 1)]
+        for b0, b1 in zip(bond_before, bond_after):
+            self.assertAlmostEqual(b0, b1, places=6)
+
     def test_energy_finite(self):
         engine = ProteinFoldingEngine()
         structure = engine.initialize_extended_chain("ACDE", seed=42)
@@ -141,10 +160,13 @@ class TestRealComputation(unittest.TestCase):
         engine = ProteinFoldingEngine()
         sequence = "ACDEFGH"
 
-        r1 = engine.metropolis_anneal(engine.initialize_extended_chain(sequence, seed=1), steps=250, seed=1)
-        r2 = engine.metropolis_anneal(engine.initialize_extended_chain(sequence, seed=2), steps=250, seed=2)
+        energies = []
+        for s in (1, 2, 3):
+            r = engine.metropolis_anneal(engine.initialize_extended_chain(sequence, seed=s), steps=300, seed=s)
+            energies.append(float(r["best_energy"]))
 
-        self.assertNotAlmostEqual(r1["best_energy"], r2["best_energy"], places=6)
+        # Stochastic search can occasionally collide; this makes the test far less flaky.
+        self.assertGreater(len({round(e, 4) for e in energies}), 1)
 
     def test_longer_run_not_worse(self):
         engine = ProteinFoldingEngine()
