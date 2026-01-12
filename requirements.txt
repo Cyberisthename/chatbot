@@ -1,19 +1,37 @@
 # J.A.R.V.I.S. Python Dependencies
+
+# Core inference
 llama-cpp-python>=0.2.0
 numpy>=1.24.0
 torch>=2.0.0
 transformers>=4.30.0
 sentencepiece>=0.1.99
 protobuf>=4.22.0
+
+# API server
 fastapi>=0.100.0
 uvicorn>=0.22.0
 websockets>=11.0.0
 python-multipart>=0.0.6
 aiofiles>=23.0.0
+flask>=2.3.0
+
+# Media processing
 pillow>=10.0.0
 sounddevice>=0.4.6
 pyaudio>=0.2.11
 speechrecognition>=3.10.0
 pyttsx3>=2.90
+
+# Utilities
 requests>=2.31.0
 python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# Training & knowledge
+datasets>=2.14.0  # HuggingFace datasets for IDI streaming
+networkx>=3.0  # Graph support for adapters
+duckduckgo-search>=3.8.0  # Web search
+
+# Optional: Scientific computing (for quantum simulations)
+scipy>=1.10.0

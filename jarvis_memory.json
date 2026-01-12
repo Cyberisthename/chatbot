@@ -1,9 +1,35 @@
 {
   "facts": [
-    "Ben is my creator."
+    "Ben is my creator.",
+    "Learned from file 'example_knowledge.txt' (1 sections, domains: programming, science, quantum)",
+    "Ben created JARVIS-2v"
   ],
   "chats": [],
-  "topics": {},
+  "topics": {
+    "creator": 1
+  },
   "preferences": {},
-  "last_topics": []
+  "last_topics": [],
+  "local_sources": [
+    {
+      "filename": "example_knowledge.txt",
+      "domains": [
+        "programming",
+        "science",
+        "quantum"
+      ],
+      "chunk_count": 1,
+      "timestamp": 1765731098.3383355
+    }
+  ],
+  "knowledge_base": [
+    {
+      "content": "Ben created JARVIS-2v",
+      "tags": [
+        "creator"
+      ],
+      "timestamp": 1765731159.2911773,
+      "source": "ingestion"
+    }
+  ]
 }

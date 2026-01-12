@@ -1,0 +1,40 @@
+JARVIS-2v is a modular edge AI system with adapter-based intelligence.
+
+The core intelligence of JARVIS-2v resides in three primary systems:
+1. AdapterEngine - Modular AI adapters with graph relationships
+2. Y/Z/X bit routing - 16-bit Y (task/domain), 8-bit Z (difficulty), 8-bit X (experimental)
+3. Memory system - Persistent facts, topics, and conversation history
+
+Adapters are non-destructive learning units that never overwrite existing knowledge.
+
+The synthetic quantum engine generates experimental artifacts that link to adapters.
+
+The base GGUF model serves only as a language decoder, not the intelligence itself.
+
+Training in JARVIS-2v means creating new adapters, not fine-tuning the base model.
+
+All adapter creation is incremental and preserves the existing knowledge graph.
+
+Y-bits encode task domains: programming (bit 0), mathematics (bit 1), quantum (bit 2), explanation (bit 3).
+
+Z-bits encode difficulty and precision levels for task routing.
+
+X-bits are experimental toggles for features like quantum simulation or recall-only modes.
+
+The adapter graph uses NetworkX to track relationships between adapters.
+
+Each adapter has metadata including task tags, parameters, rules, prompts, and success metrics.
+
+Adapters can have parent-child relationships to form knowledge hierarchies.
+
+Quantum artifacts are linked to adapters to provide experimental context.
+
+JARVIS-2v supports edge deployment on devices like Jetson Orin NX.
+
+The system uses GGUF format models for efficient inference on CPU and GPU.
+
+Memory persistence allows JARVIS-2v to remember conversations and facts across sessions.
+
+Web search integration provides real-time information retrieval via DuckDuckGo.
+
+The UI shows adapter statistics, memory browser, and quantum lab experiments.

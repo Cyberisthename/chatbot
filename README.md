@@ -262,13 +262,69 @@ docker run --gpus all -p 3001:3001 jarvis-2v:jetson
 - Quantum artifact usage for complex decision making
 - Non-destructive learning for continuous adaptation
 
+## 🎓 Training & Learning
+
+JARVIS-2v uses **adapter-based learning**, not traditional fine-tuning.
+
+### Training Methods
+
+1. **Local File Training** - Convert documents into adapters
+   ```bash
+   python scripts/train_adapters.py --input data/raw
+   ```
+
+2. **IDI Streaming** - Stream books from HuggingFace (no full download)
+   ```bash
+   pip install datasets
+   python scripts/train_idi_stream.py --max-books 100 --language en
+   ```
+
+3. **Knowledge Ingestion** - Quick facts and snippets
+   ```bash
+   python scripts/ingest_knowledge.py --fact "JARVIS uses Y/Z/X routing" --tags ai
+   ```
+
+### What Gets Trained?
+
+✅ **Adapters** - New knowledge modules added to graph  
+✅ **Memory** - Facts and context stored  
+✅ **Routing** - Y/Z/X bit patterns improved  
+✅ **Quantum Artifacts** - Experiment data linked to adapters  
+
+❌ **NOT the base model** - GGUF model is only a language decoder
+
+📚 **Full Training Guide**: See [docs/TRAINING.md](docs/TRAINING.md)
+
+## 🔄 Ollama Integration
+
+Run JARVIS-2v with Ollama:
+
+```bash
+# Create Ollama model
+ollama create jarvis2v -f ollama/Modelfile
+
+# Run interactively
+ollama run jarvis2v
+
+# Use via API
+curl http://localhost:11434/api/generate -d '{
+  "model": "jarvis2v",
+  "prompt": "Hello JARVIS!"
+}'
+```
+
+📖 **Setup Guide**: See [ollama/README.md](ollama/README.md)
+
 ## 📖 Documentation
 
+- [Training Guide](docs/TRAINING.md) - **NEW** ⭐
+- [Deployment Guide](docs/DEPLOYMENT.md) - **NEW** ⭐
 - [Architecture Overview](docs/architecture.md)
 - [Adapter System Deep Dive](docs/adapters.md)
 - [Quantum Module Guide](docs/quantum.md)
 - [Edge Deployment Guide](docs/edge-deploy.md)
 - [API Reference](docs/api.md)
+- [Ollama Integration](ollama/README.md) - **NEW** ⭐
 
 ## 🤝 Contributing
 
