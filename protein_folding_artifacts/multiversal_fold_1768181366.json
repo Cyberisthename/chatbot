@@ -1,0 +1,94 @@
+{
+  "sequence": "ACE",
+  "n_universes": 4,
+  "best_overall_universe_id": "universe_003",
+  "best_overall_energy": 0.22866136429934755,
+  "energy_mean": 0.3243193022355628,
+  "energy_std": 0.0672908240691479,
+  "total_runtime_s": 0.16161203384399414,
+  "timestamp": 1768181366.6967268,
+  "universes": [
+    {
+      "universe_id": "universe_000",
+      "seed": 42,
+      "best_energy": 0.3131588524114033,
+      "final_energy": 2.0562999794196575,
+      "acceptance_rate": 0.654,
+      "runtime_s": 0.036206722259521484,
+      "metadata": {
+        "steps": 5000,
+        "t_start": 2.0,
+        "t_end": 0.2
+      }
+    },
+    {
+      "universe_id": "universe_001",
+      "seed": 43,
+      "best_energy": 0.4173020940269256,
+      "final_energy": 0.5525585623328404,
+      "acceptance_rate": 0.6522,
+      "runtime_s": 0.12932896614074707,
+      "metadata": {
+        "steps": 5000,
+        "t_start": 2.0,
+        "t_end": 0.2
+      }
+    },
+    {
+      "universe_id": "universe_002",
+      "seed": 44,
+      "best_energy": 0.3381548982045748,
+      "final_energy": 0.7601572949039708,
+      "acceptance_rate": 0.6628,
+      "runtime_s": 0.09134507179260254,
+      "metadata": {
+        "steps": 5000,
+        "t_start": 2.0,
+        "t_end": 0.2
+      }
+    },
+    {
+      "universe_id": "universe_003",
+      "seed": 45,
+      "best_energy": 0.22866136429934755,
+      "final_energy": 0.6726110280976754,
+      "acceptance_rate": 0.6558,
+      "runtime_s": 0.11114907264709473,
+      "metadata": {
+        "steps": 5000,
+        "t_start": 2.0,
+        "t_end": 0.2
+      }
+    }
+  ],
+  "best_structure": {
+    "sequence": "ACE",
+    "coords": [
+      [
+        4.167212423880512,
+        0.03217738080716015,
+        -1.32932994333413
+      ],
+      [
+        1.6448317142468452,
+        1.438578109015916,
+        1.0897332165617777
+      ],
+      [
+        -1.1632376605657495,
+        3.53597806899081,
+        -0.4829484852638807
+      ]
+    ],
+    "phi": [
+      -1.0536242862438954,
+      -1.0005653274190052,
+      -1.326926995913691
+    ],
+    "psi": [
+      -1.0836887320417705,
+      -0.8187243341195954,
+      -0.779828419837791
+    ]
+  }
+}

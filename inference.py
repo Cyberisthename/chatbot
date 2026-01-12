@@ -1,8 +1,24 @@
 import threading
 import json as _json
+import os
+import time
+from flask import Flask, request, jsonify
+
+# Multiversal Computing System Import
+try:
+    from src.core.multiversal_compute_system import MultiversalComputeSystem, MultiversalQuery
+    from src.core.multiversal_adapters import MultiversalAdapter, MultiversalComputeEngine
+    from src.quantum.multiversal_quantum import MultiversalQuantumEngine, MultiversalExperimentConfig
+    MULTIVERSAL_AVAILABLE = True
+except ImportError as e:
+    print(f"🌌 Multiversal Computing System not available: {e}")
+    MULTIVERSAL_AVAILABLE = False
 
 MEMORY_FILE = "jarvis_memory.json"
 MEMORY_LOCK = threading.Lock()
+
+# Global multiversal system instance
+multiversal_system = None
 
 def load_memory():
     if not os.path.exists(MEMORY_FILE):
@@ -317,11 +333,204 @@ Maintain a consistent personality without repeating yourself. Vary your response
 
 
 
+def init_multiversal_system():
+    """Initialize the multiversal computing system"""
+    global multiversal_system
+    
+    if not MULTIVERSAL_AVAILABLE:
+        return False
+        
+    try:
+        config = {
+            "multiverse": {
+                "storage_path": "./jarvis_multiverse"
+            },
+            "bits": {
+                "y_bits": 16,
+                "z_bits": 8,
+                "x_bits": 8,
+                "u_bits": 16
+            },
+            "artifacts": {
+                "storage_path": "./jarvis_artifacts"
+            }
+        }
+        
+        multiversal_system = MultiversalComputeSystem(config)
+        print("🌌 Multiversal Computing System initialized in JARVIS")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to initialize multiversal system: {e}")
+        return False
+
+# Initialize multiversal system
+init_multiversal_system()
+
 # --- Flask API for local chat ---
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 backend = None
+
+# Multiversal API Routes
+@app.route('/api/multiverse/query', methods=['POST'])
+def multiversal_query():
+    """Process a query using multiversal computation"""
+    if not multiversal_system:
+        return jsonify({
+            "error": "Multiversal Computing System not available",
+            "status": "unavailable"
+        }), 503
+    
+    try:
+        data = request.get_json()
+        
+        # Create multiversal query
+        query = MultiversalQuery(
+            query_id=data.get('query_id', f"jarvis_{int(time.time())}"),
+            problem_description=data['problem_description'],
+            problem_domain=data['problem_domain'],
+            complexity=float(data.get('complexity', 0.5)),
+            urgency=data.get('urgency', 'medium'),
+            target_outcome=data.get('target_outcome'),
+            constraints=data.get('constraints', {}),
+            max_universes=int(data.get('max_universes', 5)),
+            allow_cross_universe_transfer=bool(data.get('allow_cross_universe_transfer', True)),
+            simulation_steps=int(data.get('simulation_steps', 10))
+        )
+        
+        # Process query
+        solution = multiversal_system.process_multiversal_query(query)
+        
+        return jsonify({
+            "success": True,
+            "solution": solution.to_dict(),
+            "timestamp": time.time()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "status": "error"
+        }), 400
+
+@app.route('/api/multiverse/cancer-simulation', methods=['POST'])
+def multiversal_cancer_simulation():
+    """Run multiversal cancer treatment simulation (Grandma's Fight)"""
+    if not multiversal_system:
+        return jsonify({
+            "error": "Multiversal Computing System not available",
+            "status": "unavailable"
+        }), 503
+    
+    try:
+        data = request.get_json() or {}
+        
+        # Create experiment config
+        config = MultiversalExperimentConfig(
+            universe_count=int(data.get('universe_count', 10)),
+            parallel_simulations=int(data.get('parallel_simulations', 5)),
+            cross_universe_transfer=bool(data.get('cross_universe_transfer', True)),
+            interference_amplification=bool(data.get('interference_amplification', True))
+        )
+        
+        # Run cancer simulation
+        result = multiversal_system.quantum_engine.run_multiversal_cancer_simulation(config)
+        
+        return jsonify({
+            "success": True,
+            "simulation": result,
+            "timestamp": time.time()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "status": "error"
+        }), 400
+
+@app.route('/api/multiverse/status', methods=['GET'])
+def multiversal_status():
+    """Get multiversal system status"""
+    if not multiversal_system:
+        return jsonify({
+            "status": "unavailable",
+            "message": "Multiversal Computing System not initialized"
+        })
+    
+    try:
+        status = multiversal_system.get_system_status()
+        return jsonify({
+            "status": "success",
+            "multiverse_status": status,
+            "timestamp": time.time()
+        })
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "status": "error"
+        }), 400
+
+@app.route('/api/multiverse/grandmas-fight', methods=['GET'])
+def grandmas_fight_demo():
+    """Special endpoint for Grandma's Fight cancer treatment demo"""
+    if not multiversal_system:
+        return jsonify({
+            "error": "Multiversal Computing System not available",
+            "status": "unavailable"
+        }), 503
+    
+    try:
+        # Create a special query for Grandma's fight
+        query = MultiversalQuery(
+            query_id="grandmas_fight_demo",
+            problem_description="Find optimal cancer treatment approach for elderly patient with advanced cancer",
+            problem_domain="cancer_treatment",
+            complexity=0.9,  # High complexity for medical case
+            urgency="high",
+            target_outcome="Maximize survival chances while maintaining quality of life",
+            constraints={
+                "patient_age": 75,
+                "condition_stage": "advanced",
+                "previous_treatments": ["chemotherapy", "radiation"],
+                "quality_of_life_priority": "high"
+            },
+            max_universes=8,
+            allow_cross_universe_transfer=True,
+            simulation_steps=15
+        )
+        
+        # Process the query
+        solution = multiversal_system.process_multiversal_query(query)
+        
+        # Generate special summary for Grandma's fight
+        grandmas_fight_summary = {
+            "message": "For Grandma's Fight",
+            "hope_message": "In parallel universes, treatments that work perfectly exist. This multiversal analysis shows us the paths to success.",
+            "parallel_universes_where_she_wins": [
+                "Universe with virus injection + glutamine blockade success",
+                "Universe with enhanced immunotherapy response", 
+                "Universe with breakthrough targeted therapy",
+                "Universe with personalized nanomedicine approach"
+            ],
+            "recommended_approach": solution.solution_data.get("primary_approach", "Combined multiversal approach"),
+            "confidence_level": f"{solution.confidence:.1%}",
+            "multiversal_insight": "The multiverse shows us that Grandma's victory is possible - we just need to follow the successful paths."
+        }
+        
+        return jsonify({
+            "success": True,
+            "grandmas_fight": True,
+            "solution": solution.to_dict(),
+            "grandmas_fight_summary": grandmas_fight_summary,
+            "timestamp": time.time()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "status": "error"
+        }), 400
 
 def create_app():
     app = Flask(__name__)

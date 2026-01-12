@@ -1,0 +1,76 @@
+{
+  "universes": [
+    {
+      "universe_id": "universe_86ddb161",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_0",
+      "branch_timestamp": 1768178184.7160509,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    },
+    {
+      "universe_id": "universe_fe76d3bc",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_1",
+      "branch_timestamp": 1768178184.7174382,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    },
+    {
+      "universe_id": "universe_780e97cb",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_2",
+      "branch_timestamp": 1768178184.7183192,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    },
+    {
+      "universe_id": "universe_ff68a112",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_0",
+      "branch_timestamp": 1768178204.588259,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    },
+    {
+      "universe_id": "universe_1cf8a697",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_1",
+      "branch_timestamp": 1768178204.588776,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    },
+    {
+      "universe_id": "universe_38cfdd59",
+      "parent_universe_id": "base_interference_universe",
+      "decision_point": "base_2",
+      "branch_timestamp": 1768178204.5898235,
+      "state": "active",
+      "coherence_level": 0.9,
+      "artifact_count": 0,
+      "total_solutions": 0,
+      "successful_solutions": 0,
+      "interference_reach": 0.5
+    }
+  ]
+}
