@@ -347,6 +347,59 @@ def list_experiments():
         }), 400
 
 
+@multiversal_bp.route('/protein-folding', methods=['POST'])
+def fold_protein():
+    """Real multiversal protein folding computation"""
+    try:
+        from ..multiversal.multiversal_protein_computer import MultiversalProteinComputer
+        
+        data = request.get_json()
+        sequence = data.get('sequence')
+        
+        if not sequence:
+            return jsonify({"error": "sequence parameter required"}), 400
+        
+        # Validate sequence
+        valid_amino_acids = set("ACDEFGHIKLMNPQRSTVWY")
+        if not all(aa in valid_amino_acids for aa in sequence.upper()):
+            return jsonify({"error": "Invalid amino acid sequence"}), 400
+        
+        # Get parameters
+        n_universes = int(data.get('n_universes', 4))
+        steps_per_universe = int(data.get('steps_per_universe', 5000))
+        t_start = float(data.get('t_start', 2.0))
+        t_end = float(data.get('t_end', 0.2))
+        base_seed = int(data.get('base_seed', 42))
+        
+        # Create computer and run
+        computer = MultiversalProteinComputer(artifacts_dir="./protein_folding_artifacts")
+        result = computer.fold_multiversal(
+            sequence=sequence.upper(),
+            n_universes=n_universes,
+            steps_per_universe=steps_per_universe,
+            t_start=t_start,
+            t_end=t_end,
+            base_seed=base_seed,
+            save_artifacts=True,
+        )
+        
+        return jsonify({
+            "success": True,
+            "result": result.to_dict(),
+            "timestamp": datetime.now().isoformat(),
+            "computation_type": "REAL",
+            "note": "This is real physics-based protein folding computation using multiversal parallel optimization"
+        })
+        
+    except Exception as e:
+        import traceback
+        return jsonify({
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "timestamp": datetime.now().isoformat()
+        }), 400
+
+
 @multiversal_bp.route('/grandmas-fight', methods=['GET'])
 def grandmas_fight_demo():
     """Special endpoint for Grandma's Fight cancer treatment demo"""
