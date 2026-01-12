@@ -1,0 +1,3872 @@
+{
+  "performance_metrics": {
+    "total_queries": 3,
+    "successful_solutions": 0,
+    "cross_universe_transfers": 3,
+    "average_processing_time": 0.15315691630045572,
+    "multiverse_health": 0.0
+  },
+  "solutions": [
+    {
+      "solution_id": "solution_b60cd3ab",
+      "query_id": "grandmas_fight_63d7b44b",
+      "primary_universe": "universe_7d421484",
+      "contributing_universes": [
+        "universe_7d421484",
+        "universe_e3b05b39",
+        "universe_c9cfe7ed",
+        "universe_41f8e099",
+        "universe_e04efdd7",
+        "universe_b908bbd7",
+        "universe_dbd9ff50",
+        "universe_371a96ee"
+      ],
+      "solution_quality": 0.45671511583978935,
+      "confidence": 1.0,
+      "solution_data": {
+        "primary_approach": "Universe universe_7d421484 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+        "multiverse_consensus": 0.45671511583978935,
+        "universe_results": [
+          {
+            "universe_id": "universe_7d421484",
+            "adapter_id": "adapter_universe_7d421484",
+            "solution_quality": 0.5416397431645985,
+            "interference_weight": 0.5,
+            "coherence_level": 0.942850755209433,
+            "evolution_result": {
+              "universe_id": "universe_7d421484",
+              "evolution_steps": 12,
+              "final_coherence": 0.9849508176985577,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8706768440831975,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_133b3858",
+                  "coherence": 0.859998343925727
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.859998343925727,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.859998343925727,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.9344353210789804,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.9385141603399628,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "interference_amplification",
+                  "coherence": 0.9683287231448201,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.9683287231448201,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9380139069170982,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9722322011325923,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "branching",
+                  "new_universe": "universe_88c76d19",
+                  "coherence": 0.9232593194905532
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.9232593194905532,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.9232593194905532,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9220623944870557,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9352369131607693,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.9849508176985577,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_7d421484 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1396437
+            }
+          },
+          {
+            "universe_id": "universe_e3b05b39",
+            "adapter_id": "adapter_universe_e3b05b39",
+            "solution_quality": 0.4576263070166445,
+            "interference_weight": 0.5,
+            "coherence_level": 0.9264129374700399,
+            "evolution_result": {
+              "universe_id": "universe_e3b05b39",
+              "evolution_steps": 12,
+              "final_coherence": 0.8432747848916384,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.9457095997670076,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.849663893346668,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8562015622527686,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8682097695654254,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.9008793998690113,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "event": "interference_amplification",
+                  "coherence": 0.8567911844942656,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8567911844942656,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "event": "branching",
+                  "new_universe": "universe_71c3126d",
+                  "coherence": 0.8702425134453173
+                },
+                {
+                  "step": 6,
+                  "event": "interference_amplification",
+                  "coherence": 0.8702425134453173,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8702425134453173,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8654966442881877,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8737258291141186,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.8293706882872397,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.7933886178262457,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.8432747848916384,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8432747848916384,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e3b05b39 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1433215
+            }
+          },
+          {
+            "universe_id": "universe_c9cfe7ed",
+            "adapter_id": "adapter_universe_c9cfe7ed",
+            "solution_quality": 0.5086436177677277,
+            "interference_weight": 0.5,
+            "coherence_level": 0.9756792159338004,
+            "evolution_result": {
+              "universe_id": "universe_c9cfe7ed",
+              "evolution_steps": 12,
+              "final_coherence": 0.9470137985133062,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_0f7cc13d",
+                  "coherence": 0.860803003207841
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.860803003207841,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_e7df19c4",
+                  "coherence": 0.8072203369031992
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.8072203369031992,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8072203369031992,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "branching",
+                  "new_universe": "universe_31503948",
+                  "coherence": 0.7656291145616348
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7656291145616348,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.7823402609785212,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "interference_amplification",
+                  "coherence": 0.8296001276701603,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8296001276701603,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9325897262428579,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9302861654580974,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9433463922590652,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "event": "branching",
+                  "new_universe": "universe_0a280474",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 10,
+                  "coherence": 1.0,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.9470137985133062,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.9470137985133062,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_c9cfe7ed approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1528738
+            }
+          },
+          {
+            "universe_id": "universe_41f8e099",
+            "adapter_id": "adapter_universe_41f8e099",
+            "solution_quality": 0.43881125876934424,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8488436077319882,
+            "evolution_result": {
+              "universe_id": "universe_41f8e099",
+              "evolution_steps": 12,
+              "final_coherence": 0.8466823711945192,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "interference_amplification",
+                  "coherence": 0.8171485276699555,
+                  "interference_reach": 0.9600000000000002
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.8171485276699555,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.7400482729668295,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.7400482729668295,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 0.7376198164503998,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7376198164503998,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "branching",
+                  "new_universe": "universe_59347190",
+                  "coherence": 0.8049947714731303
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8049947714731303,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.7932777326021309,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.7795335952814191,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8300702776753834,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8786319341907994,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8227975728985074,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "branching",
+                  "new_universe": "universe_7742e974",
+                  "coherence": 0.8472201026891967
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.8472201026891967,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8158869516556462,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8466823711945192,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_41f8e099 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1585846
+            }
+          },
+          {
+            "universe_id": "universe_e04efdd7",
+            "adapter_id": "adapter_universe_e04efdd7",
+            "solution_quality": 0.41600000000000004,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_e04efdd7",
+              "evolution_steps": 12,
+              "final_coherence": 0.9378708067500313,
+              "final_interference_reach": 0.8,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "interference_amplification",
+                  "coherence": 0.9270695012954572,
+                  "interference_reach": 0.55
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.9270695012954572,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_caa65a34",
+                  "coherence": 0.9443534138853347
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.9443534138853347,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.9380362598671519,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.9479007010725707,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "interference_amplification",
+                  "coherence": 0.896564562626754,
+                  "interference_reach": 0.7000000000000001
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.896564562626754,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9216777624160138,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9221141406293502,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "branching",
+                  "new_universe": "universe_b09dbe6d",
+                  "coherence": 0.9438546013692111
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9438546013692111,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.9708007394937397,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9282578750011642,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9067676047837614,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.9378708067500313,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e04efdd7 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1633832
+            }
+          },
+          {
+            "universe_id": "universe_b908bbd7",
+            "adapter_id": "adapter_universe_b908bbd7",
+            "solution_quality": 0.392,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_b908bbd7",
+              "evolution_steps": 12,
+              "final_coherence": 0.9835548420702244,
+              "final_interference_reach": 0.75,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.9372236958825436,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8973610749118257,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "branching",
+                  "new_universe": "universe_ec0dfdda",
+                  "coherence": 0.8971177168134311
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8971177168134311,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8416770130047753,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8490154604486938,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8693682426817219,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9048815168619461,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9777970869880018,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.942961679970135,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9830426798536396,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "event": "branching",
+                  "new_universe": "universe_317002c7",
+                  "coherence": 0.9566411656354235
+                },
+                {
+                  "step": 10,
+                  "event": "interference_amplification",
+                  "coherence": 0.9566411656354235,
+                  "interference_reach": 0.75
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9566411656354235,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.9835548420702244,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_b908bbd7 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1694534
+            }
+          },
+          {
+            "universe_id": "universe_dbd9ff50",
+            "adapter_id": "adapter_universe_dbd9ff50",
+            "solution_quality": 0.41300000000000003,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_dbd9ff50",
+              "evolution_steps": 12,
+              "final_coherence": 0.6504145837898804,
+              "final_interference_reach": 0.7000000000000001,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8318462126519379,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.819752110264866,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7857170717500004,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "branching",
+                  "new_universe": "universe_ec0a2c4b",
+                  "coherence": 0.6921625330210133
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 0.6921625330210133,
+                  "interference_reach": 0.65
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.6921625330210133,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.6684385361691233,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.7267226777615161,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.6810672344485048,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.6383553505253658,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.6773087259908114,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.6985914306052232,
+                  "interference_reach": 0.7000000000000001
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.6985914306052232,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.6406595240063979,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.6504145837898804,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_dbd9ff50 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1728969
+            }
+          },
+          {
+            "universe_id": "universe_371a96ee",
+            "adapter_id": "adapter_universe_371a96ee",
+            "solution_quality": 0.486,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_371a96ee",
+              "evolution_steps": 12,
+              "final_coherence": 0.7717775452905196,
+              "final_interference_reach": 0.6000000000000001,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.9623122196455632,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8548279628303024,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8068326897764957,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 0.7709658778614931,
+                  "interference_reach": 0.55
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.7709658778614931,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.6778602443040805,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.6735136569023992,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "event": "interference_amplification",
+                  "coherence": 0.74496655240963,
+                  "interference_reach": 0.6000000000000001
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.74496655240963,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.7876733168769536,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.7433257252093467,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.791946736988785,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8340769818359929,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.7717775452905196,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_371a96ee approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178147.1744232
+            }
+          }
+        ],
+        "recommendations": [
+          "Low confidence - explore alternative strategies",
+          "Cross-universe insights available - review for additional strategies"
+        ],
+        "next_steps": [
+          "Immediate action recommended based on multiverse analysis",
+          "High complexity detected - consider breaking into sub-problems",
+          "Monitor results and prepare alternative approaches",
+          "Consult with medical professionals before implementing treatment changes"
+        ]
+      },
+      "cross_universe_insights": [
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.750296645400025,
+          "echo_strength": 0.750296645400025
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.7690540615350258,
+          "echo_strength": 0.7690540615350258
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.7878114776700263,
+          "echo_strength": 0.7878114776700263
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.806568893805027,
+          "echo_strength": 0.806568893805027
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_b908bbd7",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_b908bbd7",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_b908bbd7",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_b908bbd7",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8440837260750284,
+          "echo_strength": 0.8440837260750284
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_b908bbd7",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_dbd9ff50",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_dbd9ff50",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_dbd9ff50",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8628411422100289,
+          "echo_strength": 0.8628411422100289
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_dbd9ff50",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_dbd9ff50",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_371a96ee",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9849508176985577,
+          "echo_strength": 0.9849508176985577
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_371a96ee",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.9470137985133062,
+          "echo_strength": 0.9470137985133062
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_371a96ee",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8815985583450296,
+          "echo_strength": 0.8815985583450296
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_371a96ee",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8466823711945192,
+          "echo_strength": 0.8466823711945192
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_371a96ee",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.8432747848916384,
+          "echo_strength": 0.8432747848916384
+        }
+      ],
+      "processing_time": 0.11342573165893555,
+      "artifacts_generated": [
+        "cancer_multiverse_1768178147"
+      ],
+      "timestamp": 1768178147.2594545
+    },
+    {
+      "solution_id": "solution_a96e6783",
+      "query_id": "grandmas_fight_3c6ef5cf",
+      "primary_universe": "universe_7d421484",
+      "contributing_universes": [
+        "universe_7d421484",
+        "universe_c9cfe7ed",
+        "universe_e04efdd7",
+        "universe_41f8e099",
+        "universe_e3b05b39",
+        "universe_bb1a4efd",
+        "universe_4081e70a",
+        "universe_34db514f"
+      ],
+      "solution_quality": 0.4717373602857407,
+      "confidence": 1.0,
+      "solution_data": {
+        "primary_approach": "Universe universe_7d421484 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+        "multiverse_consensus": 0.4717373602857407,
+        "universe_results": [
+          {
+            "universe_id": "universe_7d421484",
+            "adapter_id": "adapter_universe_7d421484",
+            "solution_quality": 0.5441635236280469,
+            "interference_weight": 0.5,
+            "coherence_level": 0.9849508176985577,
+            "evolution_result": {
+              "universe_id": "universe_7d421484",
+              "evolution_steps": 12,
+              "final_coherence": 0.8286734429991377,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_8f849d55",
+                  "coherence": 0.996007131775868
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.996007131775868,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.9817139910081859,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 2,
+                  "coherence": 1.0,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "branching",
+                  "new_universe": "universe_d191a81d",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 3,
+                  "coherence": 1.0,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 1.0,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9650481638870003,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 1.0,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "branching",
+                  "new_universe": "universe_fb9fdaec",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 7,
+                  "coherence": 1.0,
+                  "artifact_count": 8,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.9227271348591795,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.9227271348591795,
+                  "artifact_count": 8,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9404248662607617,
+                  "artifact_count": 8,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9241745046530171,
+                  "artifact_count": 8,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "branching",
+                  "new_universe": "universe_75f34736",
+                  "coherence": 0.8286734429991377
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8286734429991377,
+                  "artifact_count": 9,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_7d421484 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5485246
+            }
+          },
+          {
+            "universe_id": "universe_c9cfe7ed",
+            "adapter_id": "adapter_universe_c9cfe7ed",
+            "solution_quality": 0.4786692267752368,
+            "interference_weight": 0.5,
+            "coherence_level": 0.9470137985133062,
+            "evolution_result": {
+              "universe_id": "universe_c9cfe7ed",
+              "evolution_steps": 12,
+              "final_coherence": 0.691256528582361,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "interference_amplification",
+                  "coherence": 0.9189309509250769,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.9189309509250769,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8615507732115995,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8758612365597648,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8233617507406811,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8269688750968851,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8003114048019089,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.7934954118123079,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.83573264069264,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8218606799182623,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.7558978234988277,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.7558978234988277,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "event": "interference_amplification",
+                  "coherence": 0.6957620073795111,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.6957620073795111,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.691256528582361,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_c9cfe7ed approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5508747
+            }
+          },
+          {
+            "universe_id": "universe_e04efdd7",
+            "adapter_id": "adapter_universe_e04efdd7",
+            "solution_quality": 0.5132120182906402,
+            "interference_weight": 0.5,
+            "coherence_level": 0.9378708067500313,
+            "evolution_result": {
+              "universe_id": "universe_e04efdd7",
+              "evolution_steps": 12,
+              "final_coherence": 0.8307989555972956,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.9185238233425934,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_fbbe3e10",
+                  "coherence": 0.8745422115129755
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8745422115129755,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8918076366639629,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.9223902752334175,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.9506094981848846,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9367486226904511,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9537358396539067,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "interference_amplification",
+                  "coherence": 0.9441622233312411,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9441622233312411,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.9425157791858041,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.9425157791858041,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9277751185585515,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "event": "interference_amplification",
+                  "coherence": 0.819436609168931,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.819436609168931,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "branching",
+                  "new_universe": "universe_c6c09a78",
+                  "coherence": 0.8307989555972956
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8307989555972956,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e04efdd7 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5580559
+            }
+          },
+          {
+            "universe_id": "universe_41f8e099",
+            "adapter_id": "adapter_universe_41f8e099",
+            "solution_quality": 0.4547576559573281,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8466823711945192,
+            "evolution_result": {
+              "universe_id": "universe_41f8e099",
+              "evolution_steps": 12,
+              "final_coherence": 0.8835285744023592,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_9fa6a3b2",
+                  "coherence": 0.9013080232848326
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.9013080232848326,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 1.0,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 2,
+                  "coherence": 1.0,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 0.8920918159352291,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8920918159352291,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.9291662725314974,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9179014505856469,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9159770266050077,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "interference_amplification",
+                  "coherence": 0.9554769800975307,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.9554769800975307,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 1.0,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "branching",
+                  "new_universe": "universe_44a0330f",
+                  "coherence": 0.9650200753061101
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9650200753061101,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9144056797120848,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.8835285744023592,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8835285744023592,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_41f8e099 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.564624
+            }
+          },
+          {
+            "universe_id": "universe_e3b05b39",
+            "adapter_id": "adapter_universe_e3b05b39",
+            "solution_quality": 0.43409645763467375,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8432747848916384,
+            "evolution_result": {
+              "universe_id": "universe_e3b05b39",
+              "evolution_steps": 12,
+              "final_coherence": 0.898617742830706,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8311620093006681,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.852768779002154,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8727032721688927,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8863800669466909,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8255523212394869,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "event": "interference_amplification",
+                  "coherence": 0.8132052164931987,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8132052164931987,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.7837402217557372,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.7551273410674282,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "branching",
+                  "new_universe": "universe_0633f820",
+                  "coherence": 0.8071835466135888
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8071835466135888,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.7606979314555884,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.7606979314555884,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "event": "interference_amplification",
+                  "coherence": 0.7848845279001426,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.7848845279001426,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.898617742830706,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e3b05b39 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5690427
+            }
+          },
+          {
+            "universe_id": "universe_bb1a4efd",
+            "adapter_id": "adapter_universe_bb1a4efd",
+            "solution_quality": 0.478,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_bb1a4efd",
+              "evolution_steps": 12,
+              "final_coherence": 0.8119986071465116,
+              "final_interference_reach": 0.6,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8613820930778429,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8557839074009467,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7557633085183161,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8047475395385677,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.7958826843450914,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8674477211242076,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.802424278166007,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8543132021889156,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8471804774239292,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "branching",
+                  "new_universe": "universe_c21c2995",
+                  "coherence": 0.9290575960735328
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9290575960735328,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.9407894585648271,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8119986071465116,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_bb1a4efd approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5738766
+            }
+          },
+          {
+            "universe_id": "universe_4081e70a",
+            "adapter_id": "adapter_universe_4081e70a",
+            "solution_quality": 0.438,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_4081e70a",
+              "evolution_steps": 12,
+              "final_coherence": 0.8024881264118042,
+              "final_interference_reach": 0.55,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8810151494918963,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8416266467959566,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8398562711969768,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.7980092747698685,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.768545337680862,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.7659177283216803,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.803708042881024,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.7913757124070204,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.7080209247603241,
+                  "interference_reach": 0.55
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.7080209247603241,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.7770297643764021,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8200463429369638,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8024881264118042,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_4081e70a approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5758839
+            }
+          },
+          {
+            "universe_id": "universe_34db514f",
+            "adapter_id": "adapter_universe_34db514f",
+            "solution_quality": 0.433,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_34db514f",
+              "evolution_steps": 12,
+              "final_coherence": 1.0,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_2bf728a4",
+                  "coherence": 0.9847205104184268
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.9847205104184268,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_a06e6422",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 1,
+                  "coherence": 1.0,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 0.75
+                },
+                {
+                  "step": 2,
+                  "coherence": 1.0,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 0.8
+                },
+                {
+                  "step": 3,
+                  "coherence": 1.0,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "branching",
+                  "new_universe": "universe_05d51e0c",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 4,
+                  "coherence": 1.0,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 0.9500000000000001
+                },
+                {
+                  "step": 5,
+                  "coherence": 1.0,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 1.0,
+                  "artifact_count": 3,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "branching",
+                  "new_universe": "universe_ba62178b",
+                  "coherence": 1.0
+                },
+                {
+                  "step": 7,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 1.0,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_34db514f approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178184.5877225
+            }
+          }
+        ],
+        "recommendations": [
+          "Low confidence - explore alternative strategies",
+          "Cross-universe insights available - review for additional strategies"
+        ],
+        "next_steps": [
+          "Immediate action recommended based on multiverse analysis",
+          "High complexity detected - consider breaking into sub-problems",
+          "Monitor results and prepare alternative approaches",
+          "Consult with medical professionals before implementing treatment changes"
+        ]
+      },
+      "cross_universe_insights": [
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_bb1a4efd",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_bb1a4efd",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_bb1a4efd",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_bb1a4efd",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_bb1a4efd",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_4081e70a",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 1.0,
+          "echo_strength": 1.0
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_4081e70a",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_4081e70a",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_4081e70a",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_4081e70a",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e3b05b39",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_e3b05b39",
+          "relevance_score": 0.898617742830706,
+          "echo_strength": 0.898617742830706
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_41f8e099",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_41f8e099",
+          "relevance_score": 0.8835285744023592,
+          "echo_strength": 0.8835285744023592
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.8307989555972956,
+          "echo_strength": 0.8307989555972956
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.8286734429991377,
+          "echo_strength": 0.8286734429991377
+        }
+      ],
+      "processing_time": 0.14975214004516602,
+      "artifacts_generated": [
+        "cancer_multiverse_1768178184"
+      ],
+      "timestamp": 1768178184.701372
+    },
+    {
+      "solution_id": "solution_aa7c98db",
+      "query_id": "grandmas_fight_9b6c66d0",
+      "primary_universe": "universe_34db514f",
+      "contributing_universes": [
+        "universe_34db514f",
+        "universe_e3b05b39",
+        "universe_41f8e099",
+        "universe_e04efdd7",
+        "universe_7d421484",
+        "universe_c9cfe7ed",
+        "universe_9b3a756a",
+        "universe_91574330"
+      ],
+      "solution_quality": 0.45703458520634765,
+      "confidence": 1.0,
+      "solution_data": {
+        "primary_approach": "Universe universe_34db514f approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+        "multiverse_consensus": 0.45703458520634765,
+        "universe_results": [
+          {
+            "universe_id": "universe_34db514f",
+            "adapter_id": "adapter_universe_34db514f",
+            "solution_quality": 0.4985,
+            "interference_weight": 0.5,
+            "coherence_level": 1.0,
+            "evolution_result": {
+              "universe_id": "universe_34db514f",
+              "evolution_steps": 12,
+              "final_coherence": 0.7839613220612699,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 1.0,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 0.9381735027987448,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.9381735027987448,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.9429168197020652,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.9537865594304249,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "event": "branching",
+                  "new_universe": "universe_7df826e0",
+                  "coherence": 0.9086922715376571
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9086922715376571,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "event": "interference_amplification",
+                  "coherence": 0.8636975121356564,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8636975121356564,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8605499466398612,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8390876212043386,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.7917226289883303,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.7917226289883303,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.7398391450771059,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.7839613220612699,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_34db514f approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.4223354
+            }
+          },
+          {
+            "universe_id": "universe_e3b05b39",
+            "adapter_id": "adapter_universe_e3b05b39",
+            "solution_quality": 0.44207614962996916,
+            "interference_weight": 0.5,
+            "coherence_level": 0.898617742830706,
+            "evolution_result": {
+              "universe_id": "universe_e3b05b39",
+              "evolution_steps": 12,
+              "final_coherence": 0.6703749777008796,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_db2afba7",
+                  "coherence": 0.8742561916600282
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.8742561916600282,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8638761758799768,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8710780003015511,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 0.8381115406228774,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8381115406228774,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "branching",
+                  "new_universe": "universe_8ae74b2b",
+                  "coherence": 0.783290886342454
+                },
+                {
+                  "step": 4,
+                  "event": "interference_amplification",
+                  "coherence": 0.783290886342454,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.783290886342454,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8344185432532913,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8412992469656455,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8079849836564738,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.7261971229244417,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.7261971229244417,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.676710389860456,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.676710389860456,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.6598264767833152,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.6703749777008796,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.6703749777008796,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e3b05b39 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.4285176
+            }
+          },
+          {
+            "universe_id": "universe_41f8e099",
+            "adapter_id": "adapter_universe_41f8e099",
+            "solution_quality": 0.4817201800211501,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8835285744023592,
+            "evolution_result": {
+              "universe_id": "universe_41f8e099",
+              "evolution_steps": 12,
+              "final_coherence": 0.5263848372109657,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "event": "branching",
+                  "new_universe": "universe_4cda740d",
+                  "coherence": 0.8867641073691245
+                },
+                {
+                  "step": 0,
+                  "coherence": 0.8867641073691245,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8177644280097,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8388634646455639,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.7391875679574595,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "interference_amplification",
+                  "coherence": 0.7143283114489468,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.7143283114489468,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.6407384256969773,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.6886335784987989,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.6514804623931946,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.6601555829018623,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.6033368594055936,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.6033368594055936,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.5715187597199577,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.5263848372109657,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.5263848372109657,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_41f8e099 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.4336934
+            }
+          },
+          {
+            "universe_id": "universe_e04efdd7",
+            "adapter_id": "adapter_universe_e04efdd7",
+            "solution_quality": 0.46001449085368157,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8307989555972956,
+            "evolution_result": {
+              "universe_id": "universe_e04efdd7",
+              "evolution_steps": 12,
+              "final_coherence": 0.952567364598288,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.756880085643536,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.7972221115218426,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7810379536383517,
+                  "artifact_count": 4,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "branching",
+                  "new_universe": "universe_fdc2f130",
+                  "coherence": 0.8324315100250402
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8324315100250402,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8610342896692821,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.7717751477126347,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8475024019218356,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "interference_amplification",
+                  "coherence": 0.7892820967191346,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.7892820967191346,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8344014109326234,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.8753235326732955,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8890289597691804,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.952567364598288,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.952567364598288,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_e04efdd7 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.445079
+            }
+          },
+          {
+            "universe_id": "universe_7d421484",
+            "adapter_id": "adapter_universe_7d421484",
+            "solution_quality": 0.40397830346207964,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8286734429991377,
+            "evolution_result": {
+              "universe_id": "universe_7d421484",
+              "evolution_steps": 12,
+              "final_coherence": 0.9683516948799595,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.8151831454000439,
+                  "artifact_count": 9,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_050e27fb",
+                  "coherence": 0.7809608193266541
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.7809608193266541,
+                  "artifact_count": 10,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.801246035289841,
+                  "artifact_count": 10,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.8519861392400258,
+                  "artifact_count": 10,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "event": "branching",
+                  "new_universe": "universe_abec0ab2",
+                  "coherence": 0.8408944815432824
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.8408944815432824,
+                  "artifact_count": 11,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.8378858458396942,
+                  "artifact_count": 11,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.8406612086501052,
+                  "artifact_count": 11,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.8214266611728255,
+                  "artifact_count": 11,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "branching",
+                  "new_universe": "universe_32e7f6ef",
+                  "coherence": 0.8437735553117076
+                },
+                {
+                  "step": 8,
+                  "event": "interference_amplification",
+                  "coherence": 0.8437735553117076,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8437735553117076,
+                  "artifact_count": 12,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "branching",
+                  "new_universe": "universe_fd1137f5",
+                  "coherence": 0.9340521912449946
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.9340521912449946,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9340521912449946,
+                  "artifact_count": 13,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8998985429615819,
+                  "artifact_count": 13,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.9683516948799595,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.9683516948799595,
+                  "artifact_count": 13,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_7d421484 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.4557905
+            }
+          },
+          {
+            "universe_id": "universe_c9cfe7ed",
+            "adapter_id": "adapter_universe_c9cfe7ed",
+            "solution_quality": 0.43298755768390096,
+            "interference_weight": 0.5,
+            "coherence_level": 0.691256528582361,
+            "evolution_result": {
+              "universe_id": "universe_c9cfe7ed",
+              "evolution_steps": 12,
+              "final_coherence": 0.8166839204340809,
+              "final_interference_reach": 1.0,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.7598652587131809,
+                  "artifact_count": 5,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "branching",
+                  "new_universe": "universe_c112769a",
+                  "coherence": 0.7490706179948129
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.7490706179948129,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.7490706179948129,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "event": "interference_amplification",
+                  "coherence": 0.7776939805985473,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.7776939805985473,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.7569053207527254,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.6851117379360647,
+                  "artifact_count": 6,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "event": "branching",
+                  "new_universe": "universe_cc4ee319",
+                  "coherence": 0.6700410929739369
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.6700410929739369,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.6786488568723607,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.759257052280454,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.8217827891179253,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.8248016076749791,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.8665204470583564,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "interference_amplification",
+                  "coherence": 0.8166839204340809,
+                  "interference_reach": 1.0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8166839204340809,
+                  "artifact_count": 7,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_c9cfe7ed approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.462505
+            }
+          },
+          {
+            "universe_id": "universe_9b3a756a",
+            "adapter_id": "adapter_universe_9b3a756a",
+            "solution_quality": 0.488,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_9b3a756a",
+              "evolution_steps": 12,
+              "final_coherence": 0.6085530357423591,
+              "final_interference_reach": 0.7500000000000001,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.7910680564794331,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.718189547571436,
+                  "interference_reach": 0.55
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.718189547571436,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.657949726998271,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "branching",
+                  "new_universe": "universe_22742fff",
+                  "coherence": 0.6027975615657827
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.6027975615657827,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.563808452097599,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.5168606441793943,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.58723753572092,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "event": "interference_amplification",
+                  "coherence": 0.5904430908998998,
+                  "interference_reach": 0.7000000000000001
+                },
+                {
+                  "step": 7,
+                  "coherence": 0.5904430908998998,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.6686182086161724,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "event": "interference_amplification",
+                  "coherence": 0.6662880181675532,
+                  "interference_reach": 0.7500000000000001
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.6662880181675532,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.5770706702885162,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.6085530357423591,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_9b3a756a approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.4670682
+            }
+          },
+          {
+            "universe_id": "universe_91574330",
+            "adapter_id": "adapter_universe_91574330",
+            "solution_quality": 0.449,
+            "interference_weight": 0.5,
+            "coherence_level": 0.8,
+            "evolution_result": {
+              "universe_id": "universe_91574330",
+              "evolution_steps": 12,
+              "final_coherence": 0.8226015365951929,
+              "final_interference_reach": 0.8,
+              "events": [
+                {
+                  "step": 0,
+                  "coherence": 0.9519257302103462,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 1,
+                  "event": "interference_amplification",
+                  "coherence": 0.8648878835148811,
+                  "interference_reach": 0.55
+                },
+                {
+                  "step": 1,
+                  "coherence": 0.8648878835148811,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 2,
+                  "coherence": 0.8935121153371562,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 3,
+                  "event": "interference_amplification",
+                  "coherence": 0.864693219142415,
+                  "interference_reach": 0.6000000000000001
+                },
+                {
+                  "step": 3,
+                  "coherence": 0.864693219142415,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 4,
+                  "coherence": 0.919681969240443,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 5,
+                  "coherence": 0.9589102164628999,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 6,
+                  "coherence": 0.9807745754040134,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 7,
+                  "coherence": 1.0,
+                  "artifact_count": 0,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 8,
+                  "event": "branching",
+                  "new_universe": "universe_944737e4",
+                  "coherence": 0.9455507021428068
+                },
+                {
+                  "step": 8,
+                  "coherence": 0.9455507021428068,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 9,
+                  "coherence": 0.9519534976734763,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 10,
+                  "coherence": 0.872941673238296,
+                  "artifact_count": 1,
+                  "total_solutions": 0
+                },
+                {
+                  "step": 11,
+                  "event": "branching",
+                  "new_universe": "universe_7f616113",
+                  "coherence": 0.8226015365951929
+                },
+                {
+                  "step": 11,
+                  "coherence": 0.8226015365951929,
+                  "artifact_count": 2,
+                  "total_solutions": 0
+                }
+              ]
+            },
+            "universe_insights": "Universe universe_91574330 approach to Find optimal cancer treatment for elderly patient with advanced stage cancer",
+            "processing_metadata": {
+              "query_domain": "cancer_treatment",
+              "complexity": 0.95,
+              "urgency": "high",
+              "timestamp": 1768178204.473879
+            }
+          }
+        ],
+        "recommendations": [
+          "Low confidence - explore alternative strategies",
+          "Cross-universe insights available - review for additional strategies"
+        ],
+        "next_steps": [
+          "Immediate action recommended based on multiverse analysis",
+          "High complexity detected - consider breaking into sub-problems",
+          "Monitor results and prepare alternative approaches",
+          "Consult with medical professionals before implementing treatment changes"
+        ]
+      },
+      "cross_universe_insights": [
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_34db514f",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.7376661315526682,
+          "echo_strength": 0.7376661315526682
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_e3b05b39",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.7573372283940728,
+          "echo_strength": 0.7573372283940728
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_41f8e099",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.7770083252354772,
+          "echo_strength": 0.7770083252354772
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.7966794220768818,
+          "echo_strength": 0.7966794220768818
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_e04efdd7",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.8163505189182862,
+          "echo_strength": 0.8163505189182862
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_7d421484",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.8360216157596908,
+          "echo_strength": 0.8360216157596908
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_c9cfe7ed",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_9b3a756a",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_9b3a756a",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_9b3a756a",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.8556927126010953,
+          "echo_strength": 0.8556927126010953
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_9b3a756a",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_9b3a756a",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_7d421484",
+          "target_universe": "universe_91574330",
+          "insight": "Cross-universe insight from universe_7d421484",
+          "relevance_score": 0.9683516948799595,
+          "echo_strength": 0.9683516948799595
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_e04efdd7",
+          "target_universe": "universe_91574330",
+          "insight": "Cross-universe insight from universe_e04efdd7",
+          "relevance_score": 0.952567364598288,
+          "echo_strength": 0.952567364598288
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_b908bbd7",
+          "target_universe": "universe_91574330",
+          "insight": "Cross-universe insight from universe_b908bbd7",
+          "relevance_score": 0.8753638094424998,
+          "echo_strength": 0.8753638094424998
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_c9cfe7ed",
+          "target_universe": "universe_91574330",
+          "insight": "Cross-universe insight from universe_c9cfe7ed",
+          "relevance_score": 0.8166839204340809,
+          "echo_strength": 0.8166839204340809
+        },
+        {
+          "type": "cross_universe_transfer",
+          "source_universe": "universe_34db514f",
+          "target_universe": "universe_91574330",
+          "insight": "Cross-universe insight from universe_34db514f",
+          "relevance_score": 0.7839613220612699,
+          "echo_strength": 0.7839613220612699
+        }
+      ],
+      "processing_time": 0.14040398597717285,
+      "artifacts_generated": [
+        "cancer_multiverse_1768178204"
+      ],
+      "timestamp": 1768178204.5743244
+    }
+  ],
+  "last_updated": 1768178204.5744038
+}
