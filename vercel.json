@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "framework": "none",
   "name": "jarvis-ai-chatbot",
   "builds": [
     {
