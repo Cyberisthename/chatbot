@@ -1,0 +1,68 @@
+{
+  "type": "interference_amplification",
+  "experiment_id": "interference_1768178184",
+  "base_universes": [
+    "universe_86ddb161",
+    "universe_fe76d3bc",
+    "universe_780e97cb"
+  ],
+  "interference_results": [
+    {
+      "source_universe": "universe_86ddb161",
+      "target_universe": "universe_fe76d3bc",
+      "interference_strength": 0.1910828025477707,
+      "amplification_factor": 0.9179700727573772,
+      "final_coherence": 0.17540829415746062
+    },
+    {
+      "source_universe": "universe_86ddb161",
+      "target_universe": "universe_780e97cb",
+      "interference_strength": 0.1727447216890595,
+      "amplification_factor": 1.2015360623868683,
+      "final_coherence": 0.207559012696388
+    },
+    {
+      "source_universe": "universe_fe76d3bc",
+      "target_universe": "universe_86ddb161",
+      "interference_strength": 0.1910828025477707,
+      "amplification_factor": 1.1394520036114502,
+      "final_coherence": 0.21772968221874844
+    },
+    {
+      "source_universe": "universe_fe76d3bc",
+      "target_universe": "universe_780e97cb",
+      "interference_strength": 0.10089686098654709,
+      "amplification_factor": 0.9562312932893549,
+      "final_coherence": 0.09648073587000217
+    },
+    {
+      "source_universe": "universe_780e97cb",
+      "target_universe": "universe_86ddb161",
+      "interference_strength": 0.1727447216890595,
+      "amplification_factor": 0.9598524905802146,
+      "final_coherence": 0.16580945134782976
+    },
+    {
+      "source_universe": "universe_780e97cb",
+      "target_universe": "universe_fe76d3bc",
+      "interference_strength": 0.10089686098654709,
+      "amplification_factor": 1.0824720627149549,
+      "final_coherence": 0.10921803323357168
+    }
+  ],
+  "config": {
+    "experiment_type": "interference_amplification",
+    "iterations": 1000,
+    "noise_level": 0.1,
+    "seed": null,
+    "parameters": null,
+    "universe_count": 3,
+    "parallel_simulations": 2,
+    "cross_universe_transfer": true,
+    "interference_amplification": true,
+    "branching_probability": 0.3,
+    "coherence_threshold": 0.7,
+    "multiversal_artifact_storage": true
+  },
+  "timestamp": 1768178184.7194638
+}
