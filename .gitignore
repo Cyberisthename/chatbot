@@ -190,3 +190,7 @@ build/
 # Environment variables
 .env.local
 .env.production
+
+# EGF Data
+egf_data/
+egf_demo_data/
