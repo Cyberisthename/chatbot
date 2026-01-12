@@ -4,12 +4,10 @@ Multiversal computing for protein folding: run parallel "universes" each with
 different random initialization, optimization strategy, or parameter choices.
 
 Each "universe" corresponds to a separate folding trajectory in conformational
-space. The system runs them in parallel (via threading or multiprocessing),
-and aggregates results to find the best conformation(s) and perform statistical
-analysis.
+space. The system runs them in parallel (via multiprocessing for true CPU
+concurrency, avoiding the Python GIL).
 
-This is a real parallel computing approach, not mock/fake - each universe
-performs actual physics-based energy minimization concurrently.
+This is a real parallel computing approach, not mock/fake.
 """
 
 from __future__ import annotations
@@ -41,9 +39,7 @@ class UniverseConfig:
     seed: int
     steps: int = 5000
     t_start: float = 2.0
-    t_end: float = 0.2
-    max_torsion_step: float = math.radians(25.0)
-    max_cartesian_jitter: float = 0.75
+    t_end: float = 0.1
     params_override: Optional[Dict[str, Any]] = None
 
 
@@ -100,6 +96,54 @@ class MultiversalResult:
         }
 
 
+def _fold_universe_worker(
+    sequence: str,
+    config: UniverseConfig,
+    artifacts_dir: Path,
+) -> UniverseResult:
+    """Top-level worker function for multiprocessing."""
+    logger.info("[%s] Starting fold (seed=%d, steps=%d)", config.universe_id, config.seed, config.steps)
+    start = time.time()
+
+    # Build engine
+    params = FoldingParameters()
+    if config.params_override:
+        for k, v in config.params_override.items():
+            setattr(params, k, v)
+
+    engine = ProteinFoldingEngine(artifacts_dir=artifacts_dir, params=params)
+
+    initial = engine.initialize_extended_chain(sequence, seed=config.seed)
+
+    result = engine.metropolis_anneal(
+        initial,
+        steps=config.steps,
+        t_start=config.t_start,
+        t_end=config.t_end,
+        seed=config.seed,
+    )
+
+    runtime = time.time() - start
+
+    universe_result = UniverseResult(
+        universe_id=config.universe_id,
+        seed=config.seed,
+        best_energy=result["best_energy"],
+        final_energy=result["final_energy"],
+        acceptance_rate=result["acceptance_rate"],
+        runtime_s=runtime,
+        best_structure=result["best_structure"],
+        trajectory=result["trajectory"],
+        metadata={
+            "steps": config.steps,
+            "t_start": config.t_start,
+            "t_end": config.t_end,
+        },
+    )
+    logger.info("[%s] Fold complete: E=%.6f (runtime=%.3fs)", config.universe_id, universe_result.best_energy, runtime)
+    return universe_result
+
+
 class MultiversalProteinComputer:
     """Compute protein folding across parallel universes."""
 
@@ -114,11 +158,13 @@ class MultiversalProteinComputer:
         self._setup_logging(log_level)
 
     def _setup_logging(self, log_level: int):
-        logging.basicConfig(
-            level=log_level,
-            format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
+        # Only setup if not already configured
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level,
+                format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
 
     def fold_multiversal(
         self,
@@ -126,34 +172,17 @@ class MultiversalProteinComputer:
         n_universes: int = 4,
         steps_per_universe: int = 5000,
         t_start: float = 2.0,
-        t_end: float = 0.2,
+        t_end: float = 0.1,
         base_seed: int = 42,
         max_workers: Optional[int] = None,
         save_artifacts: bool = True,
     ) -> MultiversalResult:
         """
-        Fold a sequence across multiple parallel universes.
-
-        Each universe uses a different random seed to explore a different
-        folding pathway, leading to potentially different local minima.
-
-        Args:
-            sequence: Amino acid sequence
-            n_universes: Number of parallel universes
-            steps_per_universe: Optimization steps per universe
-            t_start: Starting temperature for annealing
-            t_end: Ending temperature for annealing
-            base_seed: Base random seed (each universe gets base_seed+i)
-            max_workers: Max parallel threads. None uses default.
-            save_artifacts: If True, save results to disk
-
-        Returns:
-            MultiversalResult with aggregated statistics and best structure
+        Fold a sequence across multiple parallel universes using ProcessPoolExecutor.
         """
-        logger.info("==== MULTIVERSAL PROTEIN FOLDING START ====")
+        logger.info("==== MULTIVERSAL PROTEIN FOLDING START (ProcessPool) ====")
         logger.info("Sequence: %s (length=%d)", sequence, len(sequence))
         logger.info("Universes: %d | Steps/universe: %d", n_universes, steps_per_universe)
-        logger.info("Temperature: %.2f -> %.2f", t_start, t_end)
 
         start_time = time.time()
 
@@ -169,11 +198,14 @@ class MultiversalProteinComputer:
             )
             configs.append(cfg)
 
-        # Run universes in parallel
+        # Run universes in parallel using processes to bypass GIL
         results: List[UniverseResult] = []
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_map = {executor.submit(self._fold_universe, sequence, cfg): cfg for cfg in configs}
+        with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+            future_map = {
+                executor.submit(_fold_universe_worker, sequence, cfg, self.artifacts_dir): cfg 
+                for cfg in configs
+            }
 
             for future in concurrent.futures.as_completed(future_map):
                 cfg = future_map[future]
@@ -191,12 +223,14 @@ class MultiversalProteinComputer:
                     logger.error("Universe %s failed: %s", cfg.universe_id, exc)
 
         total_time = time.time() - start_time
+        if not results:
+            raise RuntimeError("All universe computations failed.")
 
         # Aggregate
         best = min(results, key=lambda r: r.best_energy)
         energies = [r.best_energy for r in results]
         mean_e = sum(energies) / len(energies)
-        std_e = (sum((e - mean_e) ** 2 for e in energies) / len(energies)) ** 0.5
+        std_e = (sum((e - mean_e) ** 2 for e in energies) / len(energies)) ** 0.5 if len(energies) > 1 else 0.0
 
         multiversal_result = MultiversalResult(
             sequence=sequence,
@@ -211,62 +245,12 @@ class MultiversalProteinComputer:
 
         logger.info("==== MULTIVERSAL PROTEIN FOLDING COMPLETE ====")
         logger.info("Best universe: %s | E=%.6f", best.universe_id, best.best_energy)
-        logger.info("Energy stats: mean=%.6f std=%.6f", mean_e, std_e)
         logger.info("Total runtime: %.3f s", total_time)
 
         if save_artifacts:
             self._save_multiversal_artifact(multiversal_result)
 
         return multiversal_result
-
-    def _fold_universe(
-        self,
-        sequence: str,
-        config: UniverseConfig,
-    ) -> UniverseResult:
-        """Worker function: fold in a single universe."""
-        logger.info("[%s] Starting fold (seed=%d, steps=%d)", config.universe_id, config.seed, config.steps)
-        start = time.time()
-
-        # Build engine (could override params if config specifies)
-        params = FoldingParameters()
-        if config.params_override:
-            for k, v in config.params_override.items():
-                setattr(params, k, v)
-
-        engine = ProteinFoldingEngine(artifacts_dir=self.artifacts_dir, params=params)
-
-        initial = engine.initialize_extended_chain(sequence, seed=config.seed)
-
-        result = engine.metropolis_anneal(
-            initial,
-            steps=config.steps,
-            t_start=config.t_start,
-            t_end=config.t_end,
-            max_torsion_step=config.max_torsion_step,
-            max_cartesian_jitter=config.max_cartesian_jitter,
-            seed=config.seed,
-        )
-
-        runtime = time.time() - start
-
-        universe_result = UniverseResult(
-            universe_id=config.universe_id,
-            seed=config.seed,
-            best_energy=result["best_energy"],
-            final_energy=result["final_energy"],
-            acceptance_rate=result["acceptance_rate"],
-            runtime_s=runtime,
-            best_structure=result["best_structure"],
-            trajectory=result["trajectory"],
-            metadata={
-                "steps": config.steps,
-                "t_start": config.t_start,
-                "t_end": config.t_end,
-            },
-        )
-        logger.info("[%s] Fold complete: E=%.6f (runtime=%.3fs)", config.universe_id, universe_result.best_energy, runtime)
-        return universe_result
 
     def _save_multiversal_artifact(self, result: MultiversalResult) -> str:
         """Save the multiversal result (all universes) as a JSON artifact."""

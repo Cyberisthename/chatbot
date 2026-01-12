@@ -8,6 +8,8 @@ import logging
 import math
 import time
 import uuid
+import multiprocessing
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -17,6 +19,132 @@ from ..quantum.multiversal_quantum import MultiversalQuantumEngine, MultiversalE
 
 
 logger = logging.getLogger(__name__)
+
+
+def _universe_worker_func(adapter: MultiversalAdapter, query: 'MultiversalQuery', 
+                         interference_weight: float, config: Dict[str, Any]) -> Dict[str, Any]:
+    """Worker function for parallel universe computation"""
+    from .multiversal_adapters import MultiversalComputeEngine
+    
+    # Initialize engine in this process
+    multiverse_engine = MultiversalComputeEngine(config)
+    
+    if query.problem_domain == "protein_folding":
+        # Protein folding logic
+        from ..multiversal.protein_folding_engine import ProteinFoldingEngine
+        
+        constraints = query.constraints or {}
+        sequence = (constraints.get("sequence") or "").strip().upper()
+        if not sequence:
+            return {"error": "protein_folding requires constraints.sequence"}
+
+        steps = int(constraints.get("steps_per_universe", 5000))
+        t_start = float(constraints.get("t_start", 2.0))
+        t_end = float(constraints.get("t_end", 0.1))
+
+        seed = int(constraints.get("seed") or (abs(hash(adapter.universe_id + query.query_id)) % 2_147_483_647))
+
+        evolution_result = multiverse_engine.simulate_universe_evolution(
+            adapter.universe_id, steps=query.simulation_steps
+        )
+
+        engine = ProteinFoldingEngine(artifacts_dir="./protein_folding_artifacts")
+        initial = engine.initialize_extended_chain(sequence, seed=seed)
+
+        log_every = max(1, min(250, steps // 10))
+        folding_result = engine.metropolis_anneal(
+            initial,
+            steps=steps,
+            t_start=t_start,
+            t_end=t_end,
+            seed=seed,
+            log_every=log_every,
+        )
+
+        best_energy = float(folding_result["best_energy"])
+        final_energy = float(folding_result["final_energy"])
+        acceptance_rate = float(folding_result["acceptance_rate"])
+
+        # Map energy to quality in [0,1]; lower energy => higher quality
+        solution_quality = 1.0 / (1.0 + math.exp(best_energy / 10.0))
+        solution_quality *= (0.5 + 0.5 * interference_weight) * adapter.coherence_level
+        solution_quality = max(0.0, min(1.0, solution_quality))
+
+        artifact_path = engine.save_artifact(
+            run_id=f"{query.query_id}_{adapter.universe_id}",
+            payload={
+                "query_id": query.query_id,
+                "universe_id": adapter.universe_id,
+                "sequence": sequence,
+                "initial_structure": initial,
+                "best_structure": folding_result["best_structure"],
+                "best_energy": best_energy,
+                "final_energy": final_energy,
+                "acceptance_rate": acceptance_rate,
+                "trajectory": folding_result["trajectory"],
+                "parameters": {
+                    "steps": steps,
+                    "t_start": t_start,
+                    "t_end": t_end,
+                    "seed": seed,
+                },
+            },
+            filename_prefix="protein_fold_universe",
+        )
+
+        return {
+            "universe_id": adapter.universe_id,
+            "adapter_id": adapter.id,
+            "solution_quality": solution_quality,
+            "interference_weight": interference_weight,
+            "coherence_level": adapter.coherence_level,
+            "evolution_result": evolution_result,
+            "universe_insights": f"Protein folding trajectory with best_energy={best_energy:.6f}",
+            "protein_folding": {
+                "sequence": sequence,
+                "seed": seed,
+                "steps": steps,
+                "t_start": t_start,
+                "t_end": t_end,
+                "best_energy": best_energy,
+                "final_energy": final_energy,
+                "acceptance_rate": acceptance_rate,
+                "best_structure": folding_result["best_structure"].to_dict(),
+                "artifact_path": artifact_path,
+            },
+            "processing_metadata": {
+                "query_domain": query.problem_domain,
+                "complexity": query.complexity,
+                "urgency": query.urgency,
+                "timestamp": time.time(),
+            },
+        }
+    else:
+        # Default logic
+        evolution_result = multiverse_engine.simulate_universe_evolution(
+            adapter.universe_id, steps=query.simulation_steps
+        )
+
+        solution_quality = min(1.0, (adapter.coherence_level * interference_weight *
+                                   (0.5 + query.complexity * 0.5)))
+        solution_quality += (hash(adapter.universe_id + query.query_id) % 100) / 1000
+        solution_quality = max(0.1, min(1.0, solution_quality))
+
+        return {
+            "universe_id": adapter.universe_id,
+            "adapter_id": adapter.id,
+            "solution_quality": solution_quality,
+            "interference_weight": interference_weight,
+            "coherence_level": adapter.coherence_level,
+            "evolution_result": evolution_result,
+            "universe_insights": f"Universe {adapter.universe_id} approach to {query.problem_description}",
+            "processing_metadata": {
+                "query_domain": query.problem_domain,
+                "complexity": query.complexity,
+                "urgency": query.urgency,
+                "timestamp": time.time()
+            }
+        }
 
 
 @dataclass
@@ -147,9 +275,29 @@ class MultiversalComputeSystem:
         
         # Step 3: Execute computation across universes
         universe_results = []
-        for adapter, interference_weight in routed_universes:
-            result = self._execute_universe_computation(adapter, query, interference_weight)
-            universe_results.append(result)
+        
+        # Parallel execution using ProcessPoolExecutor for true CPU parallelism
+        # (avoiding GIL issues with heavy energy loops)
+        num_workers = min(len(routed_universes), multiprocessing.cpu_count())
+        
+        if num_workers > 1:
+            print(f"🚀 Executing across {len(routed_universes)} universes in parallel ({num_workers} workers)")
+            with ProcessPoolExecutor(max_workers=num_workers) as executor:
+                futures = []
+                for adapter, interference_weight in routed_universes:
+                    futures.append(executor.submit(
+                        _universe_worker_func, 
+                        adapter, 
+                        query, 
+                        interference_weight, 
+                        self.config
+                    ))
+                for f in futures:
+                    universe_results.append(f.result())
+        else:
+            for adapter, interference_weight in routed_universes:
+                result = self._execute_universe_computation(adapter, query, interference_weight)
+                universe_results.append(result)
         
         # Step 4: Cross-universe knowledge transfer (if enabled)
         cross_universe_insights = []
@@ -242,171 +390,14 @@ class MultiversalComputeSystem:
         
         return relevant_universes[:query.max_universes]
     
-    def _execute_universe_computation(self, adapter: MultiversalAdapter, 
+    def _execute_universe_computation(self, adapter: MultiversalAdapter,
                                     query: MultiversalQuery, interference_weight: float) -> Dict[str, Any]:
         """Execute computation in a specific universe.
 
-        For most domains, this uses the existing multiversal simulation.
-
-        For protein_folding, this runs REAL physics-based folding (not mock).
+        Calls the worker function to maintain consistency between sequential and parallel execution.
         """
+        return _universe_worker_func(adapter, query, interference_weight, self.config)
 
-        if query.problem_domain == "protein_folding":
-            return self._execute_protein_folding_universe(adapter, query, interference_weight)
-
-        # Simulate universe evolution
-        evolution_result = self.multiverse_engine.simulate_universe_evolution(
-            adapter.universe_id, steps=query.simulation_steps
-        )
-
-        # Generate universe-specific solution
-        solution_quality = min(1.0, (adapter.coherence_level * interference_weight *
-                                   (0.5 + query.complexity * 0.5)))
-
-        # Add some randomness
-        solution_quality += (hash(adapter.universe_id + query.query_id) % 100) / 1000
-        solution_quality = max(0.1, min(1.0, solution_quality))
-
-        universe_solution = {
-            "universe_id": adapter.universe_id,
-            "adapter_id": adapter.id,
-            "solution_quality": solution_quality,
-            "interference_weight": interference_weight,
-            "coherence_level": adapter.coherence_level,
-            "evolution_result": evolution_result,
-            "universe_insights": f"Universe {adapter.universe_id} approach to {query.problem_description}",
-            "processing_metadata": {
-                "query_domain": query.problem_domain,
-                "complexity": query.complexity,
-                "urgency": query.urgency,
-                "timestamp": time.time()
-            }
-        }
-
-        return universe_solution
-
-    def _execute_protein_folding_universe(
-        self,
-        adapter: MultiversalAdapter,
-        query: MultiversalQuery,
-        interference_weight: float,
-    ) -> Dict[str, Any]:
-        """REAL protein folding in a single universe.
-
-        Expected query.constraints:
-          - sequence: str (required)
-          - steps_per_universe: int (optional)
-          - t_start: float (optional)
-          - t_end: float (optional)
-          - seed: int (optional)
-
-        Returns a universe result with best_energy, final_energy, best_structure, and artifact_path.
-        """
-        from ..multiversal.protein_folding_engine import ProteinFoldingEngine
-
-        constraints = query.constraints or {}
-        sequence = (constraints.get("sequence") or "").strip().upper()
-        if not sequence:
-            raise ValueError("protein_folding requires constraints.sequence")
-
-        valid = set("ACDEFGHIKLMNPQRSTVWY")
-        if not all(aa in valid for aa in sequence):
-            raise ValueError("Invalid amino acid sequence for protein_folding")
-
-        steps = int(constraints.get("steps_per_universe", 5000))
-        t_start = float(constraints.get("t_start", 2.0))
-        t_end = float(constraints.get("t_end", 0.2))
-
-        # Deterministic per-universe seed unless provided
-        seed = int(constraints.get("seed") or (abs(hash(adapter.universe_id + query.query_id)) % 2_147_483_647))
-
-        # Keep universe evolution for continuity with the multiverse engine
-        evolution_result = self.multiverse_engine.simulate_universe_evolution(
-            adapter.universe_id, steps=query.simulation_steps
-        )
-
-        engine = ProteinFoldingEngine(artifacts_dir="./protein_folding_artifacts")
-        initial = engine.initialize_extended_chain(sequence, seed=seed)
-
-        log_every = max(1, min(250, steps // 10))
-        folding_result = engine.metropolis_anneal(
-            initial,
-            steps=steps,
-            t_start=t_start,
-            t_end=t_end,
-            seed=seed,
-            log_every=log_every,
-        )
-
-        best_energy = float(folding_result["best_energy"])
-        final_energy = float(folding_result["final_energy"])
-        acceptance_rate = float(folding_result["acceptance_rate"])
-
-        # Map energy to quality in [0,1]; lower energy => higher quality
-        # The exp transform keeps it stable for large magnitudes.
-        solution_quality = 1.0 / (1.0 + math.exp(best_energy / 10.0))
-        solution_quality *= (0.5 + 0.5 * interference_weight) * adapter.coherence_level
-        solution_quality = max(0.0, min(1.0, solution_quality))
-
-        artifact_path = engine.save_artifact(
-            run_id=f"{query.query_id}_{adapter.universe_id}",
-            payload={
-                "query_id": query.query_id,
-                "universe_id": adapter.universe_id,
-                "sequence": sequence,
-                "initial_structure": initial,
-                "best_structure": folding_result["best_structure"],
-                "best_energy": best_energy,
-                "final_energy": final_energy,
-                "acceptance_rate": acceptance_rate,
-                "trajectory": folding_result["trajectory"],
-                "parameters": {
-                    "steps": steps,
-                    "t_start": t_start,
-                    "t_end": t_end,
-                    "seed": seed,
-                },
-            },
-            filename_prefix="protein_fold_universe",
-        )
-
-        logger.info(
-            "protein_folding universe=%s best_energy=%.6f final_energy=%.6f acc=%.3f artifact=%s",
-            adapter.universe_id,
-            best_energy,
-            final_energy,
-            acceptance_rate,
-            artifact_path,
-        )
-
-        return {
-            "universe_id": adapter.universe_id,
-            "adapter_id": adapter.id,
-            "solution_quality": solution_quality,
-            "interference_weight": interference_weight,
-            "coherence_level": adapter.coherence_level,
-            "evolution_result": evolution_result,
-            "universe_insights": f"Protein folding trajectory with best_energy={best_energy:.6f}",
-            "protein_folding": {
-                "sequence": sequence,
-                "seed": seed,
-                "steps": steps,
-                "t_start": t_start,
-                "t_end": t_end,
-                "best_energy": best_energy,
-                "final_energy": final_energy,
-                "acceptance_rate": acceptance_rate,
-                "best_structure": folding_result["best_structure"].to_dict(),
-                "artifact_path": artifact_path,
-            },
-            "processing_metadata": {
-                "query_domain": query.problem_domain,
-                "complexity": query.complexity,
-                "urgency": query.urgency,
-                "timestamp": time.time(),
-            },
-        }
-    
     def _perform_cross_universe_transfer(self, universe_results: List[Dict[str, Any]], 
                                       query: MultiversalQuery) -> List[Dict[str, Any]]:
         """Perform cross-universe knowledge transfer"""
