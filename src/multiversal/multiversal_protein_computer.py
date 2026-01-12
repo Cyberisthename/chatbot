@@ -40,6 +40,8 @@ class UniverseConfig:
     max_torsion_step: float = math.radians(25.0)
     max_cartesian_jitter: float = 0.75
     params_override: Optional[Dict[str, Any]] = None
+    initial_structure: Optional[ProteinStructure] = None
+    consensus_coords: Optional[List[Tuple[float, float, float]]] = None
 
 
 @dataclass
@@ -109,7 +111,17 @@ def _fold_universe_worker(sequence: str, config: UniverseConfig, artifacts_dir: 
             setattr(params, k, v)
 
     engine = ProteinFoldingEngine(artifacts_dir=artifacts_dir, params=params)
-    initial = engine.initialize_extended_chain(sequence, seed=config.seed)
+    
+    if config.initial_structure:
+        initial = config.initial_structure
+    else:
+        initial = engine.initialize_extended_chain(sequence, seed=config.seed)
+
+    if config.consensus_coords:
+        engine.params.consensus_coords = config.consensus_coords
+        # If consensus is set, we use a small consensus_k by default if not overridden
+        if engine.params.consensus_k == 0:
+            engine.params.consensus_k = 0.05
 
     result = engine.metropolis_anneal(
         initial,
@@ -170,65 +182,90 @@ class MultiversalProteinComputer:
         base_seed: int = 42,
         max_workers: Optional[int] = None,
         save_artifacts: bool = True,
+        n_cycles: int = 5,
     ) -> MultiversalResult:
-        """Fold a sequence across multiple parallel universes."""
+        """Fold a sequence across multiple parallel universes with inter-universal consensus sharing."""
 
-        logger.info("==== MULTIVERSAL PROTEIN FOLDING START ====")
+        logger.info("==== MULTIVERSAL PROTEIN FOLDING START (V2 - CONSENSUS) ====")
         logger.info("Sequence: %s (length=%d)", sequence, len(sequence))
-        logger.info("Universes: %d | Steps/universe: %d", n_universes, steps_per_universe)
+        logger.info("Universes: %d | Total Steps/universe: %d | Cycles: %d", n_universes, steps_per_universe, n_cycles)
         logger.info("Temperature: %.2f -> %.2f", t_start, t_end)
 
         start_time = time.time()
+        steps_per_cycle = max(100, steps_per_universe // n_cycles)
 
-        configs: List[UniverseConfig] = []
-        for i in range(n_universes):
-            configs.append(
-                UniverseConfig(
-                    universe_id=f"universe_{i:03d}",
-                    seed=base_seed + i,
-                    steps=steps_per_universe,
-                    t_start=t_start,
-                    t_end=t_end,
-                )
-            )
+        current_structures: List[Optional[ProteinStructure]] = [None] * n_universes
+        consensus_coords: Optional[List[Tuple[float, float, float]]] = None
+        all_universe_results: List[UniverseResult] = []
 
-        results: List[UniverseResult] = []
+        for cycle in range(n_cycles):
+            logger.info("--- Cycle %d/%d ---", cycle + 1, n_cycles)
+            
+            # Linear temperature schedule across cycles
+            cycle_t_start = t_start + (t_end - t_start) * (cycle / n_cycles)
+            cycle_t_end = t_start + (t_end - t_start) * ((cycle + 1) / n_cycles)
 
-        # Use processes for real CPU parallelism.
-        with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-            future_map = {
-                executor.submit(_fold_universe_worker, sequence, cfg, str(self.artifacts_dir)): cfg for cfg in configs
-            }
-
-            for future in concurrent.futures.as_completed(future_map):
-                cfg = future_map[future]
-                try:
-                    result = future.result()
-                    results.append(result)
-                    logger.info(
-                        "Universe %s complete: best_E=%.6f runtime=%.3fs acc=%.3f",
-                        result.universe_id,
-                        result.best_energy,
-                        result.runtime_s,
-                        result.acceptance_rate,
+            configs: List[UniverseConfig] = []
+            for i in range(n_universes):
+                configs.append(
+                    UniverseConfig(
+                        universe_id=f"universe_{i:03d}_cycle_{cycle}",
+                        seed=base_seed + i + (cycle * n_universes),
+                        steps=steps_per_cycle,
+                        t_start=cycle_t_start,
+                        t_end=cycle_t_end,
+                        initial_structure=current_structures[i],
+                        consensus_coords=consensus_coords,
+                        params_override={"consensus_k": 0.1 * (cycle / n_cycles)} # Increase consensus bias over time
                     )
-                except Exception as exc:
-                    logger.error("Universe %s failed: %s", cfg.universe_id, exc)
+                )
+
+            cycle_results: List[UniverseResult] = []
+            with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+                future_map = {
+                    executor.submit(_fold_universe_worker, sequence, cfg, str(self.artifacts_dir)): i 
+                    for i, cfg in enumerate(configs)
+                }
+
+                for future in concurrent.futures.as_completed(future_map):
+                    idx = future_map[future]
+                    try:
+                        result = future.result()
+                        cycle_results.append(result)
+                        current_structures[idx] = result.best_structure
+                    except Exception as exc:
+                        logger.error("Universe index %d failed in cycle %d: %s", idx, cycle, exc)
+
+            if not cycle_results:
+                logger.error("All universes failed in cycle %d", cycle)
+                continue
+
+            # Update consensus from the best found so far in this cycle
+            best_in_cycle = min(cycle_results, key=lambda r: r.best_energy)
+            consensus_coords = best_in_cycle.best_structure.coords
+            
+            # Store results from final cycle or if it's the best overall
+            if cycle == n_cycles - 1:
+                all_universe_results = cycle_results
+            else:
+                # Optionally keep track of improvements
+                pass
 
         total_time = time.time() - start_time
 
-        if not results:
-            raise RuntimeError("All universes failed")
+        if not all_universe_results:
+            # Fallback if final cycle failed
+            raise RuntimeError("Folding failed in all cycles")
 
-        best = min(results, key=lambda r: r.best_energy)
-        energies = [r.best_energy for r in results]
+        best = min(all_universe_results, key=lambda r: r.best_energy)
+        energies = [r.best_energy for r in all_universe_results]
         mean_e = sum(energies) / len(energies)
         std_e = (sum((e - mean_e) ** 2 for e in energies) / len(energies)) ** 0.5
 
         multiversal_result = MultiversalResult(
             sequence=sequence,
             n_universes=n_universes,
-            universes=results,
+            universes=all_universe_results,
             best_overall=best,
             energy_mean=mean_e,
             energy_std=std_e,
@@ -237,8 +274,7 @@ class MultiversalProteinComputer:
         )
 
         logger.info("==== MULTIVERSAL PROTEIN FOLDING COMPLETE ====")
-        logger.info("Best universe: %s | E=%.6f", best.universe_id, best.best_energy)
-        logger.info("Energy stats: mean=%.6f std=%.6f", mean_e, std_e)
+        logger.info("Best overall energy: %.6f", best.best_energy)
         logger.info("Total runtime: %.3f s", total_time)
 
         if save_artifacts:
