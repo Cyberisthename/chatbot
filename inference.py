@@ -9,9 +9,11 @@ try:
     from src.core.multiversal_compute_system import MultiversalComputeSystem, MultiversalQuery
     from src.core.multiversal_adapters import MultiversalAdapter, MultiversalComputeEngine
     from src.quantum.multiversal_quantum import MultiversalQuantumEngine, MultiversalExperimentConfig
+    from src.thought_compression import get_tcl_engine
     MULTIVERSAL_AVAILABLE = True
 except ImportError as e:
     print(f"🌌 Multiversal Computing System not available: {e}")
+    print(f"🧠 Thought-Compression Language not available: {e}")
     MULTIVERSAL_AVAILABLE = False
 
 MEMORY_FILE = "jarvis_memory.json"
@@ -547,6 +549,188 @@ def create_app():
             return jsonify(result)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+    
+    @app.route("/tcl/session", methods=["POST"])
+    def tcl_create_session():
+        """Create a new TCL processing session"""
+        try:
+            if not MULTIVERSAL_AVAILABLE:
+                return jsonify({"error": "TCL not available - Multiversal system not loaded"}), 503
+            
+            data = request.get_json()
+            user_id = data.get("user_id", "anonymous")
+            cognitive_level = data.get("cognitive_level", 0.5)
+            
+            tcl_engine = get_tcl_engine()
+            session_id = tcl_engine.create_session(user_id, cognitive_level)
+            
+            status = tcl_engine.get_session_status(session_id)
+            
+            return jsonify({
+                "session_id": session_id,
+                "cognitive_level": cognitive_level,
+                "status": "created",
+                "initial_metrics": status['metrics']
+            })
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    @app.route("/tcl/thought", methods=["POST"])
+    def tcl_process_thought():
+        """Process a TCL thought expression"""
+        try:
+            if not MULTIVERSAL_AVAILABLE:
+                return jsonify({"error": "TCL not available - Multiversal system not loaded"}), 503
+            
+            data = request.get_json()
+            session_id = data.get("session_id")
+            tcl_input = data.get("tcl_input")
+            
+            if not session_id or not tcl_input:
+                return jsonify({"error": "session_id and tcl_input are required"}), 400
+            
+            tcl_engine = get_tcl_engine()
+            result = tcl_engine.process_thought(session_id, tcl_input)
+            
+            if "error" in result:
+                return jsonify(result), 400
+            
+            return jsonify({
+                "result": result["result"],
+                "metrics": result["metrics"],
+                "enhanced_thinking": result["enhanced_thinking"],
+                "causal_predictions": result["causal_predictions"],
+                "processing_time": result["processing_time"]
+            })
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    @app.route("/tcl/compress", methods=["POST"])
+    def tcl_compress_concept():
+        """Compress a natural language concept into TCL symbols"""
+        try:
+            if not MULTIVERSAL_AVAILABLE:
+                return jsonify({"error": "TCL not available - Multiversal system not loaded"}), 503
+            
+            data = request.get_json()
+            session_id = data.get("session_id")
+            concept = data.get("concept")
+            
+            if not session_id or not concept:
+                return jsonify({"error": "session_id and concept are required"}), 400
+            
+            tcl_engine = get_tcl_engine()
+            result = tcl_engine.compress_concept(session_id, concept)
+            
+            return jsonify({
+                "original_concept": result["original_concept"],
+                "compressed_symbols": result["compressed_symbols"],
+                "compression_ratio": result["compression_ratio"],
+                "conceptual_density": result["conceptual_density"],
+                "cognitive_weight": result["cognitive_weight"]
+            })
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    @app.route("/tcl/reason", methods=["POST"])
+    def tcl_enhance_reasoning():
+        """Use TCL to enhance problem-solving and reasoning"""
+        try:
+            if not MULTIVERSAL_AVAILABLE:
+                return jsonify({"error": "TCL not available - Multiversal system not loaded"}), 503
+            
+            data = request.get_json()
+            session_id = data.get("session_id")
+            problem = data.get("problem")
+            
+            if not session_id or not problem:
+                return jsonify({"error": "session_id and problem are required"}), 400
+            
+            tcl_engine = get_tcl_engine()
+            result = tcl_engine.enhance_reasoning(session_id, problem)
+            
+            return jsonify({
+                "original_problem": result["original_problem"],
+                "conceptual_mapping": result["conceptual_mapping"],
+                "causal_analysis": result["causal_analysis"],
+                "enhanced_solutions": result["enhanced_solutions"],
+                "reasoning_enhancement_level": result["reasoning_enhancement_level"]
+            })
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    @app.route("/tcl/demo", methods=["GET"])
+    def tcl_demo():
+        """Demonstrate TCL capabilities with example expressions"""
+        demo_expressions = [
+            {
+                "expression": "Ψ → Γ",
+                "description": "Thought causes concept formation",
+                "cognitive_impact": "Foundation for conceptual thinking"
+            },
+            {
+                "expression": "∀x (x → ∞Ψ)",
+                "description": "Universal causation to infinite thinking",
+                "cognitive_impact": "Expands thought boundaries"
+            },
+            {
+                "expression": "ΣΨ = Ψ₁ + Ψ₂ + Ψ₃",
+                "description": "Superthought as sum of component thoughts",
+                "cognitive_impact": "Enables complex multi-dimensional thinking"
+            },
+            {
+                "expression": "ΓΛ ⟹ Δ",
+                "description": "Conceptual logic implies difference",
+                "cognitive_impact": "Enhances analytical reasoning"
+            }
+        ]
+        
+        return jsonify({
+            "title": "Thought-Compression Language Demo",
+            "description": "A language optimized for thinking, not talking",
+            "expressions": demo_expressions,
+            "principles": [
+                "One symbol = full abstract concept",
+                "Grammar encodes causality, not syntax",
+                "Ambiguity is illegal",
+                "IQ scales with fluency",
+                "Math, philosophy, and strategy merge"
+            ],
+            "warning": "This technology enables superhuman cognitive capabilities. Use responsibly."
+        })
+    
+    @app.route("/tcl/health", methods=["GET"])
+    def tcl_health():
+        """Health check for TCL subsystem"""
+        try:
+            if not MULTIVERSAL_AVAILABLE:
+                return jsonify({
+                    "status": "unavailable",
+                    "error": "TCL not available - Multiversal system not loaded"
+                }), 503
+            
+            tcl_engine = get_tcl_engine()
+            stats = tcl_engine.get_global_stats()
+            
+            return jsonify({
+                "status": "healthy" if stats["initialized"] else "uninitialized",
+                "initialized": stats["initialized"],
+                "active_sessions": stats["active_sessions"],
+                "total_symbols": stats["total_symbols"],
+                "quantum_mode": stats["quantum_mode"],
+                "average_cognitive_enhancement": stats["average_cognitive_enhancement"]
+            })
+        except Exception as e:
+            return jsonify({
+                "status": "error",
+                "error": str(e)
+            }), 500
             
     return app
 
