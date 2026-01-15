@@ -29,6 +29,9 @@ from .tcl_quantum_integrator import (
     TCLCausalChain
 )
 
+from .dna_generator import DNAGenerator, DNASequence
+from .digital_pipeline import run_pipeline
+
 __all__ = [
     "BiologicalKnowledgeBase",
     "Protein",
@@ -41,5 +44,8 @@ __all__ = [
     "CausalChain",
     "TCLQuantumIntegrator",
     "QuantumProteinAnalysis",
-    "TCLCausalChain"
+    "TCLCausalChain",
+    "DNAGenerator",
+    "DNASequence",
+    "run_pipeline"
 ]

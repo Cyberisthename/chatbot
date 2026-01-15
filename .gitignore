@@ -172,6 +172,8 @@ node_modules/
 *.safetensors
 quantacap/artifacts/
 artifacts/
+dna_artifacts/
+cancer_artifacts/
 adapters_graph.json
 bit_patterns.json
 models/
