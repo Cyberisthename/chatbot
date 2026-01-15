@@ -1,0 +1,75 @@
+{
+  "generation_summary": {
+    "total_hypotheses": 39,
+    "proteins_analyzed": 15,
+    "pathways_covered": 5,
+    "quantum_sensitive_discoveries": 12,
+    "generation_time_seconds": 0.23282885551452637
+  },
+  "top_hypotheses": [
+    {
+      "title": "Quantum-enhanced Alpelisib targeting PIK3CA in PI3K-Akt signaling pathway",
+      "target": "PIK3CA",
+      "pathway": "PI3K-Akt signaling pathway",
+      "drug": "Alpelisib",
+      "overall_score": 2.3400493968223093,
+      "novelty_score": 0.55,
+      "quantum_enhancement": 9.150246984111547
+    },
+    {
+      "title": "Quantum-enhanced Alpelisib targeting PIK3CA in MAPK signaling pathway",
+      "target": "PIK3CA",
+      "pathway": "MAPK signaling pathway",
+      "drug": "Alpelisib",
+      "overall_score": 2.3400493968223093,
+      "novelty_score": 0.55,
+      "quantum_enhancement": 9.150246984111547
+    },
+    {
+      "title": "Novel quantum-sensitive targeting of PIK3CA in PI3K-Akt signaling pathway",
+      "target": "PIK3CA",
+      "pathway": "PI3K-Akt signaling pathway",
+      "drug": "Novel target",
+      "overall_score": 2.2775493968223093,
+      "novelty_score": 0.7,
+      "quantum_enhancement": 9.150246984111547
+    },
+    {
+      "title": "Novel quantum-sensitive targeting of PIK3CA in MAPK signaling pathway",
+      "target": "PIK3CA",
+      "pathway": "MAPK signaling pathway",
+      "drug": "Novel target",
+      "overall_score": 2.2775493968223093,
+      "novelty_score": 0.7,
+      "quantum_enhancement": 9.150246984111547
+    },
+    {
+      "title": "Quantum-enhanced Gefitinib targeting EGFR in PI3K-Akt signaling pathway",
+      "target": "EGFR",
+      "pathway": "PI3K-Akt signaling pathway",
+      "drug": "Gefitinib",
+      "overall_score": 2.1777671570390282,
+      "novelty_score": 0.55,
+      "quantum_enhancement": 8.338835785195142
+    }
+  ],
+  "statistics": {
+    "avg_overall_score": 2.093859249743198,
+    "avg_novelty_score": 0.6,
+    "avg_quantum_enhancement": 8.082437274357016,
+    "hypotheses_with_quantum_enhancement": 39,
+    "novel_target_hypotheses": 15,
+    "fda_approved_drug_hypotheses": 20
+  },
+  "bio_knowledge_stats": {
+    "total_proteins": 10,
+    "oncogenes": 8,
+    "tumor_suppressors": 2,
+    "total_pathways": 5,
+    "total_drugs": 15,
+    "approved_drugs": 13,
+    "total_interactions": 11,
+    "quantum_sensitive_pathways": 5,
+    "avg_quantum_sensitivity": 0.65
+  }
+}
