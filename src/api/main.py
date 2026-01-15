@@ -20,6 +20,7 @@ import logging
 from ..core.adapter_engine import AdapterEngine, YZXBitRouter, AdapterStatus
 from ..quantum.synthetic_quantum import SyntheticQuantumEngine, ExperimentConfig
 from .tcl_routes import tcl_router
+from .cancer_routes import cancer_router
 from ...inference import JarvisInferenceBackend, load_memory, save_memory
 
 logging.basicConfig(level=logging.INFO)
@@ -131,10 +132,13 @@ class JarvisAPI:
     
     def _setup_routes(self):
         """Setup API routes"""
-        
+
         # Include TCL router
         self.app.include_router(tcl_router)
-        
+
+        # Include Cancer research router
+        self.app.include_router(cancer_router)
+
         @self.app.get("/health", response_model=HealthResponse)
         async def health_check():
             """Health check endpoint"""
@@ -146,7 +150,8 @@ class JarvisAPI:
                 "mode": self.config.get("engine", {}).get("mode", "standard"),
                 "adapters_count": len(self.adapter_engine.list_adapters()) if self.adapter_engine else 0,
                 "tcl_available": True,  # TCL is integrated and available
-                "quantum_available": self.quantum_engine is not None
+                "quantum_available": self.quantum_engine is not None,
+                "cancer_research_available": True  # Cancer hypothesis system is integrated
             }
         
         @self.app.post("/chat", response_model=ChatResponse)
