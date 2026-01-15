@@ -19,6 +19,7 @@ import logging
 
 from ..core.adapter_engine import AdapterEngine, YZXBitRouter, AdapterStatus
 from ..quantum.synthetic_quantum import SyntheticQuantumEngine, ExperimentConfig
+from .tcl_routes import tcl_router
 from ...inference import JarvisInferenceBackend, load_memory, save_memory
 
 logging.basicConfig(level=logging.INFO)
@@ -131,6 +132,9 @@ class JarvisAPI:
     def _setup_routes(self):
         """Setup API routes"""
         
+        # Include TCL router
+        self.app.include_router(tcl_router)
+        
         @self.app.get("/health", response_model=HealthResponse)
         async def health_check():
             """Health check endpoint"""
@@ -140,7 +144,9 @@ class JarvisAPI:
                 "llm_ready": self.llm_engine and self.llm_engine.is_initialized if self.llm_engine else False,
                 "version": self.config.get("engine", {}).get("version", "2.0.0"),
                 "mode": self.config.get("engine", {}).get("mode", "standard"),
-                "adapters_count": len(self.adapter_engine.list_adapters()) if self.adapter_engine else 0
+                "adapters_count": len(self.adapter_engine.list_adapters()) if self.adapter_engine else 0,
+                "tcl_available": True,  # TCL is integrated and available
+                "quantum_available": self.quantum_engine is not None
             }
         
         @self.app.post("/chat", response_model=ChatResponse)
