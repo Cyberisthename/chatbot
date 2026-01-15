@@ -176,6 +176,7 @@ adapters_graph.json
 bit_patterns.json
 models/
 releases/
+.llama.cpp/
 extracted_bundles/
 
 # Build outputs
