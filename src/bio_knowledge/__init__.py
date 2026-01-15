@@ -15,39 +15,44 @@ from .biological_database import (
     Protein,
     CancerPathway,
     Drug,
-    MolecularInteraction
+    MolecularInteraction,
 )
 
 from .cancer_hypothesis_generator import (
     CancerHypothesisGenerator,
     Hypothesis,
     HypothesisMetrics,
-    CausalChain
+    CausalChain,
 )
 
 from .tcl_quantum_integrator import (
     TCLQuantumIntegrator,
     QuantumProteinAnalysis,
-    TCLCausalChain
+    TCLCausalChain,
+)
+
+from .protein_sequence_retriever import (
+    ProteinSequenceRetriever,
+    ProteinSequenceRecord,
 )
 
 from .dna_sequence_retriever import (
     DNASequenceRetriever,
     GeneStructure,
-    GenomicRegion
+    GenomicRegion,
 )
 
 from .quantum_dna_optimizer import (
     QuantumDNAOptimizer,
     OptimizedDNA,
-    DNAQuantumAnalysis
+    DNAQuantumAnalysis,
 )
 
 from .virtual_cancer_cell_simulator import (
     VirtualCancerCellSimulator,
     VirtualCellState,
     TreatmentOutcome,
-    CellState
+    CellState,
 )
 
 __all__ = [
@@ -63,6 +68,8 @@ __all__ = [
     "TCLQuantumIntegrator",
     "QuantumProteinAnalysis",
     "TCLCausalChain",
+    "ProteinSequenceRetriever",
+    "ProteinSequenceRecord",
     "DNASequenceRetriever",
     "GeneStructure",
     "GenomicRegion",
@@ -72,5 +79,5 @@ __all__ = [
     "VirtualCancerCellSimulator",
     "VirtualCellState",
     "TreatmentOutcome",
-    "CellState"
+    "CellState",
 ]
