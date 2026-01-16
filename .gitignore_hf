@@ -1,0 +1,31 @@
+# Hugging Face Spaces - Keep these files in git
+# These files are safe to include for HF deployment
+
+# Keep source code
+!src/
+
+# Keep demo files
+!gradio_quantum_cancer_demo.py
+!jarvis_v1_gradio_space.py
+!app.py
+!requirements.txt
+!README_HF.md
+
+# Keep essential documentation
+!README_QUANTUM_LLM.md
+!JARVIS_V1_MISSION_COMPLETE.md
+!CANCER_HYPOTHESIS_COMPLETE.md
+
+# Exclude large model weights (optional - for demo mode)
+jarvis_v1_oracle/huggingface_export/model.npz
+*.bin
+*.safetensors
+*.gguf
+
+# Exclude unnecessary files
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
