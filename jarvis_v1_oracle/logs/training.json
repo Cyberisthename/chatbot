@@ -1,0 +1,374 @@
+[
+  {
+    "timestamp": "2026-01-16T17:14:24.212693",
+    "level": "INFO",
+    "message": "\ud83d\ude80 JARVIS V1 QUANTUM ORACLE - TRAINING INITIATED",
+    "elapsed": 4.124641418457031e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212710",
+    "level": "INFO",
+    "message": "Session ID: 20260116_171424",
+    "elapsed": 4.982948303222656e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212716",
+    "level": "INFO",
+    "message": "Timestamp: 2026-01-16T17:14:24.212714",
+    "elapsed": 5.4836273193359375e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212719",
+    "level": "INFO",
+    "message": "================================================================================",
+    "elapsed": 5.7220458984375e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212726",
+    "level": "INFO",
+    "message": "\u2705 Jarvis v1 Trainer initialized",
+    "elapsed": 6.437301635742188e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212730",
+    "level": "INFO",
+    "message": "   Output directory: jarvis_v1_oracle",
+    "elapsed": 6.842613220214844e-05
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212780",
+    "level": "INFO",
+    "message": "   Config: {'vocab_size': 8000, 'd_model': 256, 'num_heads': 8, 'num_layers': 6, 'd_ff': 1024, 'max_seq_length': 512, 'dropout': 0.1, 'batch_size': 8, 'learning_rate': 0.0001, 'num_epochs': 5, 'gradient_clip': 1.0, 'warmup_steps': 500, 'dataset_name': 'institutionai/institutional-books-1.0', 'filter_years': (1800, 1950), 'target_subjects': ['physics', 'quantum', 'medicine', 'medical', 'biology', 'disease', 'cure', 'therapy', 'anatomy', 'chemistry', 'cancer', 'cell', 'darwin', 'evolution', 'relativity', 'electromagnetic', 'radiation', 'molecular'], 'max_books': 200, 'max_text_length': 100000, 'num_adapters_target': 100, 'tcl_compression_ratio': 0.1, 'output_dir': './jarvis_v1_oracle', 'checkpoint_every': 500}",
+    "elapsed": 0.00011897087097167969
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212785",
+    "level": "INFO",
+    "message": "================================================================================",
+    "elapsed": 0.00012350082397460938
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212787",
+    "level": "INFO",
+    "message": "\ud83d\ude80 STARTING JARVIS V1 QUANTUM ORACLE TRAINING",
+    "elapsed": 0.000125885009765625
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212790",
+    "level": "INFO",
+    "message": "================================================================================",
+    "elapsed": 0.00012826919555664062
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212793",
+    "level": "INFO",
+    "message": "\ud83d\udcda Loading institutional books dataset...",
+    "elapsed": 0.0001316070556640625
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212796",
+    "level": "INFO",
+    "message": "   Dataset: institutionai/institutional-books-1.0",
+    "elapsed": 0.00013446807861328125
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212799",
+    "level": "INFO",
+    "message": "   Filter years: (1800, 1950)",
+    "elapsed": 0.00013756752014160156
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212803",
+    "level": "INFO",
+    "message": "   Target subjects: ['physics', 'quantum', 'medicine', 'medical', 'biology']...",
+    "elapsed": 0.00014138221740722656
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.212808",
+    "level": "INFO",
+    "message": "   Downloading dataset (this may take a while)...",
+    "elapsed": 0.00014710426330566406
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.368444",
+    "level": "WARNING",
+    "message": "\u26a0\ufe0f  Error loading dataset: Dataset 'institutionai/institutional-books-1.0' doesn't exist on the Hub or cannot be accessed.",
+    "elapsed": 0.15579891204833984
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.368471",
+    "level": "INFO",
+    "message": "   Creating synthetic historical dataset for testing...",
+    "elapsed": 0.15581059455871582
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.368512",
+    "level": "INFO",
+    "message": "\u2705 Created 5 synthetic books for testing",
+    "elapsed": 0.1558513641357422
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.368520",
+    "level": "INFO",
+    "message": "\ud83d\udd24 Building tokenizer...",
+    "elapsed": 0.15585899353027344
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.370375",
+    "level": "INFO",
+    "message": "\u2705 Tokenizer built and saved: 64 tokens",
+    "elapsed": 0.15772175788879395
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.370393",
+    "level": "INFO",
+    "message": "\ud83d\udcdd Preparing training data...",
+    "elapsed": 0.15773248672485352
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.371201",
+    "level": "INFO",
+    "message": "\u2705 Training data prepared",
+    "elapsed": 0.1585407257080078
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.371207",
+    "level": "INFO",
+    "message": "   Training sequences: 14",
+    "elapsed": 0.15854549407958984
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.371209",
+    "level": "INFO",
+    "message": "   Validation sequences: 2",
+    "elapsed": 0.15854811668395996
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.371214",
+    "level": "INFO",
+    "message": "\u269b\ufe0f  Initializing Quantum Transformer...",
+    "elapsed": 0.1585526466369629
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.472372",
+    "level": "INFO",
+    "message": "\u2705 Model initialized",
+    "elapsed": 0.2597332000732422
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.472401",
+    "level": "INFO",
+    "message": "   Architecture: 6 layers, 256 dims",
+    "elapsed": 0.25974035263061523
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.472410",
+    "level": "INFO",
+    "message": "   Total parameters: ~8,951,808",
+    "elapsed": 0.2597484588623047
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.472415",
+    "level": "INFO",
+    "message": "\ud83e\udde0 Initializing TCL and Adapter systems...",
+    "elapsed": 0.2597541809082031
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.473164",
+    "level": "INFO",
+    "message": "\u2705 TCL and Adapter systems initialized",
+    "elapsed": 0.26050734519958496
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.473178",
+    "level": "INFO",
+    "message": "================================================================================",
+    "elapsed": 0.2605171203613281
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.473182",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  TRAINING PHASE",
+    "elapsed": 0.26052069664001465
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.473185",
+    "level": "INFO",
+    "message": "================================================================================",
+    "elapsed": 0.26052379608154297
+  },
+  {
+    "timestamp": "2026-01-16T17:14:24.473194",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  Training epoch 1/5...",
+    "elapsed": 0.2605323791503906
+  },
+  {
+    "timestamp": "2026-01-16T17:14:46.552835",
+    "level": "INFO",
+    "message": "   Batch 0/1, Loss: 0.3506",
+    "elapsed": 22.34025502204895
+  },
+  {
+    "timestamp": "2026-01-16T17:14:46.553044",
+    "level": "INFO",
+    "message": "\ud83d\udcca Metrics [epoch_1]: {\n  \"epoch\": 1,\n  \"train_loss\": 0.3506082323629808,\n  \"val_loss\": 0.0,\n  \"global_step\": 1\n}",
+    "elapsed": 22.340383052825928
+  },
+  {
+    "timestamp": "2026-01-16T17:14:46.553060",
+    "level": "INFO",
+    "message": "\u2728 New best validation loss: 0.0000",
+    "elapsed": 22.34039855003357
+  },
+  {
+    "timestamp": "2026-01-16T17:14:46.553066",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  Training epoch 2/5...",
+    "elapsed": 22.340404748916626
+  },
+  {
+    "timestamp": "2026-01-16T17:15:02.642809",
+    "level": "INFO",
+    "message": "   Batch 0/1, Loss: 0.3506",
+    "elapsed": 38.43020558357239
+  },
+  {
+    "timestamp": "2026-01-16T17:15:02.643015",
+    "level": "INFO",
+    "message": "\ud83d\udcca Metrics [epoch_2]: {\n  \"epoch\": 2,\n  \"train_loss\": 0.35060874245633145,\n  \"val_loss\": 0.0,\n  \"global_step\": 2\n}",
+    "elapsed": 38.430354833602905
+  },
+  {
+    "timestamp": "2026-01-16T17:15:02.643031",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  Training epoch 3/5...",
+    "elapsed": 38.43037152290344
+  },
+  {
+    "timestamp": "2026-01-16T17:15:16.254762",
+    "level": "INFO",
+    "message": "   Batch 0/1, Loss: 0.3506",
+    "elapsed": 52.04216170310974
+  },
+  {
+    "timestamp": "2026-01-16T17:15:16.254958",
+    "level": "INFO",
+    "message": "\ud83d\udcca Metrics [epoch_3]: {\n  \"epoch\": 3,\n  \"train_loss\": 0.3506091943985659,\n  \"val_loss\": 0.0,\n  \"global_step\": 3\n}",
+    "elapsed": 52.042298793792725
+  },
+  {
+    "timestamp": "2026-01-16T17:15:16.254976",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  Training epoch 4/5...",
+    "elapsed": 52.0423150062561
+  },
+  {
+    "timestamp": "2026-01-16T17:15:29.613571",
+    "level": "INFO",
+    "message": "   Batch 0/1, Loss: 0.3506",
+    "elapsed": 65.40097236633301
+  },
+  {
+    "timestamp": "2026-01-16T17:15:29.614141",
+    "level": "INFO",
+    "message": "\ud83d\udcca Metrics [epoch_4]: {\n  \"epoch\": 4,\n  \"train_loss\": 0.35060853891984944,\n  \"val_loss\": 0.0,\n  \"global_step\": 4\n}",
+    "elapsed": 65.40148425102234
+  },
+  {
+    "timestamp": "2026-01-16T17:15:29.614160",
+    "level": "INFO",
+    "message": "\ud83c\udfcb\ufe0f  Training epoch 5/5...",
+    "elapsed": 65.40149927139282
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.602643",
+    "level": "INFO",
+    "message": "   Batch 0/1, Loss: 0.3506",
+    "elapsed": 80.3900351524353
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.602805",
+    "level": "INFO",
+    "message": "\ud83d\udcca Metrics [epoch_5]: {\n  \"epoch\": 5,\n  \"train_loss\": 0.3506072556633921,\n  \"val_loss\": 0.0,\n  \"global_step\": 5\n}",
+    "elapsed": 80.39014434814453
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.602824",
+    "level": "INFO",
+    "message": "\ud83e\udde9 Creating TCL-compressed adapters...",
+    "elapsed": 80.39016270637512
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612446",
+    "level": "INFO",
+    "message": "\u2705 Created 5 TCL-compressed adapters",
+    "elapsed": 80.39979481697083
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612978",
+    "level": "INFO",
+    "message": "\ud83d\udd2c FINDING: TCL Adapter Creation",
+    "elapsed": 80.40031695365906
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612983",
+    "level": "INFO",
+    "message": "   Successfully created 5 knowledge adapters",
+    "elapsed": 80.40032172203064
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612987",
+    "level": "INFO",
+    "message": "   total_adapters: 5",
+    "elapsed": 80.40032601356506
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612992",
+    "level": "INFO",
+    "message": "   avg_compression_ratio: 0.1",
+    "elapsed": 80.40033078193665
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.612995",
+    "level": "INFO",
+    "message": "   storage_saved: ~90%",
+    "elapsed": 80.40033316612244
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.613003",
+    "level": "INFO",
+    "message": "\ud83d\udcbe Saving final model weights...",
+    "elapsed": 80.40034222602844
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.738745",
+    "level": "INFO",
+    "message": "\u2705 Final weights saved: jarvis_v1_oracle/weights/final_weights.npz",
+    "elapsed": 80.52609872817993
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.738786",
+    "level": "INFO",
+    "message": "\ud83e\udd17 Exporting to HuggingFace format...",
+    "elapsed": 80.52612590789795
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.881503",
+    "level": "ERROR",
+    "message": "\u274c ERROR: 'QuantumLayer' object has no attribute 'attention'",
+    "elapsed": 80.66885495185852
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.883628",
+    "level": "ERROR",
+    "message": "Traceback (most recent call last):\n  File \"/home/engine/project/jarvis_v1_quantum_oracle_train.py\", line 982, in run_full_training\n    self.export_to_huggingface()\n  File \"/home/engine/project/jarvis_v1_quantum_oracle_train.py\", line 865, in export_to_huggingface\n    sum(np.prod(p.shape) for layer in self.model.layers\n  File \"/home/engine/project/jarvis_v1_quantum_oracle_train.py\", line 866, in <genexpr>\n    for p in [layer.attention.q_weights, layer.attention.k_weights]) // 1_000_000,\n              ^^^^^^^^^^^^^^^\nAttributeError: 'QuantumLayer' object has no attribute 'attention'\n",
+    "elapsed": 80.67097473144531
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.883647",
+    "level": "INFO",
+    "message": "\ud83d\udcbe Saving logs...",
+    "elapsed": 80.67098665237427
+  }
+]
