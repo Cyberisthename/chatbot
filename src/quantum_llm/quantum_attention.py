@@ -135,22 +135,22 @@ class QuantumAttention:
         batch_size, seq_len, d_model = query.shape
         
         # Reshape for multi-head attention
-        query = query.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
-        key = key.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
-        value = value.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
+        query_reshaped = query.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
+        key_reshaped = key.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
+        value_reshaped = value.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
         
         # Transpose for matrix operations
-        query = query.transpose(0, 2, 1, 3)  # [batch, n_heads, seq_len, head_dim]
-        key = key.transpose(0, 2, 1, 3)
-        value = value.transpose(0, 2, 1, 3)
+        q = query_reshaped.transpose(0, 2, 1, 3)  # [batch, n_heads, seq_len, head_dim]
+        k = key_reshaped.transpose(0, 2, 1, 3)
+        v = value_reshaped.transpose(0, 2, 1, 3)
         
         # Apply quantum rotation gates
-        rotated_query = np.zeros_like(query)
-        rotated_key = np.zeros_like(key)
+        rotated_query = np.zeros_like(q)
+        rotated_key = np.zeros_like(k)
         
         for head in range(self.n_heads):
-            rotated_query[:, head] = query[:, head] @ self.rotation_matrices[head].T
-            rotated_key[:, head] = key[:, head] @ self.rotation_matrices[head].T
+            rotated_query[:, head] = q[:, head] @ self.rotation_matrices[head].T
+            rotated_key[:, head] = k[:, head] @ self.rotation_matrices[head].T
         
         # Compute quantum attention scores using complex-valued inner product
         # Convert to complex domain for quantum interference
@@ -170,8 +170,8 @@ class QuantumAttention:
         
         # Apply mask if provided
         if mask is not None:
-            mask = mask.reshape(batch_size, 1, 1, seq_len)
-            attention_scores = np.where(mask == 0, -1e10, attention_scores)
+            mask_reshaped = mask.reshape(batch_size, 1, 1, seq_len)
+            attention_scores = np.where(mask_reshaped == 0, -1e10, attention_scores)
         
         # Compute quantum probability amplitudes
         # Use complex exponential for quantum interference
@@ -182,17 +182,17 @@ class QuantumAttention:
         attention_weights_real = attention_weights_real / (np.sum(attention_weights_real, axis=-1, keepdims=True) + 1e-10)
         
         # Apply attention to values
-        output = np.zeros_like(value, dtype=np.complex128)
+        output_complex = np.zeros_like(v, dtype=np.complex128)
         for b in range(batch_size):
             for h in range(self.n_heads):
-                output[b, h] = attention_weights_real[b, h] @ value[b, h]
+                output_complex[b, h] = attention_weights_real[b, h] @ v[b, h].astype(np.complex128)
         
         # Take real part for final output
-        output = np.real(output)
+        out = np.real(output_complex)
         
         # Combine heads
-        output = output.transpose(0, 2, 1, 3)  # [batch, seq_len, n_heads, head_dim]
-        output = output.reshape(batch_size, seq_len, d_model)
+        out = out.transpose(0, 2, 1, 3)  # [batch, seq_len, n_heads, head_dim]
+        out = out.reshape(batch_size, seq_len, d_model)
         
         # Compute quantum metrics
         quantum_metrics = {
@@ -201,8 +201,71 @@ class QuantumAttention:
             "interference": self._compute_interference(attention_weights_complex),
             "quantum_fidelity": self._compute_fidelity(attention_weights_real)
         }
+
+        # Store cache for backward pass
+        self.cache = {
+            "q": q, "k": k, "v": v,
+            "rotated_query": rotated_query,
+            "rotated_key": rotated_key,
+            "attention_weights_real": attention_weights_real,
+            "output_complex": output_complex,
+            "mask": mask
+        }
         
-        return output, attention_weights_real, quantum_metrics
+        return out, attention_weights_real, quantum_metrics
+
+    def backward(self, grad_output: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Real backpropagation for quantum attention
+        """
+        q, k, v = self.cache["q"], self.cache["k"], self.cache["v"]
+        batch_size, n_heads, seq_len, head_dim = q.shape
+        
+        # grad_output is [batch, seq_len, d_model]
+        grad_output = grad_output.reshape(batch_size, seq_len, self.n_heads, self.head_dim)
+        grad_output = grad_output.transpose(0, 2, 1, 3) # [batch, n_heads, seq_len, head_dim]
+        
+        weights = self.cache["attention_weights_real"]
+        
+        # dL/dv = weights.T @ grad_output
+        grad_v = np.zeros_like(v)
+        for b in range(batch_size):
+            for h in range(n_heads):
+                grad_v[b, h] = weights[b, h].T @ grad_output[b, h]
+        
+        # dL/dweights = grad_output @ v.T
+        grad_weights = np.zeros_like(weights)
+        for b in range(batch_size):
+            for h in range(n_heads):
+                grad_weights[b, h] = grad_output[b, h] @ v[b, h].T
+                
+        # dL/dscores (simplified for real part of exp)
+        # S = softmax(scores) -> dL/dscores = S * (grad_weights - sum(S * grad_weights))
+        grad_scores = weights * (grad_weights - np.sum(weights * grad_weights, axis=-1, keepdims=True))
+        grad_scores /= self.temperature
+        
+        # dL/dq = grad_scores @ k
+        # dL/dk = grad_scores.T @ q
+        grad_q_rotated = np.zeros_like(q)
+        grad_k_rotated = np.zeros_like(k)
+        for b in range(batch_size):
+            for h in range(n_heads):
+                grad_q_rotated[b, h] = grad_scores[b, h] @ self.cache["rotated_key"][b, h]
+                grad_k_rotated[b, h] = grad_scores[b, h].T @ self.cache["rotated_query"][b, h]
+        
+        # Backprop through rotations
+        grad_q = np.zeros_like(q)
+        grad_k = np.zeros_like(k)
+        for h in range(n_heads):
+            grad_q[:, h] = grad_q_rotated[:, h] @ self.rotation_matrices[h]
+            grad_k[:, h] = grad_k_rotated[:, h] @ self.rotation_matrices[h]
+            
+        # Reshape back
+        grad_q = grad_q.transpose(0, 2, 1, 3).reshape(batch_size, seq_len, -1)
+        grad_k = grad_k.transpose(0, 2, 1, 3).reshape(batch_size, seq_len, -1)
+        grad_v = grad_v.transpose(0, 2, 1, 3).reshape(batch_size, seq_len, -1)
+        
+        return grad_q, grad_k, grad_v
     
     def _compute_coherence(self, weights: np.ndarray) -> float:
         """

@@ -1,6 +1,6 @@
 """
 Quantum Transformer Architecture
-Neural network from scratch using quantum-inspired operations
+Neural network from scratch using quantum-inspired operations with real backpropagation
 """
 
 import json
@@ -44,8 +44,10 @@ class QuantumState:
             ],
             "layer_norms": [
                 {
-                    "gamma": ln["gamma"].tolist(),
-                    "beta": ln["beta"].tolist(),
+                    "gamma1": ln["gamma1"].tolist(),
+                    "beta1": ln["beta1"].tolist(),
+                    "gamma2": ln["gamma2"].tolist(),
+                    "beta2": ln["beta2"].tolist(),
                 }
                 for ln in self.layer_norms
             ],
@@ -70,8 +72,10 @@ class QuantumState:
             ],
             layer_norms=[
                 {
-                    "gamma": np.array(ln["gamma"]),
-                    "beta": np.array(ln["beta"]),
+                    "gamma1": np.array(ln["gamma1"]),
+                    "beta1": np.array(ln["beta1"]),
+                    "gamma2": np.array(ln["gamma2"]),
+                    "beta2": np.array(ln["beta2"]),
                 }
                 for ln in data["layer_norms"]
             ],
@@ -81,25 +85,19 @@ class QuantumState:
 
 class QuantumLayer:
     """
-    Single transformer layer with quantum attention
+    Single transformer layer with quantum attention and real backprop
     """
     
     def __init__(self, d_model: int, d_ff: int, n_heads: int, dropout: float = 0.1):
         """
         Initialize quantum transformer layer
-        
-        Args:
-            d_model: Model dimension
-            d_ff: Feed-forward dimension
-            n_heads: Number of attention heads
-            dropout: Dropout rate
         """
         self.d_model = d_model
         self.d_ff = d_ff
         self.n_heads = n_heads
         self.dropout = dropout
         
-        # Initialize attention weights (Q, K, V projections)
+        # Xavier initialization
         limit = np.sqrt(6.0 / (d_model + d_model))
         self.query_proj = np.random.uniform(-limit, limit, (d_model, d_model))
         self.key_proj = np.random.uniform(-limit, limit, (d_model, d_model))
@@ -119,119 +117,159 @@ class QuantumLayer:
         # Initialize quantum attention
         self.quantum_attention = QuantumAttention(d_model, n_heads)
         
-        # Store metrics
-        self.quantum_metrics = {}
+        # Cache for backprop
+        self.cache = {}
     
     def forward(self, x: np.ndarray, mask: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
-        Forward pass through quantum layer
-        
-        Args:
-            x: Input tensor [batch, seq_len, d_model]
-            mask: Optional attention mask
-            
-        Returns:
-            Tuple of (output, metrics)
+        Forward pass with caching
         """
-        # Layer norm before attention
-        x_norm = self._layer_norm(x, self.gamma1, self.beta1)
+        # 1. Layer norm 1
+        x_norm1, norm1_cache = self._layer_norm_forward(x, self.gamma1, self.beta1)
         
-        # Compute Q, K, V
-        query = x_norm @ self.query_proj
-        key = x_norm @ self.key_proj
-        value = x_norm @ self.value_proj
+        # 2. Attention projections
+        q = x_norm1 @ self.query_proj
+        k = x_norm1 @ self.key_proj
+        v = x_norm1 @ self.value_proj
         
-        # Quantum attention
-        attn_output, attn_weights, quantum_metrics = self.quantum_attention.compute_quantum_attention(
-            query, key, value, mask
+        # 3. Quantum attention
+        attn_out, attn_weights, metrics = self.quantum_attention.compute_quantum_attention(q, k, v, mask)
+        
+        # 4. Residual 1
+        x_res1 = x + attn_out
+        
+        # 5. Layer norm 2
+        x_norm2, norm2_cache = self._layer_norm_forward(x_res1, self.gamma2, self.beta2)
+        
+        # 6. FFN
+        # FFN1
+        h1 = x_norm2 @ self.ffn1
+        # GELU
+        h_gelu = self._gelu_forward(h1)
+        # FFN2
+        h2 = h_gelu @ self.ffn2
+        
+        # 7. Residual 2
+        out = x_res1 + h2
+        
+        # Store in cache
+        self.cache = {
+            "x": x,
+            "x_norm1": x_norm1,
+            "norm1_cache": norm1_cache,
+            "q": q, "k": k, "v": v,
+            "attn_out": attn_out,
+            "x_res1": x_res1,
+            "x_norm2": x_norm2,
+            "norm2_cache": norm2_cache,
+            "h1": h1,
+            "h_gelu": h_gelu,
+            "h2": h2,
+            "mask": mask
+        }
+        
+        return out, metrics
+
+    def backward(self, grad_out: np.ndarray) -> Tuple[np.ndarray, Dict[str, np.ndarray]]:
+        """
+        Real backpropagation through the layer
+        """
+        grads = {}
+        
+        # Backprop through Residual 2
+        grad_h2 = grad_out
+        grad_x_res1 = grad_out # Residual connection
+        
+        # Backprop through FFN
+        # grad_h2 = dL/dh2 [batch, seq, d_model]
+        # h2 = h_gelu @ ffn2
+        grads["ffn2"] = self.cache["h_gelu"].transpose(0, 2, 1) @ grad_h2
+        grads["ffn2"] = np.sum(grads["ffn2"], axis=0)
+        grad_h_gelu = grad_h2 @ self.ffn2.T
+        
+        # GELU backward
+        grad_h1 = self._gelu_backward(self.cache["h1"], grad_h_gelu)
+        
+        # FFN1 backward
+        grads["ffn1"] = self.cache["x_norm2"].transpose(0, 2, 1) @ grad_h1
+        grads["ffn1"] = np.sum(grads["ffn1"], axis=0)
+        grad_x_norm2 = grad_h1 @ self.ffn1.T
+        
+        # Layer norm 2 backward
+        grad_x_res1_from_norm, grads["gamma2"], grads["beta2"] = self._layer_norm_backward(
+            grad_x_norm2, self.cache["norm2_cache"], self.gamma2
+        )
+        grad_x_res1 += grad_x_res1_from_norm
+        
+        # Backprop through Attention
+        grad_attn_out = grad_x_res1
+        grad_x_res1_attn = grad_x_res1 # Residual connection for first part
+        
+        # Quantum Attention backward
+        grad_q, grad_k, grad_v = self.quantum_attention.backward(grad_attn_out)
+        
+        # Attention Projections backward
+        grads["query"] = self.cache["x_norm1"].transpose(0, 2, 1) @ grad_q
+        grads["query"] = np.sum(grads["query"], axis=0)
+        grads["key"] = self.cache["x_norm1"].transpose(0, 2, 1) @ grad_k
+        grads["key"] = np.sum(grads["key"], axis=0)
+        grads["value"] = self.cache["x_norm1"].transpose(0, 2, 1) @ grad_v
+        grads["value"] = np.sum(grads["value"], axis=0)
+        
+        grad_x_norm1 = (grad_q @ self.query_proj.T + 
+                        grad_k @ self.key_proj.T + 
+                        grad_v @ self.value_proj.T)
+        
+        # Layer norm 1 backward
+        grad_x_from_norm1, grads["gamma1"], grads["beta1"] = self._layer_norm_backward(
+            grad_x_norm1, self.cache["norm1_cache"], self.gamma1
         )
         
-        # Store quantum metrics
-        self.quantum_metrics = quantum_metrics
+        grad_input = grad_x_res1_attn + grad_x_from_norm1
         
-        # Residual connection
-        x = x + self._dropout(attn_output)
-        
-        # Layer norm before FFN
-        x_norm = self._layer_norm(x, self.gamma2, self.beta2)
-        
-        # Feed-forward network
-        ffn_output = self._feed_forward(x_norm)
-        
-        # Residual connection
-        x = x + self._dropout(ffn_output)
-        
-        return x, quantum_metrics
-    
-    def backward(self, grad_output: np.ndarray, lr: float) -> Dict[str, np.ndarray]:
-        """
-        Backward pass - compute gradients and update weights
-        
-        Args:
-            grad_output: Gradient from next layer
-            lr: Learning rate
-            
-        Returns:
-            Dictionary of gradients
-        """
-        # Simplified backpropagation (in full implementation, would be more complex)
-        # This is a placeholder for the actual gradient computation
-        
-        gradients = {
-            "query": np.zeros_like(self.query_proj),
-            "key": np.zeros_like(self.key_proj),
-            "value": np.zeros_like(self.value_proj),
-            "ffn1": np.zeros_like(self.ffn1),
-            "ffn2": np.zeros_like(self.ffn2),
-        }
-        
-        # Update weights with small random noise for now
-        # In real implementation, would compute actual gradients
-        noise_scale = lr * 0.01
-        self.query_proj += np.random.randn(*self.query_proj.shape) * noise_scale
-        self.key_proj += np.random.randn(*self.key_proj.shape) * noise_scale
-        self.value_proj += np.random.randn(*self.value_proj.shape) * noise_scale
-        self.ffn1 += np.random.randn(*self.ffn1.shape) * noise_scale
-        self.ffn2 += np.random.randn(*self.ffn2.shape) * noise_scale
-        
-        return gradients
-    
-    def _layer_norm(self, x: np.ndarray, gamma: np.ndarray, beta: np.ndarray) -> np.ndarray:
-        """Layer normalization"""
+        return grad_input, grads
+
+    def _layer_norm_forward(self, x, gamma, beta):
         mean = np.mean(x, axis=-1, keepdims=True)
         var = np.var(x, axis=-1, keepdims=True)
-        normalized = (x - mean) / np.sqrt(var + 1e-10)
-        return gamma * normalized + beta
-    
-    def _feed_forward(self, x: np.ndarray) -> np.ndarray:
-        """Feed-forward network with GELU activation"""
-        hidden = x @ self.ffn1
-        # GELU activation
-        hidden = 0.5 * hidden * (1.0 + np.tanh(np.sqrt(2.0 / np.pi) * (hidden + 0.044715 * hidden**3)))
-        output = hidden @ self.ffn2
-        return output
-    
-    def _dropout(self, x: np.ndarray, training: bool = True) -> np.ndarray:
-        """Dropout regularization"""
-        if not training or self.dropout == 0:
-            return x
-        mask = (np.random.random(x.shape) > self.dropout).astype(np.float32)
-        return x * mask / (1.0 - self.dropout)
-    
-    def get_weights(self) -> Dict[str, np.ndarray]:
-        """Get all trainable weights"""
-        return {
-            "query": self.query_proj,
-            "key": self.key_proj,
-            "value": self.value_proj,
-            "ffn1": self.ffn1,
-            "ffn2": self.ffn2,
-        }
+        x_centered = x - mean
+        std = np.sqrt(var + 1e-10)
+        x_norm = x_centered / std
+        out = gamma * x_norm + beta
+        cache = (x, x_norm, x_centered, std, gamma)
+        return out, cache
+
+    def _layer_norm_backward(self, grad_out, cache, gamma):
+        x, x_norm, x_centered, std, gamma = cache
+        batch, seq, d = grad_out.shape
+        
+        grad_gamma = np.sum(grad_out * x_norm, axis=(0, 1))
+        grad_beta = np.sum(grad_out, axis=(0, 1))
+        
+        grad_x_norm = grad_out * gamma
+        grad_std = np.sum(grad_x_norm * x_centered * (-1.0 / (std**2)), axis=-1, keepdims=True)
+        grad_var = grad_std * 0.5 * (1.0 / std)
+        
+        grad_x_centered = grad_x_norm / std + (2.0 / d) * x_centered * grad_var
+        grad_mean = np.sum(grad_x_centered * -1.0, axis=-1, keepdims=True)
+        
+        grad_x = grad_x_centered + grad_mean / d
+        return grad_x, grad_gamma, grad_beta
+
+    def _gelu_forward(self, x):
+        return 0.5 * x * (1.0 + np.tanh(np.sqrt(2.0 / np.pi) * (x + 0.044715 * x**3)))
+
+    def _gelu_backward(self, x, grad_out):
+        # Approximate derivative of GELU
+        s = np.sqrt(2.0 / np.pi)
+        term1 = 0.5 * (1.0 + np.tanh(s * (x + 0.044715 * x**3)))
+        term2 = 0.5 * x * (1.0 - np.tanh(s * (x + 0.044715 * x**3))**2) * s * (1.0 + 3 * 0.044715 * x**2)
+        return grad_out * (term1 + term2)
 
 
 class QuantumTransformer:
     """
-    Complete quantum transformer model built from scratch
+    Complete quantum transformer model built from scratch with real backprop
     """
     
     def __init__(
@@ -244,18 +282,6 @@ class QuantumTransformer:
         max_seq_len: int = 512,
         dropout: float = 0.1
     ):
-        """
-        Initialize quantum transformer
-        
-        Args:
-            vocab_size: Size of vocabulary
-            d_model: Model dimension
-            n_layers: Number of transformer layers
-            n_heads: Number of attention heads
-            d_ff: Feed-forward dimension
-            max_seq_len: Maximum sequence length
-            dropout: Dropout rate
-        """
         self.vocab_size = vocab_size
         self.d_model = d_model
         self.n_layers = n_layers
@@ -264,293 +290,202 @@ class QuantumTransformer:
         self.max_seq_len = max_seq_len
         self.dropout = dropout
         
-        # Initialize token embeddings
+        # Token embeddings
         limit = np.sqrt(6.0 / (vocab_size + d_model))
         self.embedding = np.random.uniform(-limit, limit, (vocab_size, d_model))
         
-        # Initialize position embeddings
+        # Position embeddings
         self.pos_embedding = self._create_position_embeddings()
         
-        # Initialize transformer layers
+        # Transformer layers
         self.layers = [
             QuantumLayer(d_model, d_ff, n_heads, dropout)
             for _ in range(n_layers)
         ]
         
-        # Initialize final projection
+        # Final projection
         limit_out = np.sqrt(6.0 / (d_model + vocab_size))
         self.output_projection = np.random.uniform(-limit_out, limit_out, (d_model, vocab_size))
         
-        # Training state
-        self.training_step = 0
-        self.loss_history = []
-        self.quantum_metrics_history = []
+        self.cache = {}
         
-        print(f"✨ Initialized QuantumTransformer from scratch")
-        print(f"   Vocab size: {vocab_size}")
-        print(f"   Model dimension: {d_model}")
-        print(f"   Layers: {n_layers}")
-        print(f"   Attention heads: {n_heads}")
-        print(f"   Parameters: {self._count_parameters():,}")
-    
+        print(f"✨ Initialized QuantumTransformer with Real Backprop")
+        print(f"   Config: {n_layers}L, {n_heads}H, {d_model}D, {d_ff}FF")
+
     def _create_position_embeddings(self) -> np.ndarray:
-        """Create sinusoidal position embeddings"""
         pos = np.arange(self.max_seq_len)[:, np.newaxis]
         div_term = np.exp(np.arange(0, self.d_model, 2) * -(np.log(10000.0) / self.d_model))
-        
         pe = np.zeros((self.max_seq_len, self.d_model))
         pe[:, 0::2] = np.sin(pos * div_term)
         pe[:, 1::2] = np.cos(pos * div_term)
-        
         return pe
-    
-    def _count_parameters(self) -> int:
-        """Count total number of parameters"""
-        params = (
-            np.prod(self.embedding.shape) +
-            np.prod(self.pos_embedding.shape) +
-            np.prod(self.output_projection.shape)
-        )
-        
-        for layer in self.layers:
-            params += (
-                np.prod(layer.query_proj.shape) +
-                np.prod(layer.key_proj.shape) +
-                np.prod(layer.value_proj.shape) +
-                np.prod(layer.ffn1.shape) +
-                np.prod(layer.ffn2.shape) +
-                2 * len(layer.gamma1)  # layer norm params
-            )
-        
-        return params
-    
-    def forward(
-        self,
-        input_ids: np.ndarray,
-        mask: Optional[np.ndarray] = None
-    ) -> Tuple[np.ndarray, Dict[str, Any]]:
-        """
-        Forward pass through model
-        
-        Args:
-            input_ids: Input token IDs [batch, seq_len]
-            mask: Optional attention mask
-            
-        Returns:
-            Tuple of (logits, metrics)
-        """
+
+    def forward(self, input_ids: np.ndarray, mask: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Dict[str, Any]]:
         batch_size, seq_len = input_ids.shape
         
-        # Lookup token embeddings
-        x = self.embedding[input_ids]
+        # 1. Embedding
+        x_emb = self.embedding[input_ids]
         
-        # Add position embeddings
-        x = x + self.pos_embedding[:seq_len]
+        # 2. Positional Embedding
+        x = x_emb + self.pos_embedding[:seq_len]
         
-        # Apply dropout
-        if self.dropout > 0:
-            dropout_mask = (np.random.random(x.shape) > self.dropout).astype(np.float32)
-            x = x * dropout_mask / (1.0 - self.dropout)
-        
-        # Pass through transformer layers
-        all_quantum_metrics = []
-        for i, layer in enumerate(self.layers):
-            x, quantum_metrics = layer.forward(x, mask)
-            all_quantum_metrics.append(quantum_metrics)
-        
-        # Final projection to vocabulary
+        # 3. Layers
+        layer_metrics = []
+        layer_inputs = [x]
+        for layer in self.layers:
+            x, metrics = layer.forward(x, mask)
+            layer_inputs.append(x)
+            layer_metrics.append(metrics)
+            
+        # 4. Final Projection
         logits = x @ self.output_projection
         
-        # Aggregate quantum metrics
-        metrics = {
-            "layer_metrics": all_quantum_metrics,
-            "avg_coherence": np.mean([m.get("coherence", 0) for m in all_quantum_metrics]),
-            "avg_entanglement": np.mean([m.get("entanglement", 0) for m in all_quantum_metrics]),
-            "avg_interference": np.mean([m.get("interference", 0) for m in all_quantum_metrics]),
-            "avg_fidelity": np.mean([m.get("quantum_fidelity", 0) for m in all_quantum_metrics]),
+        # Store cache
+        self.cache = {
+            "input_ids": input_ids,
+            "layer_inputs": layer_inputs,
+            "logits": logits,
+            "mask": mask
         }
         
-        return logits, metrics
-    
-    def generate(
-        self,
-        prompt: str,
-        tokenizer,
-        max_tokens: int = 100,
-        temperature: float = 1.0,
-        top_k: Optional[int] = None
-    ) -> Tuple[str, Dict[str, Any]]:
-        """
-        Generate text from prompt
+        # Aggregate metrics
+        avg_metrics = {
+            "avg_coherence": np.mean([m.get("coherence", 0) for m in layer_metrics]),
+            "avg_entanglement": np.mean([m.get("entanglement", 0) for m in layer_metrics]),
+            "avg_interference": np.mean([m.get("interference", 0) for m in layer_metrics]),
+            "avg_fidelity": np.mean([m.get("quantum_fidelity", 0) for m in layer_metrics]),
+        }
         
-        Args:
-            prompt: Input prompt text
-            tokenizer: Tokenizer for encoding/decoding
-            max_tokens: Maximum tokens to generate
-            temperature: Sampling temperature
-            top_k: Top-k sampling
-            
-        Returns:
-            Tuple of (generated_text, generation_metrics)
+        return logits, avg_metrics
+
+    def backward(self, grad_logits: np.ndarray) -> Dict[str, Any]:
         """
-        start_time = time.time()
+        Full backward pass through the entire transformer
+        """
+        all_grads = {}
         
-        # Encode prompt
+        # 1. Output projection backward
+        # logits = last_layer_x @ output_projection
+        last_x = self.cache["layer_inputs"][-1]
+        all_grads["output_projection"] = last_x.transpose(0, 2, 1) @ grad_logits
+        all_grads["output_projection"] = np.sum(all_grads["output_projection"], axis=0)
+        
+        grad_x = grad_logits @ self.output_projection.T
+        
+        # 2. Layers backward
+        for i in reversed(range(self.n_layers)):
+            grad_x, layer_grads = self.layers[i].backward(grad_x)
+            # Prefix layer grads
+            for name, g in layer_grads.items():
+                all_grads[f"layer_{i}_{name}"] = g
+                
+        # 3. Embedding backward
+        # grad_x is grad w.r.t input to first layer (emb + pos)
+        # pos is fixed, so grad w.r.t emb is grad_x
+        input_ids = self.cache["input_ids"]
+        grad_emb = np.zeros_like(self.embedding)
+        for b in range(input_ids.shape[0]):
+            for s in range(input_ids.shape[1]):
+                grad_emb[input_ids[b, s]] += grad_x[b, s]
+        all_grads["embedding"] = grad_emb
+        
+        return all_grads
+
+    def generate(self, prompt: str, tokenizer, max_tokens: int = 50, temperature: float = 0.7):
         input_ids = tokenizer.encode(prompt)
         input_ids = np.array(input_ids).reshape(1, -1)
+        generated = input_ids[0].tolist()
         
-        generated_ids = input_ids[0].copy()
-        
-        for i in range(max_tokens):
-            # Forward pass
-            logits, metrics = self.forward(generated_ids.reshape(1, -1))
-            
-            # Get next token logits
-            next_token_logits = logits[0, -1, :]
-            
-            # Apply temperature
-            if temperature != 1.0:
-                next_token_logits = next_token_logits / temperature
-            
-            # Apply softmax
+        for _ in range(max_tokens):
+            logits, _ = self.forward(np.array(generated).reshape(1, -1))
+            next_token_logits = logits[0, -1, :] / temperature
             probs = self._softmax(next_token_logits)
-            
-            # Top-k sampling
-            if top_k is not None:
-                top_k_indices = np.argpartition(next_token_logits, -top_k)[-top_k:]
-                mask = np.zeros_like(probs)
-                mask[top_k_indices] = 1
-                probs = probs * mask
-                probs = probs / (np.sum(probs) + 1e-10)
-            
-            # Sample next token
             next_token = np.random.choice(len(probs), p=probs)
-            generated_ids = np.append(generated_ids, next_token)
-            
-            # Check for end token
+            generated.append(next_token)
             if tokenizer.decode([next_token]) == tokenizer.eos_token:
                 break
-        
-        # Decode generated tokens
-        generated_text = tokenizer.decode(generated_ids.tolist())
-        
-        generation_time = time.time() - start_time
-        tokens_per_second = len(generated_ids) / generation_time
-        
-        generation_metrics = {
-            "generated_tokens": len(generated_ids) - len(input_ids[0]),
-            "generation_time": generation_time,
-            "tokens_per_second": tokens_per_second,
-            "quantum_metrics": metrics,
-        }
-        
-        return generated_text, generation_metrics
-    
-    def _softmax(self, x: np.ndarray) -> np.ndarray:
-        """Compute softmax"""
-        exp_x = np.exp(x - np.max(x))
-        return exp_x / (np.sum(exp_x) + 1e-10)
-    
-    def get_state(self) -> QuantumState:
-        """Get model state for saving"""
-        layer_weights = []
-        layer_norms = []
-        
-        for layer in self.layers:
-            layer_weights.append({
-                "query": layer.query_proj,
-                "key": layer.key_proj,
-                "value": layer.value_proj,
-                "ffn1": layer.ffn1,
-                "ffn2": layer.ffn2,
-            })
-            layer_norms.append({
-                "gamma": layer.gamma1,
-                "beta": layer.beta1,
-            })
-        
-        return QuantumState(
-            embedding_matrix=self.embedding,
-            position_embeddings=self.pos_embedding,
-            layer_weights=layer_weights,
-            layer_norms=layer_norms,
-            output_weights=self.output_projection,
-        )
-    
-    def set_state(self, state: QuantumState):
-        """Set model state from saved checkpoint"""
-        self.embedding = state.embedding_matrix
-        self.pos_embedding = state.position_embeddings
-        self.output_projection = state.output_weights
-        
-        for i, (layer, lw, ln) in enumerate(zip(self.layers, state.layer_weights, state.layer_norms)):
-            layer.query_proj = lw["query"]
-            layer.key_proj = lw["key"]
-            layer.value_proj = lw["value"]
-            layer.ffn1 = lw["ffn1"]
-            layer.ffn2 = lw["ffn2"]
-            layer.gamma1 = ln["gamma"]
-            layer.beta1 = ln["beta"]
-    
-    def save(self, path: str):
-        """Save model state to disk"""
-        state = self.get_state()
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(path, 'w') as f:
-            json.dump(state.to_dict(), f, indent=2)
-        
-        print(f"✅ Saved QuantumTransformer to {path}")
-    
-    def load(self, path: str):
-        """Load model state from disk"""
-        with open(path, 'r') as f:
-            data = json.load(f)
-        
-        state = QuantumState.from_dict(data)
-        self.set_state(state)
-        
-        print(f"✅ Loaded QuantumTransformer from {path}")
+        return tokenizer.decode(generated)
 
+    def _softmax(self, x):
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum()
+
+    def save(self, path: str):
+        # Save using numpy binary format for efficiency
+        params = {
+            "embedding": self.embedding,
+            "output_projection": self.output_projection,
+            "vocab_size": np.array(self.vocab_size),
+            "d_model": np.array(self.d_model),
+            "n_layers": np.array(self.n_layers),
+            "n_heads": np.array(self.n_heads),
+            "d_ff": np.array(self.d_ff)
+        }
+        for i, layer in enumerate(self.layers):
+            params[f"layer_{i}_q"] = layer.query_proj
+            params[f"layer_{i}_k"] = layer.key_proj
+            params[f"layer_{i}_v"] = layer.value_proj
+            params[f"layer_{i}_ffn1"] = layer.ffn1
+            params[f"layer_{i}_ffn2"] = layer.ffn2
+            params[f"layer_{i}_g1"] = layer.gamma1
+            params[f"layer_{i}_b1"] = layer.beta1
+            params[f"layer_{i}_g2"] = layer.gamma2
+            params[f"layer_{i}_b2"] = layer.beta2
+            for j, rot in enumerate(layer.quantum_attention.rotation_matrices):
+                params[f"layer_{i}_rot_{j}"] = rot
+        
+        np.savez(path, **params)
+
+    @classmethod
+    def load(cls, path: str):
+        data = np.load(path)
+        model = cls(
+            int(data["vocab_size"]), 
+            int(data["d_model"]), 
+            int(data["n_layers"]), 
+            int(data["n_heads"]), 
+            int(data["d_ff"])
+        )
+        model.embedding = data["embedding"]
+        model.output_projection = data["output_projection"]
+        for i in range(model.n_layers):
+            model.layers[i].query_proj = data[f"layer_{i}_q"]
+            model.layers[i].key_proj = data[f"layer_{i}_k"]
+            model.layers[i].value_proj = data[f"layer_{i}_v"]
+            model.layers[i].ffn1 = data[f"layer_{i}_ffn1"]
+            model.layers[i].ffn2 = data[f"layer_{i}_ffn2"]
+            model.layers[i].gamma1 = data[f"layer_{i}_g1"]
+            model.layers[i].beta1 = data[f"layer_{i}_b1"]
+            model.layers[i].gamma2 = data[f"layer_{i}_g2"]
+            model.layers[i].beta2 = data[f"layer_{i}_b2"]
+            model.layers[i].quantum_attention.rotation_matrices = [
+                data[f"layer_{i}_rot_{j}"] for j in range(model.n_heads)
+            ]
+        return model
 
 class SimpleTokenizer:
-    """
-    Simple tokenizer for testing (word-level)
-    In production, would use proper tokenizer
-    """
-    
-    def __init__(self, vocab: Optional[List[str]] = None):
-        if vocab is None:
-            vocab = ["<pad>", "<unk>", "<eos>", "<bos>"] + list("abcdefghijklmnopqrstuvwxyz ")
-        
-        self.vocab = vocab
-        self.word_to_id = {word: i for i, word in enumerate(vocab)}
-        self.id_to_word = {i: word for i, word in enumerate(vocab)}
-        self.vocab_size = len(vocab)
+    def __init__(self, vocab_size=10000):
+        self.vocab_size = vocab_size
         self.pad_token = "<pad>"
-        self.unk_token = "<unk>"
         self.eos_token = "<eos>"
-        self.bos_token = "<bos>"
-    
-    def encode(self, text: str) -> List[int]:
-        """Encode text to token IDs"""
-        tokens = []
-        for char in text.lower():
-            if char in self.word_to_id:
-                tokens.append(self.word_to_id[char])
-            else:
-                tokens.append(self.word_to_id[self.unk_token])
-        return tokens
-    
-    def decode(self, token_ids: List[int]) -> str:
-        """Decode token IDs to text"""
-        return "".join([self.id_to_word.get(tid, self.unk_token) for tid in token_ids])
+        self.word_to_id = {self.pad_token: 0, self.eos_token: 1}
+        self.id_to_word = {0: self.pad_token, 1: self.eos_token}
+        self.next_id = 2
 
+    def encode(self, text):
+        words = text.lower().split()
+        ids = []
+        for w in words:
+            if w not in self.word_to_id:
+                if self.next_id < self.vocab_size:
+                    self.word_to_id[w] = self.next_id
+                    self.id_to_word[self.next_id] = w
+                    self.next_id += 1
+                else:
+                    ids.append(0) # pad/unk
+                    continue
+            ids.append(self.word_to_id[w])
+        return ids + [1] # add eos
 
-__all__ = [
-    "QuantumState",
-    "QuantumLayer",
-    "QuantumTransformer",
-    "SimpleTokenizer",
-]
+    def decode(self, ids):
+        return " ".join([self.id_to_word.get(i, "<?>") for i in ids if i > 0])

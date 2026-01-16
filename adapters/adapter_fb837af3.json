@@ -1,0 +1,60 @@
+{
+  "id": "adapter_fb837af3",
+  "task_tags": [
+    "Victorian",
+    "Cure"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "era": "Victorian",
+    "topic": "Cure"
+  },
+  "rules": [],
+  "prompts": [],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768573943.4686832,
+  "last_used": 1768573943.4686837,
+  "success_count": 0,
+  "total_calls": 0,
+  "domains": [],
+  "status": "frozen",
+  "version": 1
+}
