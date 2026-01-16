@@ -1,0 +1,60 @@
+{
+  "id": "adapter_94d1515d",
+  "task_tags": [
+    "Post-War",
+    "Quantum"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+  ],
+  "x_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "era": "Post-War",
+    "topic": "Quantum"
+  },
+  "rules": [],
+  "prompts": [],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768574292.4891324,
+  "last_used": 1768574292.4891326,
+  "success_count": 0,
+  "total_calls": 0,
+  "domains": [],
+  "status": "frozen",
+  "version": 1
+}

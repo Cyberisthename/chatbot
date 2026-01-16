@@ -1,0 +1,60 @@
+{
+  "id": "adapter_8777e198",
+  "task_tags": [
+    "Industrial",
+    "Medicine"
+  ],
+  "y_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "era": "Industrial",
+    "topic": "Medicine"
+  },
+  "rules": [],
+  "prompts": [],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768574635.601833,
+  "last_used": 1768574635.601833,
+  "success_count": 0,
+  "total_calls": 0,
+  "domains": [],
+  "status": "frozen",
+  "version": 1
+}

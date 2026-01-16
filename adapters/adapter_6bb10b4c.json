@@ -1,0 +1,60 @@
+{
+  "id": "adapter_6bb10b4c",
+  "task_tags": [
+    "Victorian",
+    "Physics"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "era": "Victorian",
+    "topic": "Physics"
+  },
+  "rules": [],
+  "prompts": [],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768574635.578128,
+  "last_used": 1768574635.5781283,
+  "success_count": 0,
+  "total_calls": 0,
+  "domains": [],
+  "status": "frozen",
+  "version": 1
+}
