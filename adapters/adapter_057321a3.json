@@ -1,0 +1,96 @@
+{
+  "id": "adapter_057321a3",
+  "task_tags": [
+    "classical_physics",
+    "early_quantum",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "classical_physics",
+    "era": "early_quantum",
+    "era_range": [
+      1900,
+      1930
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_einstein_1905_sr_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1905_sr_epoch1.json",
+      "symbol_count": 15,
+      "year": 1905,
+      "author": "Albert Einstein",
+      "title": "On the Electrodynamics of Moving Bodies"
+    },
+    "book_einstein_1905_sr_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1905_sr_epoch2.json",
+      "symbol_count": 15,
+      "year": 1905,
+      "author": "Albert Einstein",
+      "title": "On the Electrodynamics of Moving Bodies"
+    },
+    "book_einstein_1905_sr_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1905_sr_epoch3.json",
+      "symbol_count": 15,
+      "year": 1905,
+      "author": "Albert Einstein",
+      "title": "On the Electrodynamics of Moving Bodies"
+    }
+  },
+  "rules": [
+    "For questions about classical_physics in early_quantum, recall: On the Electrodynamics of Moving Bodies [15 TCL symbols available]",
+    "For questions about classical_physics in early_quantum, recall: On the Electrodynamics of Moving Bodies [15 TCL symbols available]",
+    "For questions about classical_physics in early_quantum, recall: On the Electrodynamics of Moving Bodies [15 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: On the Electrodynamics of Moving Bodies by Albert Einstein (1905) - relativity, electromagnetic, physics",
+    "Historical knowledge: On the Electrodynamics of Moving Bodies by Albert Einstein (1905) - relativity, electromagnetic, physics",
+    "Historical knowledge: On the Electrodynamics of Moving Bodies by Albert Einstein (1905) - relativity, electromagnetic, physics"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.1083162,
+  "last_used": 1768522729.229354,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

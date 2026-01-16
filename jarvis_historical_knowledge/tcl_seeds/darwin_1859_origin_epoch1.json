@@ -1,0 +1,24 @@
+{
+  "book_id": "darwin_1859_origin",
+  "title": "On the Origin of Species",
+  "author": "Charles Darwin",
+  "year": 1859,
+  "subjects": [
+    "evolution",
+    "biology",
+    "genetics"
+  ],
+  "symbols": [
+    "experiment",
+    "On",
+    "Origin",
+    "biology",
+    "evolution",
+    "genetics",
+    "Species"
+  ],
+  "symbol_count": 7,
+  "compression_ratio": 6.504065040650406e-05,
+  "epoch": 1,
+  "created_at": 1768522729.0923426
+}

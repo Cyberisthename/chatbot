@@ -1,0 +1,22 @@
+{
+  "epoch": 1,
+  "book_index": 10,
+  "total_books": 13,
+  "progress": {
+    "books_processed": 10,
+    "total_size_mb": 8.2,
+    "adapters_created": 7,
+    "tcl_seeds_generated": 10,
+    "elapsed_time": 0.7042734622955322
+  },
+  "adapter_map": {
+    "quantum_physics_early_quantum": "adapter_226dca1c",
+    "disease_pathology_mid_1800s": "adapter_f7f391bf",
+    "cancer_research_mid_1800s": "adapter_cf6986ae",
+    "cancer_research_early_quantum": "adapter_1855bc8a",
+    "cell_biology_mid_1800s": "adapter_0e8eb2a7",
+    "cell_biology_late_1800s": "adapter_62ef19e4",
+    "classical_physics_late_1800s": "adapter_422693ce"
+  },
+  "timestamp": 1768522729.1055293
+}

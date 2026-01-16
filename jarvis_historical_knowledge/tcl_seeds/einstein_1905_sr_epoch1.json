@@ -1,0 +1,32 @@
+{
+  "book_id": "einstein_1905_sr",
+  "title": "On the Electrodynamics of Moving Bodies",
+  "author": "Albert Einstein",
+  "year": 1905,
+  "subjects": [
+    "relativity",
+    "electromagnetic",
+    "physics"
+  ],
+  "symbols": [
+    "principle",
+    "particle",
+    "physics",
+    "On",
+    "Electrodynamics",
+    "Moving",
+    "theory",
+    "energy",
+    "electromagnetic",
+    "treatment",
+    "quantum",
+    "radiation",
+    "Bodies",
+    "relativity",
+    "wave"
+  ],
+  "symbol_count": 15,
+  "compression_ratio": 0.00013767783386874714,
+  "epoch": 1,
+  "created_at": 1768522729.1076705
+}

@@ -1,0 +1,96 @@
+{
+  "id": "adapter_1319071d",
+  "task_tags": [
+    "disease_pathology",
+    "victorian_medicine",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "disease_pathology",
+    "era": "victorian_medicine",
+    "era_range": [
+      1837,
+      1901
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_osler_1892_ppm_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/osler_1892_ppm_epoch1.json",
+      "symbol_count": 9,
+      "year": 1892,
+      "author": "William Osler",
+      "title": "Principles and Practice of Medicine"
+    },
+    "book_osler_1892_ppm_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/osler_1892_ppm_epoch2.json",
+      "symbol_count": 9,
+      "year": 1892,
+      "author": "William Osler",
+      "title": "Principles and Practice of Medicine"
+    },
+    "book_osler_1892_ppm_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/osler_1892_ppm_epoch3.json",
+      "symbol_count": 9,
+      "year": 1892,
+      "author": "William Osler",
+      "title": "Principles and Practice of Medicine"
+    }
+  },
+  "rules": [
+    "For questions about disease_pathology in victorian_medicine, recall: Principles and Practice of Medicine [9 TCL symbols available]",
+    "For questions about disease_pathology in victorian_medicine, recall: Principles and Practice of Medicine [9 TCL symbols available]",
+    "For questions about disease_pathology in victorian_medicine, recall: Principles and Practice of Medicine [9 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: Principles and Practice of Medicine by William Osler (1892) - medicine, disease, pathology",
+    "Historical knowledge: Principles and Practice of Medicine by William Osler (1892) - medicine, disease, pathology",
+    "Historical knowledge: Principles and Practice of Medicine by William Osler (1892) - medicine, disease, pathology"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.1131253,
+  "last_used": 1768522729.2334619,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}
