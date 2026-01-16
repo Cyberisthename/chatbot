@@ -1,0 +1,13 @@
+{
+  "model_type": "jarvis_quantum_oracle",
+  "architecture": "quantum_transformer",
+  "vocab_size": 8000,
+  "d_model": 256,
+  "num_heads": 8,
+  "num_layers": 6,
+  "d_ff": 1024,
+  "max_seq_length": 512,
+  "quantum_enabled": true,
+  "tcl_compressed": true,
+  "num_adapters": 100
+}

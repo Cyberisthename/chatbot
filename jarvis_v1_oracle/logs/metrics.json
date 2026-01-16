@@ -1,0 +1,57 @@
+[
+  {
+    "timestamp": "2026-01-16T17:14:46.552955",
+    "phase": "epoch_1",
+    "metrics": {
+      "epoch": 1,
+      "train_loss": 0.3506082323629808,
+      "val_loss": 0.0,
+      "global_step": 1
+    },
+    "elapsed": 22.340298175811768
+  },
+  {
+    "timestamp": "2026-01-16T17:15:02.642934",
+    "phase": "epoch_2",
+    "metrics": {
+      "epoch": 2,
+      "train_loss": 0.35060874245633145,
+      "val_loss": 0.0,
+      "global_step": 2
+    },
+    "elapsed": 38.43027710914612
+  },
+  {
+    "timestamp": "2026-01-16T17:15:16.254857",
+    "phase": "epoch_3",
+    "metrics": {
+      "epoch": 3,
+      "train_loss": 0.3506091943985659,
+      "val_loss": 0.0,
+      "global_step": 3
+    },
+    "elapsed": 52.04219627380371
+  },
+  {
+    "timestamp": "2026-01-16T17:15:29.613664",
+    "phase": "epoch_4",
+    "metrics": {
+      "epoch": 4,
+      "train_loss": 0.35060853891984944,
+      "val_loss": 0.0,
+      "global_step": 4
+    },
+    "elapsed": 65.40100312232971
+  },
+  {
+    "timestamp": "2026-01-16T17:15:44.602729",
+    "phase": "epoch_5",
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 0.3506072556633921,
+      "val_loss": 0.0,
+      "global_step": 5
+    },
+    "elapsed": 80.39006853103638
+  }
+]
