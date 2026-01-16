@@ -1,0 +1,27 @@
+{
+  "book_id": "osler_1892_ppm",
+  "title": "Principles and Practice of Medicine",
+  "author": "William Osler",
+  "year": 1892,
+  "subjects": [
+    "medicine",
+    "disease",
+    "pathology",
+    "therapy"
+  ],
+  "symbols": [
+    "medicine",
+    "Principles",
+    "disease",
+    "Medicine",
+    "Practice",
+    "chemical",
+    "radiation",
+    "pathology",
+    "therapy"
+  ],
+  "symbol_count": 9,
+  "compression_ratio": 7.276843467011643e-05,
+  "epoch": 1,
+  "created_at": 1768522729.1123
+}

@@ -1,0 +1,30 @@
+{
+  "book_id": "pasteur_1878_germ",
+  "title": "The Germ Theory and Its Applications to Medicine and Surgery",
+  "author": "Louis Pasteur",
+  "year": 1878,
+  "subjects": [
+    "medicine",
+    "disease",
+    "chemistry",
+    "cell"
+  ],
+  "symbols": [
+    "Its",
+    "medicine",
+    "Theory",
+    "disease",
+    "cell",
+    "Germ",
+    "Applications",
+    "radiation",
+    "chemical",
+    "The",
+    "chemistry",
+    "pathology"
+  ],
+  "symbol_count": 12,
+  "compression_ratio": 9.603072983354673e-05,
+  "epoch": 3,
+  "created_at": 1768522729.2371123
+}

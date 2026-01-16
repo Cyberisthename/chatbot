@@ -1,0 +1,53 @@
+{
+  "model_config": {
+    "vocab_size": 9,
+    "d_model": 32,
+    "n_layers": 2
+  },
+  "training": {
+    "final_loss": 3.1354999866368267,
+    "total_steps": 300
+  },
+  "quantum_experiments": {
+    "quantum_state": {
+      "probabilities": [
+        0.4999999999999999,
+        0.4999999999999999
+      ],
+      "coherence": 0.4999999999999998,
+      "is_maximal": false
+    },
+    "entanglement": {
+      "dimension": 4,
+      "entangled": true
+    },
+    "phase_shift": {
+      "probabilities_preserved": true
+    }
+  },
+  "intelligence_tests": {
+    "tests": [
+      {
+        "name": "basic_generation",
+        "passed": false,
+        "coherence": 0.010377890670589706
+      },
+      {
+        "name": "quantum_stability",
+        "passed": true,
+        "avg_coherence": 0.08841367858514965,
+        "std_coherence": 0.013615950832049329
+      },
+      {
+        "name": "learning",
+        "passed": false,
+        "initial_loss": 3.1160155380316916,
+        "final_loss": 3.1354999866368267,
+        "improvement": -0.019484448605135096
+      }
+    ],
+    "passed_tests": 1,
+    "total_tests": 3,
+    "success_rate": 0.3333333333333333
+  }
+}

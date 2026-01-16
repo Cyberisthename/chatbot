@@ -1,0 +1,29 @@
+{
+  "book_id": "virchow_1858_cp",
+  "title": "Cellular Pathology: Foundation of Modern Medicine",
+  "author": "Rudolf Virchow",
+  "year": 1858,
+  "subjects": [
+    "pathology",
+    "medicine",
+    "cell",
+    "disease"
+  ],
+  "symbols": [
+    "medicine",
+    "Cellular",
+    "Foundation",
+    "disease",
+    "Medicine",
+    "Modern",
+    "cell",
+    "Pathology",
+    "chemical",
+    "radiation",
+    "pathology"
+  ],
+  "symbol_count": 11,
+  "compression_ratio": 8.931471256901591e-05,
+  "epoch": 3,
+  "created_at": 1768522729.2013905
+}

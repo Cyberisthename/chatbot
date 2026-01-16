@@ -1,0 +1,28 @@
+{
+  "book_id": "abbe_1904_rtc",
+  "title": "Radium Therapy in Cancer",
+  "author": "Robert Abbe",
+  "year": 1904,
+  "subjects": [
+    "cure",
+    "cancer",
+    "radiation",
+    "therapy"
+  ],
+  "symbols": [
+    "disease",
+    "cancer",
+    "treatment",
+    "Therapy",
+    "cure",
+    "Radium",
+    "Cancer",
+    "radiation",
+    "pathology",
+    "therapy"
+  ],
+  "symbol_count": 10,
+  "compression_ratio": 8.090614886731392e-05,
+  "epoch": 3,
+  "created_at": 1768522729.2130563
+}

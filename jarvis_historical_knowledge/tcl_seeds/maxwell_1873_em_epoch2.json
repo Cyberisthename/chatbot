@@ -1,0 +1,30 @@
+{
+  "book_id": "maxwell_1873_em",
+  "title": "A Treatise on Electricity and Magnetism",
+  "author": "James Clerk Maxwell",
+  "year": 1873,
+  "subjects": [
+    "electromagnetic",
+    "radiation",
+    "physics"
+  ],
+  "symbols": [
+    "principle",
+    "particle",
+    "physics",
+    "energy",
+    "theory",
+    "wave",
+    "electromagnetic",
+    "Treatise",
+    "treatment",
+    "quantum",
+    "Electricity",
+    "Magnetism",
+    "radiation"
+  ],
+  "symbol_count": 13,
+  "compression_ratio": 0.00012155212716222533,
+  "epoch": 2,
+  "created_at": 1768522729.1704035
+}

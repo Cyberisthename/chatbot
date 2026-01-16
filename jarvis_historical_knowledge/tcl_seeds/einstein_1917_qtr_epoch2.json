@@ -1,0 +1,30 @@
+{
+  "book_id": "einstein_1917_qtr",
+  "title": "On the Quantum Theory of Radiation",
+  "author": "Albert Einstein",
+  "year": 1917,
+  "subjects": [
+    "quantum",
+    "electromagnetic",
+    "radiation",
+    "physics"
+  ],
+  "symbols": [
+    "principle",
+    "Radiation",
+    "Theory",
+    "physics",
+    "On",
+    "Quantum",
+    "energy",
+    "theory",
+    "treatment",
+    "electromagnetic",
+    "quantum",
+    "radiation"
+  ],
+  "symbol_count": 12,
+  "compression_ratio": 0.00011262318160488034,
+  "epoch": 2,
+  "created_at": 1768522729.1230838
+}

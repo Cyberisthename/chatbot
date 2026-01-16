@@ -1,0 +1,96 @@
+{
+  "id": "adapter_cf6986ae",
+  "task_tags": [
+    "cancer_research",
+    "mid_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "cancer_research",
+    "era": "mid_1800s",
+    "era_range": [
+      1831,
+      1860
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_muller_1838_cancer_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/muller_1838_cancer_epoch1.json",
+      "symbol_count": 14,
+      "year": 1838,
+      "author": "Johannes M\u00fcller",
+      "title": "On the Nature and Structural Characteristics of Cancer"
+    },
+    "book_muller_1838_cancer_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/muller_1838_cancer_epoch2.json",
+      "symbol_count": 14,
+      "year": 1838,
+      "author": "Johannes M\u00fcller",
+      "title": "On the Nature and Structural Characteristics of Cancer"
+    },
+    "book_muller_1838_cancer_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/muller_1838_cancer_epoch3.json",
+      "symbol_count": 14,
+      "year": 1838,
+      "author": "Johannes M\u00fcller",
+      "title": "On the Nature and Structural Characteristics of Cancer"
+    }
+  },
+  "rules": [
+    "For questions about cancer_research in mid_1800s, recall: On the Nature and Structural Characteristics of Cancer [14 TCL symbols available]",
+    "For questions about cancer_research in mid_1800s, recall: On the Nature and Structural Characteristics of Cancer [14 TCL symbols available]",
+    "For questions about cancer_research in mid_1800s, recall: On the Nature and Structural Characteristics of Cancer [14 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: On the Nature and Structural Characteristics of Cancer by Johannes M\u00fcller (1838) - tumor, medicine, pathology",
+    "Historical knowledge: On the Nature and Structural Characteristics of Cancer by Johannes M\u00fcller (1838) - tumor, medicine, pathology",
+    "Historical knowledge: On the Nature and Structural Characteristics of Cancer by Johannes M\u00fcller (1838) - tumor, medicine, pathology"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.082456,
+  "last_used": 1768522729.2064493,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

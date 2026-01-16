@@ -1,0 +1,30 @@
+{
+  "book_id": "yamagiwa_1915_esc",
+  "title": "Experimental Studies on Cancer",
+  "author": "Katsusaburo Yamagiwa",
+  "year": 1915,
+  "subjects": [
+    "disease",
+    "chemistry",
+    "cell",
+    "cancer"
+  ],
+  "symbols": [
+    "disease",
+    "cancer",
+    "Experimental",
+    "treatment",
+    "cell",
+    "chemical",
+    "radiation",
+    "Cancer",
+    "Studies",
+    "chemistry",
+    "pathology",
+    "therapy"
+  ],
+  "symbol_count": 12,
+  "compression_ratio": 9.643201542912247e-05,
+  "epoch": 3,
+  "created_at": 1768522729.2094524
+}
