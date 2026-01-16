@@ -1,0 +1,75 @@
+{
+  "adapter": {
+    "id": "adapter_book_0004",
+    "task_tags": [
+      "historical_knowledge",
+      "science",
+      "year_1940"
+    ],
+    "y_bits": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "z_bits": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    "x_bits": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "parameters": {
+      "book_title": "Cancer Research and Therapeutic Approaches",
+      "book_id": "book_0004",
+      "year": 1940,
+      "compression_ratio": 0.1,
+      "quantum_enabled": true,
+      "tcl_seed": 509851602
+    },
+    "rules": [],
+    "prompts": [
+      "Historical knowledge from Cancer Research and Therapeutic Approaches (1940)"
+    ],
+    "parent_ids": [],
+    "child_ids": [],
+    "created_at": 1768583744.6109343,
+    "last_used": 1768583744.6109343,
+    "success_count": 0,
+    "total_calls": 0,
+    "domains": [
+      "quantum",
+      "science",
+      "history"
+    ],
+    "status": "active",
+    "version": 1
+  },
+  "tcl_seed": 509851602,
+  "book_title": "Cancer Research and Therapeutic Approaches"
+}

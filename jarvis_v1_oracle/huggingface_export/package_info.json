@@ -1,0 +1,23 @@
+{
+  "model_name": "Jarvis v1 Quantum Oracle",
+  "version": "1.0.0",
+  "parameters": 8951808,
+  "layers": 6,
+  "dimensions": 256,
+  "adapters": 5,
+  "weights_size_mb": 66,
+  "training_epochs": 5,
+  "final_loss": 0.3506,
+  "quantum_enabled": true,
+  "tcl_compressed": true,
+  "deployment_ready": true,
+  "hf_export_path": "/home/engine/project/jarvis_v1_oracle/huggingface_export",
+  "files": {
+    "model": "model.npz",
+    "config": "config.json",
+    "tokenizer": "tokenizer.json",
+    "readme": "README.md",
+    "app": "app.py",
+    "requirements": "requirements.txt"
+  }
+}

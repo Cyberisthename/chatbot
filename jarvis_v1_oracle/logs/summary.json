@@ -1,0 +1,19 @@
+{
+  "session_id": "20260116_171424",
+  "total_time": 80.67405605316162,
+  "total_logs": 62,
+  "total_metrics": 5,
+  "total_findings": 1,
+  "total_quantum_metrics": 0,
+  "final_metrics": {
+    "timestamp": "2026-01-16T17:15:44.602729",
+    "phase": "epoch_5",
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 0.3506072556633921,
+      "val_loss": 0.0,
+      "global_step": 5
+    },
+    "elapsed": 80.39006853103638
+  }
+}
