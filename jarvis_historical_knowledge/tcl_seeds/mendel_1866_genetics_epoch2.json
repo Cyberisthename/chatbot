@@ -1,0 +1,24 @@
+{
+  "book_id": "mendel_1866_genetics",
+  "title": "Experiments in Plant Hybridization",
+  "author": "Gregor Mendel",
+  "year": 1866,
+  "subjects": [
+    "evolution",
+    "biology",
+    "genetics"
+  ],
+  "symbols": [
+    "experiment",
+    "biology",
+    "Hybridization",
+    "evolution",
+    "genetics",
+    "Plant",
+    "Experiments"
+  ],
+  "symbol_count": 7,
+  "compression_ratio": 6.501950585175553e-05,
+  "epoch": 2,
+  "created_at": 1768522729.1587064
+}

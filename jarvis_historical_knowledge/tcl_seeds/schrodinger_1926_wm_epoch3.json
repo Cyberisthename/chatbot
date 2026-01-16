@@ -1,0 +1,29 @@
+{
+  "book_id": "schrodinger_1926_wm",
+  "title": "Wave Mechanics and Quantum Theory",
+  "author": "Erwin Schr\u00f6dinger",
+  "year": 1926,
+  "subjects": [
+    "molecular",
+    "physics",
+    "quantum"
+  ],
+  "symbols": [
+    "Mechanics",
+    "principle",
+    "Theory",
+    "physics",
+    "Quantum",
+    "theory",
+    "treatment",
+    "quantum",
+    "radiation",
+    "molecular",
+    "wave",
+    "Wave"
+  ],
+  "symbol_count": 12,
+  "compression_ratio": 0.0001142313184198001,
+  "epoch": 3,
+  "created_at": 1768522729.1968913
+}

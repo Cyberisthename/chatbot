@@ -1,0 +1,32 @@
+{
+  "book_id": "bohr_1918_qtls",
+  "title": "The Quantum Theory of Line Spectra",
+  "author": "Niels Bohr",
+  "year": 1918,
+  "subjects": [
+    "quantum",
+    "atom",
+    "chemistry",
+    "physics"
+  ],
+  "symbols": [
+    "principle",
+    "Theory",
+    "physics",
+    "Quantum",
+    "Spectra",
+    "energy",
+    "theory",
+    "treatment",
+    "quantum",
+    "Line",
+    "radiation",
+    "The",
+    "atom",
+    "chemistry"
+  ],
+  "symbol_count": 14,
+  "compression_ratio": 0.00013213780084945728,
+  "epoch": 1,
+  "created_at": 1768522729.0725079
+}

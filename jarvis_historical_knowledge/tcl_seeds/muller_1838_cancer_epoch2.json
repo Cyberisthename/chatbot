@@ -1,0 +1,32 @@
+{
+  "book_id": "muller_1838_cancer",
+  "title": "On the Nature and Structural Characteristics of Cancer",
+  "author": "Johannes M\u00fcller",
+  "year": 1838,
+  "subjects": [
+    "tumor",
+    "medicine",
+    "pathology",
+    "cancer"
+  ],
+  "symbols": [
+    "Structural",
+    "medicine",
+    "Characteristics",
+    "On",
+    "disease",
+    "cancer",
+    "treatment",
+    "tumor",
+    "chemical",
+    "Cancer",
+    "Nature",
+    "radiation",
+    "pathology",
+    "therapy"
+  ],
+  "symbol_count": 14,
+  "compression_ratio": 0.00011430437622468974,
+  "epoch": 2,
+  "created_at": 1768522729.13877
+}

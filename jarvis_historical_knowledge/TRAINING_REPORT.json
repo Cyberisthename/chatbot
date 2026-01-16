@@ -1,0 +1,45 @@
+{
+  "training_completed": "2026-01-16T00:18:49.239559",
+  "epochs": 3,
+  "statistics": {
+    "books_processed": 39,
+    "total_size_gb": 0.0333984375,
+    "adapters_created": 10,
+    "tcl_seeds_generated": 39,
+    "training_time_minutes": 0.013972107569376628
+  },
+  "adapters": {
+    "quantum_physics_early_quantum": "adapter_226dca1c",
+    "disease_pathology_mid_1800s": "adapter_f7f391bf",
+    "cancer_research_mid_1800s": "adapter_cf6986ae",
+    "cancer_research_early_quantum": "adapter_1855bc8a",
+    "cell_biology_mid_1800s": "adapter_0e8eb2a7",
+    "cell_biology_late_1800s": "adapter_62ef19e4",
+    "classical_physics_late_1800s": "adapter_422693ce",
+    "classical_physics_early_quantum": "adapter_057321a3",
+    "disease_pathology_victorian_medicine": "adapter_1319071d",
+    "disease_pathology_late_1800s": "adapter_92cb90fe"
+  },
+  "topic_coverage": {
+    "quantum_physics": 1,
+    "classical_physics": 2,
+    "medicine_general": 0,
+    "surgery_anatomy": 0,
+    "disease_pathology": 3,
+    "cancer_research": 2,
+    "cell_biology": 2,
+    "chemistry_biochem": 0,
+    "evolution_genetics": 0,
+    "electromagnetic_radiation": 0
+  },
+  "era_coverage": {
+    "early_1800s": 0,
+    "mid_1800s": 3,
+    "late_1800s": 3,
+    "victorian_medicine": 1,
+    "early_quantum": 3,
+    "interwar_science": 0,
+    "early_1900s": 0,
+    "mid_1900s": 0
+  }
+}
