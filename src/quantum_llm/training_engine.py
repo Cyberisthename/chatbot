@@ -152,8 +152,17 @@ class QuantumTrainingEngine:
 
     def load_dataset(self, data_path: str):
         print(f"\n📚 Loading data from {data_path}...")
-        with open(data_path, 'r') as f:
-            data = json.load(f)
+        
+        # Check if dataset exists, if not - load from string
+        if isinstance(data_path, str) and data_path.startswith("["):
+            # Direct data passed as JSON string
+            data = json.loads(data_path)
+        elif Path(data_path).exists():
+            with open(data_path, 'r') as f:
+                data = json.load(f)
+        else:
+            raise FileNotFoundError(f"Dataset not found: {data_path}")
+        
         texts = [item["text"] for item in data]
         self.train_dataset = Dataset(texts, self.config.max_seq_len, self.tokenizer)
         print(f"✅ Loaded {len(self.train_dataset)} training chunks")
@@ -242,26 +251,46 @@ class QuantumTrainingEngine:
         print(f"\n🚀 Starting training for {self.config.epochs} epochs...")
         start_time = time.time()
         
+        # Add validation tracking
+        self.best_val_loss = float('inf')
+        
         for epoch in range(self.config.epochs):
             self.current_epoch = epoch
             self.train_dataset.shuffle()
             
             epoch_loss = 0
+            num_batches = 0
+            
             for i in range(0, len(self.train_dataset), self.config.batch_size):
                 batch_input, batch_target = self.train_dataset.get_batch(self.config.batch_size, i)
                 if batch_input.shape[0] == 0: continue
                 
                 metrics = self.train_step(batch_input, batch_target)
                 epoch_loss += metrics["loss"]
+                num_batches += 1
+                
+                # Store quantum metrics
+                self.quantum_metrics_history.append(metrics)
                 
                 if self.global_step % self.config.log_interval == 0:
-                    print(f"Epoch {epoch} | Step {self.global_step} | Loss: {metrics['loss']:.4f} | Coherence: {metrics['avg_coherence']:.3f}")
+                    print(f"Epoch {epoch} | Step {self.global_step} | Loss: {metrics['loss']:.4f} | Coherence: {metrics.get('avg_coherence', 0):.3f}")
                 
                 if self.global_step % self.config.checkpoint_interval == 0:
-                    self.model.save(f"{self.config.save_path}/checkpoint_{self.global_step}.json")
+                    checkpoint_path = Path(self.config.save_path) / f"checkpoint_{self.global_step}.npz"
+                    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+                    self.model.save(str(checkpoint_path))
             
-            avg_epoch_loss = epoch_loss / (len(self.train_dataset) / self.config.batch_size)
+            avg_epoch_loss = epoch_loss / num_batches if num_batches > 0 else 0
+            self.train_losses.append(avg_epoch_loss)
+            
+            # Update best validation loss
+            if avg_epoch_loss < self.best_val_loss:
+                self.best_val_loss = avg_epoch_loss
+            
             print(f"✅ Epoch {epoch} completed. Avg Loss: {avg_epoch_loss:.4f}")
             
         print(f"🏁 Training finished in {time.time() - start_time:.2f}s")
-        self.model.save(f"{self.config.save_path}/final_model.json")
+        
+        final_path = Path(self.config.save_path) / "final_model.npz"
+        final_path.parent.mkdir(parents=True, exist_ok=True)
+        self.model.save(str(final_path))

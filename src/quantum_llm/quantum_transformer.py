@@ -391,20 +391,60 @@ class QuantumTransformer:
         
         return all_grads
 
-    def generate(self, prompt: str, tokenizer, max_tokens: int = 50, temperature: float = 0.7):
+    def generate(self, prompt: str, tokenizer, max_tokens: int = 50, temperature: float = 0.7, top_k: int = 50):
+        """
+        Generate text from prompt
+        
+        Returns:
+            Tuple of (generated_text, metrics)
+        """
         input_ids = tokenizer.encode(prompt)
         input_ids = np.array(input_ids).reshape(1, -1)
         generated = input_ids[0].tolist()
         
+        # Track quantum metrics during generation
+        quantum_metrics_list = []
+        
         for _ in range(max_tokens):
-            logits, _ = self.forward(np.array(generated).reshape(1, -1))
+            # Limit context to max_seq_len
+            context = generated[-self.max_seq_len:]
+            logits, metrics = self.forward(np.array(context).reshape(1, -1))
+            
+            quantum_metrics_list.append(metrics)
+            
             next_token_logits = logits[0, -1, :] / temperature
-            probs = self._softmax(next_token_logits)
-            next_token = np.random.choice(len(probs), p=probs)
-            generated.append(next_token)
-            if tokenizer.decode([next_token]) == tokenizer.eos_token:
-                break
-        return tokenizer.decode(generated)
+            
+            # Top-k sampling
+            if top_k > 0:
+                top_k_indices = np.argpartition(next_token_logits, -top_k)[-top_k:]
+                top_k_logits = next_token_logits[top_k_indices]
+                top_k_probs = self._softmax(top_k_logits)
+                next_token = top_k_indices[np.random.choice(len(top_k_probs), p=top_k_probs)]
+            else:
+                probs = self._softmax(next_token_logits)
+                next_token = np.random.choice(len(probs), p=probs)
+            
+            generated.append(int(next_token))
+            
+            # Check for EOS token
+            if hasattr(tokenizer, 'eos_token'):
+                if tokenizer.decode([next_token]) == tokenizer.eos_token:
+                    break
+        
+        generated_text = tokenizer.decode(generated)
+        
+        # Aggregate quantum metrics
+        avg_metrics = {
+            "quantum_metrics": {
+                "avg_coherence": float(np.mean([m.get("avg_coherence", 0) for m in quantum_metrics_list])),
+                "avg_entanglement": float(np.mean([m.get("avg_entanglement", 0) for m in quantum_metrics_list])),
+                "avg_interference": float(np.mean([m.get("avg_interference", 0) for m in quantum_metrics_list])),
+                "avg_fidelity": float(np.mean([m.get("avg_fidelity", 0) for m in quantum_metrics_list])),
+            },
+            "generated_tokens": len(generated) - len(input_ids[0])
+        }
+        
+        return generated_text, avg_metrics
 
     def _softmax(self, x):
         e_x = np.exp(x - np.max(x))
@@ -489,3 +529,27 @@ class SimpleTokenizer:
 
     def decode(self, ids):
         return " ".join([self.id_to_word.get(i, "<?>") for i in ids if i > 0])
+    
+    def save(self, path: str):
+        """Save tokenizer to JSON"""
+        import json
+        with open(path, 'w') as f:
+            json.dump({
+                "vocab_size": self.vocab_size,
+                "word_to_id": self.word_to_id,
+                "id_to_word": {int(k): v for k, v in self.id_to_word.items()},
+                "next_id": self.next_id
+            }, f)
+    
+    @classmethod
+    def load(cls, path: str):
+        """Load tokenizer from JSON"""
+        import json
+        with open(path, 'r') as f:
+            data = json.load(f)
+        
+        tokenizer = cls(vocab_size=data["vocab_size"])
+        tokenizer.word_to_id = data["word_to_id"]
+        tokenizer.id_to_word = {int(k): v for k, v in data["id_to_word"].items()}
+        tokenizer.next_id = data["next_id"]
+        return tokenizer
