@@ -190,7 +190,8 @@ class JarvisQuantumLLM:
             "quantum_coherence": float(quantum_metrics.get("avg_coherence", 0)),
             "quantum_entanglement": float(quantum_metrics.get("avg_entanglement", 0)),
             "quantum_interference": float(quantum_metrics.get("avg_interference", 0)),
-            "tokens_generated": generation_metrics["generated_tokens"],
+            "quantum_fidelity": float(quantum_metrics.get("avg_fidelity", 0)),
+            "tokens_generated": generation_metrics.get("generated_tokens", 0),
             "generation_metrics": generation_metrics,
             "enhancement_metrics": enhancement_metrics,
         }
@@ -310,6 +311,8 @@ class JarvisQuantumLLM:
         Returns:
             Training metrics
         """
+        import numpy as np
+        
         print("\n🎓 Starting Quantum LLM training...")
         
         # Override epochs if specified
@@ -325,14 +328,14 @@ class JarvisQuantumLLM:
         # Get final metrics
         training_metrics = {
             "total_epochs": self.config.epochs,
-            "final_train_loss": float(self.training_engine.train_losses[-1]),
+            "final_train_loss": float(self.training_engine.train_losses[-1]) if self.training_engine.train_losses else 0.0,
             "best_val_loss": float(self.training_engine.best_val_loss),
             "total_steps": self.training_engine.global_step,
             "quantum_metrics_aggregated": {
-                "avg_coherence": float(np.mean([m.get("avg_coherence", 0) for m in self.training_engine.quantum_metrics_history])),
-                "avg_entanglement": float(np.mean([m.get("avg_entanglement", 0) for m in self.training_engine.quantum_metrics_history])),
-                "avg_interference": float(np.mean([m.get("avg_interference", 0) for m in self.training_engine.quantum_metrics_history])),
-                "avg_fidelity": float(np.mean([m.get("avg_fidelity", 0) for m in self.training_engine.quantum_metrics_history])),
+                "avg_coherence": float(np.mean([m.get("avg_coherence", 0) for m in self.training_engine.quantum_metrics_history])) if self.training_engine.quantum_metrics_history else 0.0,
+                "avg_entanglement": float(np.mean([m.get("avg_entanglement", 0) for m in self.training_engine.quantum_metrics_history])) if self.training_engine.quantum_metrics_history else 0.0,
+                "avg_interference": float(np.mean([m.get("avg_interference", 0) for m in self.training_engine.quantum_metrics_history])) if self.training_engine.quantum_metrics_history else 0.0,
+                "avg_fidelity": float(np.mean([m.get("avg_fidelity", 0) for m in self.training_engine.quantum_metrics_history])) if self.training_engine.quantum_metrics_history else 0.0,
             }
         }
         
