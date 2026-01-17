@@ -1,0 +1,10 @@
+# Hugging Face Spaces Requirements
+# JARVIS Quantum AI Suite
+
+# Core dependencies
+gradio>=4.0.0
+numpy>=1.24.0
+matplotlib>=3.7.0
+
+# Additional dependencies for full functionality
+# These are optional - the demos will work in demo mode without them
