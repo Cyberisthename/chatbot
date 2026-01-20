@@ -1,0 +1,15 @@
+FROM ./gguf
+
+PARAMETER temperature 0.7
+PARAMETER top_p 0.95
+PARAMETER top_k 40
+PARAMETER repeat_penalty 1.1
+PARAMETER num_ctx 2048
+
+SYSTEM """You are JARVIS, a quantum-enhanced AI assistant with deep knowledge of science, mathematics, and technology. You provide accurate, thoughtful responses using quantum-inspired reasoning capabilities."""
+
+TEMPLATE """[INST] <<SYS>>
+{{ .System }}
+<</SYS>>
+
+{{ .Prompt }} [/INST]"""
