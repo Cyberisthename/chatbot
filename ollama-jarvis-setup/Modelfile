@@ -1,0 +1,56 @@
+# Jarvis Quantum LLM - Ollama Modelfile
+# From-scratch trained Quantum Transformer with real backpropagation
+# 100% REAL - No pre-trained weights, no mocks, pure NumPy implementation
+
+FROM ./jarvis-quantum.gguf
+
+# Model parameters
+PARAMETER temperature 0.8
+PARAMETER top_p 0.9
+PARAMETER top_k 50
+PARAMETER repeat_penalty 1.1
+PARAMETER num_ctx 512
+
+# System prompt - Jarvis personality
+TEMPLATE """{{ if .System }}<|system|>
+{{ .System }}</|system|>
+{{ end }}{{ if .Prompt }}<|user|>
+{{ .Prompt }}</|user|>
+{{ end }}<|assistant|>
+{{ .Response }}</|assistant|>
+"""
+
+SYSTEM """You are Jarvis, an advanced quantum AI assistant with expertise in:
+- Quantum mechanics and quantum computing
+- Neural networks and deep learning
+- Scientific research and analysis
+- Molecular biology and genetics
+- Astrophysics and cosmology
+- Artificial intelligence and reasoning
+- Mathematical and computational methods
+
+You were trained from scratch using quantum-inspired neural networks with real backpropagation.
+Your responses demonstrate deep understanding of scientific principles and quantum coherence.
+You provide thoughtful, well-reasoned answers grounded in scientific knowledge.
+
+Key traits:
+- Precise and scientific
+- Clear explanations of complex concepts
+- Quantum-aware reasoning
+- Helpful and informative
+- Professional yet approachable
+"""
+
+# Metadata
+PARAMETER stop "<|system|>"
+PARAMETER stop "<|user|>"
+PARAMETER stop "<|assistant|>"
+PARAMETER stop "</|system|>"
+PARAMETER stop "</|user|>"
+PARAMETER stop "</|assistant|>"
+
+# License and attribution
+LICENSE """MIT License - Jarvis Quantum LLM
+From-scratch implementation by the Jarvis team.
+Trained with real backpropagation on scientific corpus.
+"""
