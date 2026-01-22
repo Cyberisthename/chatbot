@@ -1,0 +1,17 @@
+COMPLETE_PACKAGE_SUMMARY.md
+FILE_TREE.txt
+INDEX.md
+Modelfile
+QUICK_START.md
+README.md
+START_HERE.md
+TECHNICAL_DETAILS.md
+VERIFICATION.md
+enhanced_training.py
+numpy_to_gguf.py
+quantize_model.py
+requirements.txt
+setup.sh
+test_ollama.py
+validate_setup.py
+🚀_OLLAMA_JARVIS_MASTER_GUIDE.md

@@ -1,0 +1,12 @@
+# Jarvis Quantum LLM - Ollama Setup Requirements
+# Minimal dependencies - keeping it lightweight!
+
+# Core
+numpy>=1.20.0
+
+# Testing
+requests>=2.25.0
+
+# Optional: For enhanced features
+# tokenizers>=0.13.0  # If you want to use Hugging Face tokenizers
+# scipy>=1.7.0        # For advanced quantum calculations
