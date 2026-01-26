@@ -197,24 +197,70 @@ def convert_numpy_to_gguf(
     print()
 
 
+
+def find_model_file(script_dir, filename):
+    """Try multiple locations to find model files"""
+    possible_paths = [
+        # Check environment variable first (set by setup.sh)
+        Path(os.environ.get('JARVIS_MODEL_PATH', '')) if 'JARVIS_MODEL_PATH' in os.environ and filename == "jarvis_quantum_llm.npz" else None,
+        # Standard locations
+        script_dir.parent / "ready-to-deploy-hf" / filename,
+        script_dir.parent.parent / "ready-to-deploy-hf" / filename,
+        script_dir.parent / filename,
+        script_dir / filename,
+        # Direct paths  
+        Path("../ready-to-deploy-hf") / filename,
+        Path("ready-to-deploy-hf") / filename,
+    ]
+    
+    for path in possible_paths:
+        if path and path.exists():
+            return path
+    
+    return None
+
 def main():
     # Paths
     script_dir = Path(__file__).parent
-    project_root = script_dir.parent
-    
-    numpy_path = project_root / "ready-to-deploy-hf" / "jarvis_quantum_llm.npz"
-    config_path = project_root / "ready-to-deploy-hf" / "config.json"
     output_path = script_dir / "jarvis-quantum.gguf"
     
+    # Try to find the model weights
+    print("🔍 Searching for model files...")
+    numpy_path = find_model_file(script_dir, "jarvis_quantum_llm.npz")
+    config_path = find_model_file(script_dir, "config.json")
+    
     # Check if files exist
-    if not numpy_path.exists():
-        print(f"❌ Error: NumPy weights not found at {numpy_path}")
-        print("   Please train the model first!")
+    if not numpy_path:
+        print(f"❌ Error: NumPy weights not found!")
+        print()
+        print("Searched in:")
+        print("  • ../ready-to-deploy-hf/jarvis_quantum_llm.npz")
+        print("  • ../../ready-to-deploy-hf/jarvis_quantum_llm.npz")
+        print("  • ../jarvis_quantum_llm.npz")
+        print("  • ./jarvis_quantum_llm.npz")
+        print()
+        print("Please ensure the trained model exists or train it first:")
+        print("  cd .. && python3 train_full_quantum_llm_production.py")
         return 1
     
-    if not config_path.exists():
-        print(f"❌ Error: Config not found at {config_path}")
-        return 1
+    print(f"✅ Found model weights: {numpy_path}")
+    
+    if not config_path:
+        print(f"⚠️  Warning: Config not found, using defaults")
+        # Use defaults
+        config_str = json.dumps({
+            "vocab_size": 15000,
+            "d_model": 256,
+            "n_layers": 6,
+            "n_heads": 8,
+            "d_ff": 1024,
+            "max_seq_length": 512
+        })
+        config_path = "/tmp/jarvis_config_default.json"
+        with open(config_path, 'w') as f:
+            f.write(config_str)
+    else:
+        print(f"✅ Found config: {config_path}")
     
     # Convert
     try:
@@ -224,7 +270,6 @@ def main():
             str(output_path),
             quantize=True
         )
-        
         print("🎉 Your Jarvis Quantum LLM is ready for Ollama!")
         print(f"📁 GGUF file: {output_path}")
         print()
@@ -232,14 +277,12 @@ def main():
         print("  1. Create the model: ollama create jarvis -f Modelfile")
         print("  2. Run the model:   ollama run jarvis")
         print()
-        
         return 0
     except Exception as e:
         print(f"❌ Error during conversion: {e}")
         import traceback
         traceback.print_exc()
         return 1
-
 
 if __name__ == "__main__":
     exit(main())
