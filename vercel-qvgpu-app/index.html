@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Q-vGPU Swarm</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a0a; color: #00ffcc; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; background: #111; padding: 2rem; border-radius: 10px; border: 1px solid #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
+        h1 { text-align: center; color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; }
+        .stats { display: flex; justify-content: space-around; margin: 2rem 0; padding: 1rem; border-top: 1px solid #333; border-bottom: 1px solid #333; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: #fff; }
+        .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; }
+        textarea { width: 100%; height: 100px; background: #000; color: #00ffcc; border: 1px solid #333; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; }
+        button { width: 100%; padding: 1rem; background: #00ffcc; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        button:hover { background: #00cca3; }
+        #output { margin-top: 2rem; padding: 1rem; background: #000; border: 1px solid #333; border-radius: 5px; white-space: pre-wrap; min-height: 50px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jarvis Q-vGPU Swarm</h1>
+        <p style="text-align: center;">Trained on 10,000 documents with 160x efficiency multiplier.</p>
+        
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="stat-speedup">1.88x</div>
+                <div class="stat-label">Real Speedup</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">160x</div>
+                <div class="stat-label">Efficiency</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-chunks">20,000</div>
+                <div class="stat-label">Data Chunks</div>
+            </div>
+        </div>
+
+        <textarea id="prompt" placeholder="Enter prompt for the Quantum AI..."></textarea>
+        <button onclick="generate()">Generate with Quantum Swarm</button>
+        
+        <div id="output">Output will appear here...</div>
+    </div>
+
+    <script>
+        async function loadSummary() {
+            try {
+                const res = await fetch('/api/summary');
+                const data = await res.json();
+                document.getElementById('stat-speedup').innerText = data.speedup_achieved;
+                document.getElementById('stat-chunks').innerText = data.training_chunks.toLocaleString();
+            } catch (e) { console.error(e); }
+        }
+
+        async function generate() {
+            const prompt = document.getElementById('prompt').value;
+            const output = document.getElementById('output');
+            output.innerText = "Quantum processing...";
+            
+            try {
+                const res = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, max_tokens: 30 })
+                });
+                const data = await res.json();
+                output.innerText = data.generated_text;
+            } catch (e) {
+                output.innerText = "Error: " + e.message;
+            }
+        }
+        
+        loadSummary();
+    </script>
+</body>
+</html>

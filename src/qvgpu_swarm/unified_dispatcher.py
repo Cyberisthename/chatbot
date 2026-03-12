@@ -206,23 +206,37 @@ class Q_vGPU_Bridge:
         # Layer-by-layer forward with paging
         x = input_data
         
-        for layer_idx in range(len(self.model.layers)):
-            # Prepare layer (brings into GPU memory)
-            layer_params = self.vgpu.prepare_layer(layer_idx)
-            
-            # Set layer parameters
-            layer = self.model.layers[layer_idx]
-            for param_name, value in layer_params.items():
-                setattr(layer, param_name, value)
-            
-            # Forward through layer
-            x, metrics = layer.forward(x)
-            
-            # Cache activation for backward
-            self.vgpu.memory.blocks[
-                self.vgpu.tensors.get(f'activation_{layer_idx}', '')
-            ].data = x.copy() if layer_idx < len(self.model.layers) - 1 else None
+        # Handle embedding if present
+        if hasattr(self.model, 'embedding') and input_data.dtype in [np.int32, np.int64]:
+            seq_len = input_data.shape[1]
+            x = self.model.embedding[input_data]
+            if hasattr(self.model, 'pos_embedding'):
+                x = x + self.model.pos_embedding[:seq_len]
         
+        if hasattr(self.model, 'layers'):
+            for layer_idx in range(len(self.model.layers)):
+                # Prepare layer (brings into GPU memory)
+                layer_params = self.vgpu.prepare_layer(layer_idx)
+                
+                # Set layer parameters
+                layer = self.model.layers[layer_idx]
+                for param_name, value in layer_params.items():
+                    setattr(layer, param_name, value)
+                
+                # Forward through layer
+                x, metrics = layer.forward(x)
+                
+                # Cache activation for backward
+                if layer_idx < len(self.model.layers) - 1:
+                    act_name = f'activation_{layer_idx}'
+                    if act_name not in self.vgpu.tensors:
+                        self.vgpu.allocate_tensor(act_name, x.shape, x.dtype)
+                    self.vgpu.set_tensor(act_name, x)
+        
+        # Handle final projection
+        if hasattr(self.model, 'output_projection'):
+            x = x @ self.model.output_projection
+            
         self.stats['forward_time'] += time.time() - start_time
         
         return x
