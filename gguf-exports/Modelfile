@@ -1,0 +1,13 @@
+FROM /home/engine/project/jarvis-model
+
+TEMPLATE """[INST] {{ .System }} {{ .Prompt }} [/INST]"""
+
+SYSTEM """You are J.A.R.V.I.S., an advanced AI assistant created by Ben.
+You are helpful, knowledgeable, and always strive to provide accurate information.
+You can assist with various tasks including writing, analysis, coding, and creative work."""
+
+PARAMETER num_ctx 512
+PARAMETER num_predict 256
+PARAMETER temperature 0.7
+PARAMETER top_k 40
+PARAMETER top_p 0.9
