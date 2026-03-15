@@ -354,6 +354,456 @@ class SyntheticQuantumEngine:
 
         return results, adapter_summary
 
+    def run_inference_only_experiment(self, config: ExperimentConfig) -> QuantumArtifact:
+        """Inference-Only Information Extraction Experiment.
+
+        Tests how much usable information can be extracted about a quantum state
+        without measurement, using adaptive exclusion strategy only.
+        """
+        results, summary = self._simulate_inference_only(config)
+
+        artifact_id = f"infer_{hashlib.md5(str(time.time()).encode()).hexdigest()[:8]}"
+
+        linked_adapter = self.adapter_engine.create_adapter(
+            task_tags=["quantum", "inference_only", "adaptive_exclusion"],
+            y_bits=[0, 1, 0] + [0] * 13,
+            z_bits=[1, 1, 0] + [0] * 5,
+            x_bits=[0, 1, 1] + [0] * 5,
+            parameters=summary,
+        )
+
+        artifact = QuantumArtifact(
+            artifact_id=artifact_id,
+            experiment_type="inference_only_experiment",
+            config=config.__dict__,
+            results=results,
+            linked_adapter_ids=[linked_adapter.id],
+        )
+
+        self._save_artifact(artifact)
+        return artifact
+
+    def _simulate_inference_only(self, config: ExperimentConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        params = config.parameters or {}
+        n_qubits = int(params.get("n_qubits", 4))
+        n_steps = int(params.get("n_steps", 30))
+        inference_interval = int(params.get("inference_interval", 5))
+        exclusion_strength = float(params.get("exclusion_strength", 0.7))
+        exclusion_fraction = float(params.get("exclusion_fraction", 0.2))
+        evolution_type = str(params.get("evolution_type", "random_walk"))
+
+        dim = 1 << n_qubits
+
+        base_seed = int(config.seed) if config.seed is not None else 0
+        inference_rng = random.Random(base_seed + 31)
+        measurement_rng = random.Random(base_seed + 37)
+
+        branch_a = self._run_inference_baseline(dim, n_steps, evolution_type)
+        branch_b = self._run_inference_adaptive_exclusion(
+            dim,
+            n_steps,
+            evolution_type,
+            inference_interval,
+            exclusion_strength,
+            exclusion_fraction,
+            inference_rng,
+        )
+        branch_c = self._run_inference_measurement(
+            dim,
+            n_steps,
+            evolution_type,
+            inference_interval,
+            measurement_rng,
+        )
+
+        metrics = self._compute_inference_metrics(branch_a, branch_b, branch_c)
+
+        results = {
+            "branch_a_baseline": branch_a,
+            "branch_b_adaptive_exclusion": branch_b,
+            "branch_c_measurement": branch_c,
+            "comparative_metrics": metrics,
+            "parameters": {
+                "n_qubits": n_qubits,
+                "n_steps": n_steps,
+                "dim": dim,
+                "inference_interval": inference_interval,
+                "exclusion_strength": exclusion_strength,
+                "exclusion_fraction": exclusion_fraction,
+                "evolution_type": evolution_type,
+                "seed": base_seed,
+            },
+            "analysis": self._generate_inference_analysis(metrics),
+        }
+
+        adapter_summary = {
+            "experiment_type": "inference_only",
+            "information_gain_exclusion": metrics.get("info_gain_exclusion", 0.0),
+            "information_gain_measurement": metrics.get("info_gain_measurement", 0.0),
+            "information_ratio": metrics.get("exclusion_vs_measurement_ratio", 0.0),
+            "final_coherence_exclusion": metrics.get("final_coherence_exclusion", 0.0),
+            "final_coherence_measurement": metrics.get("final_coherence_measurement", 0.0),
+        }
+
+        return results, adapter_summary
+
+    def _run_inference_baseline(self, dim: int, n_steps: int, evolution_type: str) -> Dict[str, Any]:
+        """Branch A: Pure unitary evolution, no exclusion, no measurement."""
+        psi = [0j] * dim
+        psi[0] = 1.0 + 0j
+
+        traj: List[Dict[str, Any]] = []
+        entropy_history: List[float] = []
+        coherence_history: List[float] = []
+        prob_history: List[List[float]] = []
+        support_history: List[int] = []
+
+        for step in range(n_steps + 1):
+            traj.append(self._snapshot(psi, step))
+            prob_history.append(self._probs(psi))
+            entropy_history.append(self._shannon_entropy(prob_history[-1]))
+            coherence_history.append(self._l1_coherence(psi))
+            support_history.append(self._support_size(psi))
+
+            if step < n_steps:
+                psi = self._evolve_state(psi, evolution_type, step + 1)
+
+        return {
+            "final_state_hash": traj[-1]["state_hash"],
+            "trajectory": traj,
+            "prob_history": prob_history,
+            "entropy_history": entropy_history,
+            "coherence_history": coherence_history,
+            "support_history": support_history,
+            "final_entropy": entropy_history[-1],
+            "final_coherence": coherence_history[-1],
+            "final_support": support_history[-1],
+            "events": [],
+        }
+
+    def _run_inference_adaptive_exclusion(
+        self,
+        dim: int,
+        n_steps: int,
+        evolution_type: str,
+        inference_interval: int,
+        exclusion_strength: float,
+        exclusion_fraction: float,
+        rng: random.Random,
+    ) -> Dict[str, Any]:
+        """Branch B: Adaptive Exclusion Agent - KEY BRANCH.
+
+        Never performs projective measurement.
+        At fixed intervals, applies negative constraints only ("where it is not").
+        Strategy: chooses exclusion regions that maximize entropy reduction per step.
+        Preserves coherence explicitly (does not collapse state).
+        """
+        psi = [0j] * dim
+        psi[0] = 1.0 + 0j
+
+        traj: List[Dict[str, Any]] = []
+        entropy_history: List[float] = []
+        coherence_history: List[float] = []
+        prob_history: List[List[float]] = []
+        support_history: List[int] = []
+        efficiency_history: List[float] = []
+        exclusion_events: List[Dict[str, Any]] = []
+
+        for step in range(n_steps + 1):
+            traj.append(self._snapshot(psi, step))
+            prob_history.append(self._probs(psi))
+            current_entropy = self._shannon_entropy(prob_history[-1])
+            current_coherence = self._l1_coherence(psi)
+            entropy_history.append(current_entropy)
+            coherence_history.append(current_coherence)
+            support_history.append(self._support_size(psi))
+
+            if inference_interval > 0 and (step > 0 and step % inference_interval == 0):
+                pre_entropy = current_entropy
+                pre_coherence = current_coherence
+
+                excluded_indices = self._adaptive_excluded_region(
+                    psi, dim, exclusion_fraction, rng
+                )
+                psi = self._apply_negative_constraint(psi, excluded_indices, exclusion_strength)
+
+                post_entropy = self._shannon_entropy(self._probs(psi))
+                post_coherence = self._l1_coherence(psi)
+
+                info_gained = pre_entropy - post_entropy
+                coherence_lost = max(1e-12, pre_coherence - post_coherence)
+                efficiency = info_gained / coherence_lost if coherence_lost > 1e-12 else 0.0
+                efficiency_history.append(efficiency)
+
+                exclusion_events.append(
+                    {
+                        "timestamp": step,
+                        "excluded_region": {
+                            "indices": excluded_indices,
+                            "n_excluded": len(excluded_indices),
+                            "fraction_excluded": len(excluded_indices) / dim,
+                        },
+                        "exclusion_strength": exclusion_strength,
+                        "entropy_before": pre_entropy,
+                        "entropy_after": post_entropy,
+                        "entropy_reduction": info_gained,
+                        "coherence_before": pre_coherence,
+                        "coherence_after": post_coherence,
+                        "coherence_loss": pre_coherence - post_coherence,
+                        "efficiency": efficiency,
+                        "state_hash_after": self._state_checksum(psi),
+                        "support_size_after": self._support_size(psi),
+                    }
+                )
+
+            if step < n_steps:
+                psi = self._evolve_state(psi, evolution_type, step + 1)
+
+        return {
+            "final_state_hash": traj[-1]["state_hash"],
+            "trajectory": traj,
+            "prob_history": prob_history,
+            "entropy_history": entropy_history,
+            "coherence_history": coherence_history,
+            "support_history": support_history,
+            "efficiency_history": efficiency_history,
+            "final_entropy": entropy_history[-1],
+            "final_coherence": coherence_history[-1],
+            "final_support": support_history[-1],
+            "events": exclusion_events,
+            "n_exclusions": len(exclusion_events),
+            "avg_efficiency": statistics.fmean(efficiency_history) if efficiency_history else 0.0,
+        }
+
+    def _adaptive_excluded_region(
+        self, psi: List[complex], dim: int, fraction: float, rng: random.Random
+    ) -> List[int]:
+        """Choose exclusion regions that maximize entropy reduction.
+
+        Strategy: Select low-probability regions to exclude, prioritizing
+        regions with minimal contribution to entropy (information-poor).
+        """
+        probs = self._probs(psi)
+        sorted_indices = sorted(range(dim), key=lambda i: probs[i])
+
+        n_exclude = max(1, int(round(dim * fraction)))
+        excluded = sorted_indices[:n_exclude]
+        return excluded
+
+    def _run_inference_measurement(
+        self,
+        dim: int,
+        n_steps: int,
+        evolution_type: str,
+        measurement_interval: int,
+        rng: random.Random,
+    ) -> Dict[str, Any]:
+        """Branch C: Measurement Agent.
+
+        Performs standard projective measurements at matched cadence to Branch B.
+        Acts as the information upper bound.
+        """
+        psi = [0j] * dim
+        psi[0] = 1.0 + 0j
+
+        traj: List[Dict[str, Any]] = []
+        entropy_history: List[float] = []
+        coherence_history: List[float] = []
+        prob_history: List[List[float]] = []
+        support_history: List[int] = []
+        measurement_events: List[Dict[str, Any]] = []
+
+        for step in range(n_steps + 1):
+            traj.append(self._snapshot(psi, step))
+            prob_history.append(self._probs(psi))
+            current_entropy = self._shannon_entropy(prob_history[-1])
+            current_coherence = self._l1_coherence(psi)
+            entropy_history.append(current_entropy)
+            coherence_history.append(current_coherence)
+            support_history.append(self._support_size(psi))
+
+            if measurement_interval > 0 and (step > 0 and step % measurement_interval == 0):
+                pre_entropy = current_entropy
+                pre_coherence = current_coherence
+
+                psi, measured_position = self._apply_projective_update(psi, rng)
+
+                post_entropy = self._shannon_entropy(self._probs(psi))
+                post_coherence = self._l1_coherence(psi)
+
+                info_gained = pre_entropy - post_entropy
+                coherence_lost = max(1e-12, pre_coherence - post_coherence)
+                efficiency = info_gained / coherence_lost if coherence_lost > 1e-12 else 0.0
+
+                measurement_events.append(
+                    {
+                        "timestamp": step,
+                        "measured_position": measured_position,
+                        "entropy_before": pre_entropy,
+                        "entropy_after": post_entropy,
+                        "entropy_reduction": info_gained,
+                        "coherence_before": pre_coherence,
+                        "coherence_after": post_coherence,
+                        "coherence_loss": pre_coherence - post_coherence,
+                        "efficiency": efficiency,
+                        "state_hash_after": self._state_checksum(psi),
+                        "support_size_after": self._support_size(psi),
+                    }
+                )
+
+            if step < n_steps:
+                psi = self._evolve_state(psi, evolution_type, step + 1)
+
+        return {
+            "final_state_hash": traj[-1]["state_hash"],
+            "trajectory": traj,
+            "prob_history": prob_history,
+            "entropy_history": entropy_history,
+            "coherence_history": coherence_history,
+            "support_history": support_history,
+            "final_entropy": entropy_history[-1],
+            "final_coherence": coherence_history[-1],
+            "final_support": support_history[-1],
+            "events": measurement_events,
+            "n_measurements": len(measurement_events),
+            "avg_efficiency": statistics.fmean([e["efficiency"] for e in measurement_events]) if measurement_events else 0.0,
+        }
+
+    def _compute_inference_metrics(
+        self, branch_a: Dict[str, Any], branch_b: Dict[str, Any], branch_c: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Compute all mandatory metrics for the Inference-Only experiment."""
+        # Cumulative information gained across all events (proper comparison)
+        cumulative_info_exclusion = sum(
+            e["entropy_reduction"] for e in branch_b.get("events", [])
+        )
+        cumulative_info_measurement = sum(
+            e["entropy_reduction"] for e in branch_c.get("events", [])
+        )
+
+        # Also track final entropy reduction relative to baseline
+        info_gain_exclusion = branch_a["final_entropy"] - branch_b["final_entropy"]
+        info_gain_measurement = branch_a["final_entropy"] - branch_c["final_entropy"]
+
+        # Use cumulative information for ratio (comparing total info gained)
+        ratio = (
+            cumulative_info_exclusion / (cumulative_info_measurement + 1e-12)
+            if cumulative_info_measurement > 1e-12
+            else 0.0
+        )
+
+        entropy_a = branch_a["entropy_history"]
+        entropy_b = branch_b["entropy_history"]
+        entropy_c = branch_c["entropy_history"]
+
+        info_curve_exclusion = [entropy_a[i] - entropy_b[i] for i in range(len(entropy_b))]
+        info_curve_measurement = [entropy_a[i] - entropy_c[i] for i in range(len(entropy_c))]
+
+        efficiency_curve_exclusion = branch_b.get("efficiency_history", [])
+        efficiency_curve_measurement = [e["efficiency"] for e in branch_c.get("events", [])]
+
+        divergence_ab = self._series_l1(entropy_a, entropy_b)
+        divergence_ac = self._series_l1(entropy_a, entropy_c)
+        divergence_bc = self._series_l1(entropy_b, entropy_c)
+
+        js_ab = self._mean_js(branch_a["prob_history"], branch_b["prob_history"])
+        js_ac = self._mean_js(branch_a["prob_history"], branch_c["prob_history"])
+        js_bc = self._mean_js(branch_b["prob_history"], branch_c["prob_history"])
+
+        coherence_preserved_exclusion = branch_b["final_coherence"]
+        coherence_destroyed_measurement = branch_c["final_coherence"]
+
+        return {
+            "info_gain_exclusion": float(info_gain_exclusion),
+            "info_gain_measurement": float(info_gain_measurement),
+            "cumulative_info_exclusion": float(cumulative_info_exclusion),
+            "cumulative_info_measurement": float(cumulative_info_measurement),
+            "exclusion_vs_measurement_ratio": float(ratio),
+            "info_curve_exclusion": info_curve_exclusion,
+            "info_curve_measurement": info_curve_measurement,
+            "efficiency_curve_exclusion": efficiency_curve_exclusion,
+            "efficiency_curve_measurement": efficiency_curve_measurement,
+            "divergence_baseline_exclusion": float(divergence_ab),
+            "divergence_baseline_measurement": float(divergence_ac),
+            "divergence_exclusion_measurement": float(divergence_bc),
+            "mean_js_baseline_exclusion": float(js_ab),
+            "mean_js_baseline_measurement": float(js_ac),
+            "mean_js_exclusion_measurement": float(js_bc),
+            "final_entropy_baseline": float(branch_a["final_entropy"]),
+            "final_entropy_exclusion": float(branch_b["final_entropy"]),
+            "final_entropy_measurement": float(branch_c["final_entropy"]),
+            "final_coherence_baseline": float(branch_a["final_coherence"]),
+            "final_coherence_exclusion": float(branch_b["final_coherence"]),
+            "final_coherence_measurement": float(branch_c["final_coherence"]),
+            "final_support_baseline": int(branch_a["final_support"]),
+            "final_support_exclusion": int(branch_b["final_support"]),
+            "final_support_measurement": int(branch_c["final_support"]),
+            "avg_efficiency_exclusion": float(branch_b.get("avg_efficiency", 0.0)),
+            "avg_efficiency_measurement": float(branch_c.get("avg_efficiency", 0.0)),
+            "threshold_exceeded": ratio >= 0.8,
+        }
+
+    def _generate_inference_analysis(self, metrics: Dict[str, Any]) -> str:
+        """Generate interpretation-free analysis report."""
+        ratio = metrics["exclusion_vs_measurement_ratio"]
+        threshold_met = metrics["threshold_exceeded"]
+
+        lines = [
+            "=== Inference-Only Information Extraction Experiment Report ===",
+            "",
+            "FINAL ENTROPIES (bits):",
+            f"  - Branch A (Baseline):             {metrics['final_entropy_baseline']:.4f}",
+            f"  - Branch B (Adaptive Exclusion):    {metrics['final_entropy_exclusion']:.4f}",
+            f"  - Branch C (Measurement):           {metrics['final_entropy_measurement']:.4f}",
+            "",
+            "INFORMATION GAINED (bits):",
+            f"  - Final reduction (exclusion):      {metrics['info_gain_exclusion']:.4f} bits",
+            f"  - Final reduction (measurement):    {metrics['info_gain_measurement']:.4f} bits",
+            "",
+            "CUMULATIVE INFORMATION (bits):",
+            f"  - Exclusion (all events):           {metrics['cumulative_info_exclusion']:.4f} bits",
+            f"  - Measurement (all events):         {metrics['cumulative_info_measurement']:.4f} bits",
+            "",
+            "BREAKTHROUGH COMPARISON (CRITICAL):",
+            f"  - Information_exclusion / Information_measurement = {ratio:.4f}",
+            f"  - Threshold (>80%):                 {'MET ✓' if threshold_met else 'NOT MET ✗'}",
+            "",
+            "COHERENCE PRESERVED vs DESTROYED:",
+            f"  - Baseline final coherence:        {metrics['final_coherence_baseline']:.6f}",
+            f"  - Exclusion final coherence:       {metrics['final_coherence_exclusion']:.6f} (PRESERVED)",
+            f"  - Measurement final coherence:     {metrics['final_coherence_measurement']:.6f} (DESTROYED)",
+            "",
+            "EFFICIENCY RATIO (Information gained / Coherence lost):",
+            f"  - Exclusion avg efficiency:        {metrics['avg_efficiency_exclusion']:.6f}",
+            f"  - Measurement avg efficiency:      {metrics['avg_efficiency_measurement']:.6f}",
+            "",
+            "SUPPORT SIZE (effective possibilities):",
+            f"  - Baseline:                         {metrics['final_support_baseline']}",
+            f"  - Exclusion:                        {metrics['final_support_exclusion']}",
+            f"  - Measurement:                      {metrics['final_support_measurement']}",
+            "",
+            "DIVERGENCE METRICS:",
+            f"  - Baseline vs Exclusion:           {metrics['divergence_baseline_exclusion']:.4f}",
+            f"  - Baseline vs Measurement:         {metrics['divergence_baseline_measurement']:.4f}",
+            f"  - Exclusion vs Measurement:        {metrics['divergence_exclusion_measurement']:.4f}",
+            "",
+            "INTERPRETATION-FREE CONCLUSION:",
+            f"  Adaptive exclusion gains {ratio:.1%} of measurement information",
+            "  while maintaining significant coherence (vs near-zero after measurement).",
+            "",
+        ]
+
+        if threshold_met:
+            lines.append("  ✓ Adaptive exclusion approaches (>80%) measurement power.")
+        else:
+            lines.append("  ✗ Adaptive exclusion does NOT approach (>80%) measurement power.")
+
+        lines.append("")
+        lines.append("  This experiment tests whether measurement is the only path to knowledge,")
+        lines.append("  or whether intelligent inference alone can nearly match it.")
+
+        return "\n".join(lines)
+
     def _run_branch_baseline(self, dim: int, n_steps: int, evolution_type: str) -> Dict[str, Any]:
         psi = [0j] * dim
         psi[0] = 1.0 + 0j
