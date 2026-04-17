@@ -77,13 +77,13 @@ def train_jarvis():
     # 4. FULL BACKPROP TRAINING
     print("🚂 Initializing Quantum LLM training...")
     config = TrainingConfig(
-        vocab_size=20000,
-        d_model=256,
-        n_layers=6,
+        vocab_size=25000,
+        d_model=512,
+        n_layers=12,
         n_heads=8,
-        d_ff=1024,
-        epochs=3, # Adjusted for time, but real training
-        batch_size=4
+        d_ff=2048,
+        epochs=5, # Scaled training
+        batch_size=8
     )
     
     model = QuantumTransformer(

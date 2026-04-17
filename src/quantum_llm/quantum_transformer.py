@@ -282,6 +282,9 @@ class QuantumTransformer:
         max_seq_len: int = 512,
         dropout: float = 0.1
     ):
+        if d_model % n_heads != 0:
+            raise ValueError(f"d_model ({d_model}) must be divisible by n_heads ({n_heads})")
+            
         self.vocab_size = vocab_size
         self.d_model = d_model
         self.n_layers = n_layers

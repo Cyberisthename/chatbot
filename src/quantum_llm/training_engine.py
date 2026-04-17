@@ -21,12 +21,12 @@ from .quantum_transformer import QuantumTransformer, SimpleTokenizer
 class TrainingConfig:
     """Configuration for training"""
     # Model architecture (scaled as requested)
-    vocab_size: int = 20000
-    d_model: int = 256
-    n_layers: int = 6
+    vocab_size: int = 25000
+    d_model: int = 512
+    n_layers: int = 12
     n_heads: int = 8
-    d_ff: int = 1024
-    max_seq_len: int = 128
+    d_ff: int = 2048
+    max_seq_len: int = 256
     dropout: float = 0.1
     
     # Training hyperparameters

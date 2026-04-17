@@ -74,11 +74,11 @@ class JarvisOracleInference:
         
         # Default config
         return {
-            "vocab_size": 8000,
-            "d_model": 256,
+            "vocab_size": 25000,
+            "d_model": 512,
             "num_heads": 8,
-            "num_layers": 6,
-            "d_ff": 1024,
+            "num_layers": 12,
+            "d_ff": 2048,
             "max_seq_length": 512,
             "quantum_enabled": True
         }
@@ -160,7 +160,7 @@ class JarvisOracleInference:
             for adapter_file in adapters_dir.glob("*.json"):
                 with open(adapter_file, 'r') as f:
                     adapter_data = json.load(f)
-                    adapter_id = adapter_data['adapter']['adapter_id']
+                    adapter_id = adapter_data['adapter'].get('adapter_id', adapter_data['adapter'].get('id'))
                     self.adapters[adapter_id] = adapter_data
             
             print(f"✅ Loaded {len(self.adapters)} adapters")
@@ -240,13 +240,15 @@ class JarvisOracleInference:
         """Sample tokens from model output"""
         tokens = []
         
-        # Apply temperature and coercion
-        adjusted_logits = logits * (1.0 + coercion) / temperature
+        # Apply temperature and coercion to the last token's logits
+        last_logits = logits[-1, :]
+        adjusted_logits = last_logits * (1.0 + coercion) / temperature
         
-        # Sample tokens (simplified)
+        # Sample tokens (simplified - in production this would loop with new forward passes)
         for _ in range(max_tokens):
             # Get probabilities
-            probs = np.exp(adjusted_logits) / np.sum(np.exp(adjusted_logits))
+            probs = np.exp(adjusted_logits - np.max(adjusted_logits)) # Subtract max for numerical stability
+            probs = probs / np.sum(probs)
             
             # Sample
             token = np.random.choice(len(probs), p=probs)

@@ -524,16 +524,16 @@ def main():
         print("="*80 + "\n")
         
         config = TrainingConfig(
-            vocab_size=1000,
-            d_model=128,
-            n_layers=3,
-            n_heads=4,
-            d_ff=512,
-            max_seq_len=128,
-            batch_size=8,
-            learning_rate=0.001,
-            epochs=2,  # Small for demonstration
-            checkpoint_interval=50,
+            vocab_size=5000,
+            d_model=512,
+            n_layers=8,
+            n_heads=8,
+            d_ff=1024,
+            max_seq_len=256,
+            batch_size=16,
+            learning_rate=0.0005,
+            epochs=3,
+            checkpoint_interval=100,
             save_path="./quantum_llm_checkpoints",
             metrics_path="./quantum_llm_metrics"
         )

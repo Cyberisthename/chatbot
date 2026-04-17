@@ -1,11 +1,401 @@
 {
-  "total_adapters": 5,
-  "creation_date": "2026-01-16T17:15:44.612463",
-  "adapters": [
-    "adapter_book_0000",
-    "adapter_book_0001",
-    "adapter_book_0002",
-    "adapter_book_0003",
-    "adapter_book_0004"
-  ]
+  "nodes": {
+    "adapter_dc90c80a": {
+      "id": "adapter_dc90c80a",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428514.7308881,
+      "last_used": 1776428514.7308884,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    },
+    "adapter_e8ddee27": {
+      "id": "adapter_e8ddee27",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428632.560055,
+      "last_used": 1776428632.5600555,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    },
+    "adapter_957dc695": {
+      "id": "adapter_957dc695",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428675.870089,
+      "last_used": 1776428675.8700893,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    },
+    "adapter_8caa073c": {
+      "id": "adapter_8caa073c",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428694.0071712,
+      "last_used": 1776428694.0071714,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    },
+    "adapter_f7732788": {
+      "id": "adapter_f7732788",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428760.0167935,
+      "last_used": 1776428760.016794,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    },
+    "adapter_90581a48": {
+      "id": "adapter_90581a48",
+      "task_tags": [
+        "modern",
+        "quantum",
+        "error-correction"
+      ],
+      "y_bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "z_bits": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "x_bits": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parameters": {
+        "book_title": "Quantum Error Correction with Surface Codes",
+        "author": "Modern Researcher",
+        "tcl_compression_ratio": 0.0,
+        "enhanced_solutions": [
+          "Focus on high-impact concepts: Quantum_Error_Correction_with_Surface_Codes._Surface_codes_represent_a_leading_approach_to_quantum_error_correction_in_superconducting_qubit_processors._By_arranging_qubits_in_a_two-dimensional_lattice_and_performing_periodic_stabilizer_measurements,_we_can_protect_quantum_information_against_local_errors._Recent_experiments_have_demonstrated_logical_qubit_lifetimes_exceeding_those_of_the_physical_qubits_used_to_construct_them,_marking_a_critical_milestone_toward_fault-tolerant_quantum_computation_in_the_year_2024."
+        ],
+        "is_modern_prototype": true
+      },
+      "rules": [],
+      "prompts": [],
+      "parent_ids": [],
+      "child_ids": [],
+      "created_at": 1776428768.930372,
+      "last_used": 1776428768.9303727,
+      "success_count": 0,
+      "total_calls": 0,
+      "domains": [],
+      "status": "active",
+      "version": 1
+    }
+  },
+  "edges": {}
 }
