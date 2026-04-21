@@ -33,6 +33,8 @@ class TestAutonomousHypothesisEngine(unittest.TestCase):
         self.assertEqual(len(metrics.cycle_metrics), self.engine.inference_cycles)
         self.assertGreater(metrics.interference, 0.0)
         self.assertGreaterEqual(metrics.braid_entropy, 0.0)
+        self.assertGreaterEqual(metrics.information_density, 0.0)
+        self.assertIn(metrics.novelty_regime.split(":")[0], {"I", "II", "III"})
         self.assertIsNotNone(metrics.stable_interference)
 
     def test_proposals_include_braid_and_falsification(self):
@@ -44,6 +46,7 @@ class TestAutonomousHypothesisEngine(unittest.TestCase):
         self.assertGreaterEqual(top.evaluation.braid_novelty, 0.0)
         self.assertIn("braid", top.falsification_plan.required_data.lower())
         self.assertTrue(top.falsification_plan.controls)
+        self.assertTrue(top.evaluation.quantum_metrics.novelty_regime)
 
 
 if __name__ == "__main__":
