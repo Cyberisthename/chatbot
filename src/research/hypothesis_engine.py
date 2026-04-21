@@ -1,20 +1,17 @@
-"""Prototype autonomous hypothesis engine for scientific discovery.
+"""Refined autonomous hypothesis engine with live quantum-metric feedback.
 
-This module bridges the existing Thought-Compression Language (TCL) system with
-simulated quantum metrics inspired by the repository's Quantum Transformer.
-It is designed to:
-
-1. ingest structured scientific observations,
-2. compress them into TCL-compatible concepts,
-3. generate direct and cross-domain candidate hypotheses,
-4. score those candidates using novelty, plausibility, and interference,
-5. propose only the candidates that exhibit stable constructive interference,
-6. attach a falsification plan so every accepted hypothesis is testable.
+This module connects the Thought-Compression Language (TCL) layer to the
+repository's actual ``QuantumTransformer`` implementation instead of relying on
+purely simulated scores. Candidate hypotheses are scored from repeated forward
+passes through the transformer, allowing the engine to identify stable
+constructive interference patterns and attach falsification plans.
 """
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
+import io
 import json
 import statistics
 from dataclasses import asdict, dataclass, field
@@ -22,6 +19,9 @@ from itertools import combinations
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Union
 
+import numpy as np
+
+from ..quantum_llm.quantum_transformer import QuantumTransformer, SimpleTokenizer
 from ..thought_compression import ThoughtCompressionEngine
 
 
@@ -104,9 +104,11 @@ THEME_ALIASES: Dict[str, str] = {
     "detects": "detect",
     "detected": "detect",
     "guide": "guide",
+    "guided": "guided",
     "guides": "guide",
     "mutation": "mutation",
     "mutations": "mutation",
+    "syndrome": "syndrome",
 }
 
 
@@ -170,15 +172,57 @@ class CandidateHypothesis:
 
 
 @dataclass
-class SimulatedQuantumMetrics:
+class QuantumMetricCycle:
+    cycle_index: int
+    prompt: str
     coherence: float
     entanglement: float
     interference: float
     quantum_fidelity: float
-    interference_samples: List[float] = field(default_factory=list)
+    braid_entropy: float
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+
+@dataclass
+class StableInterferenceReport:
+    cycles_observed: int
+    mean_interference: float
+    std_interference: float
+    min_interference: float
+    max_interference: float
+    constructive_fraction: float
+    stability_score: float
+    stable: bool
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class QuantumMetricsTrace:
+    source: str
+    coherence: float
+    entanglement: float
+    interference: float
+    quantum_fidelity: float
+    braid_entropy: float
+    cycle_metrics: List[QuantumMetricCycle] = field(default_factory=list)
+    stable_interference: Optional[StableInterferenceReport] = None
+
+    @property
+    def interference_samples(self) -> List[float]:
+        return [cycle.interference for cycle in self.cycle_metrics]
+
+    def to_dict(self) -> Dict[str, Any]:
+        payload = asdict(self)
+        payload["cycle_metrics"] = [cycle.to_dict() for cycle in self.cycle_metrics]
+        payload["stable_interference"] = (
+            self.stable_interference.to_dict() if self.stable_interference else None
+        )
+        payload["interference_samples"] = self.interference_samples
+        return payload
 
 
 @dataclass
@@ -188,9 +232,10 @@ class HypothesisEvaluation:
     interference_gain: float
     stability: float
     testability: float
+    braid_novelty: float
     overall_score: float
     stable_constructive_interference: bool
-    quantum_metrics: SimulatedQuantumMetrics
+    quantum_metrics: QuantumMetricsTrace
 
     def to_dict(self) -> Dict[str, Any]:
         payload = asdict(self)
@@ -224,29 +269,110 @@ class ProposedHypothesis:
         }
 
 
+class StableInterferenceDetector:
+    """Detect stable constructive interference across repeated inference cycles."""
+
+    def __init__(self, constructive_threshold: float = 0.62, spread_tolerance: float = 0.10):
+        self.constructive_threshold = constructive_threshold
+        self.spread_tolerance = spread_tolerance
+
+    def analyze(self, interference_samples: Sequence[float]) -> StableInterferenceReport:
+        if not interference_samples:
+            return StableInterferenceReport(
+                cycles_observed=0,
+                mean_interference=0.0,
+                std_interference=1.0,
+                min_interference=0.0,
+                max_interference=0.0,
+                constructive_fraction=0.0,
+                stability_score=0.0,
+                stable=False,
+            )
+
+        mean_interference = float(statistics.mean(interference_samples))
+        std_interference = float(statistics.pstdev(interference_samples))
+        constructive_fraction = float(
+            sum(sample >= self.constructive_threshold for sample in interference_samples)
+            / len(interference_samples)
+        )
+        stability_score = _clip(1.0 - std_interference / max(self.spread_tolerance, 1e-6))
+        stable = (
+            mean_interference >= self.constructive_threshold
+            and constructive_fraction >= 0.75
+            and stability_score >= 0.65
+        )
+        return StableInterferenceReport(
+            cycles_observed=len(interference_samples),
+            mean_interference=mean_interference,
+            std_interference=std_interference,
+            min_interference=float(min(interference_samples)),
+            max_interference=float(max(interference_samples)),
+            constructive_fraction=constructive_fraction,
+            stability_score=stability_score,
+            stable=stable,
+        )
+
+
 class AutonomousHypothesisEngine:
-    """Prototype engine for autonomous scientific hypothesis discovery."""
+    """Hypothesis engine driven by live metrics from the QuantumTransformer."""
 
     def __init__(
         self,
         tcl_engine: Optional[ThoughtCompressionEngine] = None,
         session_id: Optional[str] = None,
-        interference_samples: int = 7,
+        quantum_model: Optional[QuantumTransformer] = None,
+        tokenizer: Optional[SimpleTokenizer] = None,
+        transformer_config: Optional[Dict[str, Any]] = None,
+        inference_cycles: int = 5,
         proposal_threshold: float = 0.64,
+        constructive_threshold: float = 0.62,
+        random_seed: int = 7,
     ):
         self.tcl_engine = tcl_engine or ThoughtCompressionEngine(enable_quantum_mode=True)
         self.session_id = session_id or self.tcl_engine.create_session(
             "autonomous_hypothesis_engine",
             cognitive_level=0.85,
         )
-        self.interference_samples = max(3, interference_samples)
+        self.inference_cycles = max(3, inference_cycles)
         self.proposal_threshold = proposal_threshold
+        self.random_seed = random_seed
         self.observations: List[ResearchObservation] = []
         self.observation_index: Dict[str, ResearchObservation] = {}
+        self.detector = StableInterferenceDetector(constructive_threshold=constructive_threshold)
+
+        if quantum_model is None or tokenizer is None:
+            quantum_model, tokenizer = self._build_quantum_stack(transformer_config or {})
+        self.quantum_model = quantum_model
+        self.tokenizer = tokenizer
 
     @property
     def context(self):
         return self.tcl_engine.sessions[self.session_id]
+
+    def _build_quantum_stack(
+        self,
+        transformer_config: Dict[str, Any],
+    ) -> tuple[QuantumTransformer, SimpleTokenizer]:
+        config = {
+            "vocab_size": 2048,
+            "d_model": 128,
+            "n_layers": 4,
+            "n_heads": 4,
+            "d_ff": 512,
+            "max_seq_len": 128,
+            "dropout": 0.0,
+        }
+        config.update(transformer_config)
+
+        previous_state = np.random.get_state()
+        np.random.seed(self.random_seed)
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                model = QuantumTransformer(**config)
+        finally:
+            np.random.set_state(previous_state)
+        tokenizer = SimpleTokenizer(vocab_size=config["vocab_size"])
+        return model, tokenizer
 
     def load_observations_from_json(self, path: Union[Path, str]) -> List[ResearchObservation]:
         with open(path, "r", encoding="utf-8") as handle:
@@ -312,17 +438,15 @@ class AutonomousHypothesisEngine:
             cross_domain = left.domain != right.domain
             if not shared_themes and not cross_domain:
                 continue
-
             if cross_domain and len(shared_themes) < 2:
-                # Cross-domain proposals need at least two aligned scientific themes
-                # to count as a stable mechanistic bridge rather than a loose analogy.
                 continue
 
             theme_phrase = ", ".join(shared_themes[:3]) if shared_themes else "error-control"
             target_entity = right.entities[0] if right.entities else right.title
+            outcome_phrase = right.outcome.lower()
             claim = (
                 f"Transplanting the '{left.mechanism}' control pattern from {left.domain} into "
-                f"{right.domain} systems may yield {right.outcome.lower()} through shared "
+                f"{right.domain} systems may yield {outcome_phrase} through shared "
                 f"{theme_phrase} dynamics."
             )
             tcl_expression = (
@@ -347,44 +471,98 @@ class AutonomousHypothesisEngine:
 
         return candidates
 
+    def collect_quantum_metrics(self, candidate: CandidateHypothesis) -> QuantumMetricsTrace:
+        prompt_cycles = self._build_prompt_cycles(candidate)
+        cycle_metrics: List[QuantumMetricCycle] = []
+        prior_vector: Optional[np.ndarray] = None
+
+        for cycle_index in range(self.inference_cycles):
+            prompt = prompt_cycles[cycle_index % len(prompt_cycles)]
+            encoded = self.tokenizer.encode(prompt)
+            encoded = encoded[-self.quantum_model.max_seq_len :]
+            input_ids = np.array(encoded, dtype=np.int64).reshape(1, -1)
+            _, live_metrics = self.quantum_model.forward(input_ids)
+
+            current_vector = np.array(
+                [
+                    float(live_metrics.get("avg_coherence", 0.0)),
+                    float(live_metrics.get("avg_entanglement", 0.0)),
+                    float(live_metrics.get("avg_interference", 0.0)),
+                    float(live_metrics.get("avg_fidelity", 0.0)),
+                ]
+            )
+            braid_entropy = self._compute_braid_entropy(current_vector, prior_vector)
+            prior_vector = current_vector
+
+            cycle_metrics.append(
+                QuantumMetricCycle(
+                    cycle_index=cycle_index,
+                    prompt=prompt,
+                    coherence=current_vector[0],
+                    entanglement=current_vector[1],
+                    interference=current_vector[2],
+                    quantum_fidelity=current_vector[3],
+                    braid_entropy=braid_entropy,
+                )
+            )
+
+        detector_report = self.detector.analyze([cycle.interference for cycle in cycle_metrics])
+        return QuantumMetricsTrace(
+            source="transformer_forward",
+            coherence=float(statistics.mean(cycle.coherence for cycle in cycle_metrics)),
+            entanglement=float(statistics.mean(cycle.entanglement for cycle in cycle_metrics)),
+            interference=float(statistics.mean(cycle.interference for cycle in cycle_metrics)),
+            quantum_fidelity=float(statistics.mean(cycle.quantum_fidelity for cycle in cycle_metrics)),
+            braid_entropy=float(statistics.mean(cycle.braid_entropy for cycle in cycle_metrics)),
+            cycle_metrics=cycle_metrics,
+            stable_interference=detector_report,
+        )
+
     def score_candidate(self, candidate: CandidateHypothesis) -> HypothesisEvaluation:
-        quantum_metrics = self._simulate_quantum_metrics(candidate)
+        quantum_metrics = self.collect_quantum_metrics(candidate)
         evidence_strength = self._average_evidence(candidate)
         causal_support = self._causal_support(candidate)
         theme_overlap = self._theme_overlap(candidate)
         cross_domain_bonus = 1.0 if len(set(candidate.source_domains)) > 1 else 0.25
+        stability = quantum_metrics.stable_interference.stability_score if quantum_metrics.stable_interference else 0.0
+        braid_novelty = quantum_metrics.braid_entropy
 
         novelty = _clip(
-            0.26
-            + 0.35 * cross_domain_bonus
-            + 0.20 * (1.0 - causal_support)
-            + 0.19 * min(theme_overlap * 1.5, 1.0)
+            0.18
+            + 0.23 * cross_domain_bonus
+            + 0.15 * (1.0 - causal_support)
+            + 0.16 * min(theme_overlap * 1.5, 1.0)
+            + 0.28 * braid_novelty
         )
 
         plausibility = _clip(
-            0.45 * evidence_strength
-            + 0.25 * causal_support
-            + 0.15 * quantum_metrics.coherence
-            + 0.15 * quantum_metrics.quantum_fidelity
+            0.38 * evidence_strength
+            + 0.18 * causal_support
+            + 0.14 * quantum_metrics.coherence
+            + 0.10 * quantum_metrics.quantum_fidelity
+            + 0.10 * stability
+            + 0.10 * quantum_metrics.stable_interference.constructive_fraction
         )
 
-        sample_spread = statistics.pstdev(quantum_metrics.interference_samples)
-        stability = _clip(1.0 - sample_spread / 0.12)
-        interference_gain = _clip(quantum_metrics.interference * stability)
-        testability = self._estimate_testability(candidate)
+        interference_gain = _clip(
+            quantum_metrics.interference
+            * (0.55 + 0.45 * stability)
+            * (0.70 + 0.30 * braid_novelty)
+        )
+        testability = self._estimate_testability(candidate, quantum_metrics)
 
         overall_score = _clip(
-            0.26 * novelty
-            + 0.30 * plausibility
-            + 0.26 * interference_gain
-            + 0.18 * testability
+            0.23 * novelty
+            + 0.27 * plausibility
+            + 0.24 * interference_gain
+            + 0.14 * testability
+            + 0.12 * braid_novelty
         )
 
         stable_constructive_interference = (
             len(candidate.supporting_observation_ids) > 1
-            and quantum_metrics.interference >= 0.60
-            and stability >= 0.70
-            and quantum_metrics.coherence >= 0.55
+            and quantum_metrics.stable_interference.stable
+            and braid_novelty >= 0.38
             and overall_score >= self.proposal_threshold
         )
 
@@ -394,6 +572,7 @@ class AutonomousHypothesisEngine:
             interference_gain=interference_gain,
             stability=stability,
             testability=testability,
+            braid_novelty=braid_novelty,
             overall_score=overall_score,
             stable_constructive_interference=stable_constructive_interference,
             quantum_metrics=quantum_metrics,
@@ -440,100 +619,81 @@ class AutonomousHypothesisEngine:
             if observation_id in self.observation_index
             and self.observation_index[observation_id].proposed_experiment
         ]
-        control_notes = [
+        controls = [
             "Matched baseline with the proposed mechanism disabled",
             "Negative-control perturbation that preserves measurement noise but removes the causal intervention",
+            "Scramble entity-to-mechanism pairings and verify that constructive interference and braid entropy collapse",
         ]
         if observation_notes:
-            control_notes.append(observation_notes[0])
+            controls.append(observation_notes[0])
 
-        target_domain = candidate.source_domains[-1]
-        focus_entity = candidate.premise_entities[-1]
+        focus_entity = candidate.premise_entities[-1] if candidate.premise_entities else candidate.mechanism
         experiment_name = (
-            f"Perturb-and-measure validation of {candidate.mechanism} in {target_domain} "
-            f"systems centered on {focus_entity}"
+            f"Perturb-and-measure validation of {candidate.mechanism} centered on {focus_entity}"
         )
         required_data = (
-            f"Intervention/control readouts for {focus_entity}, outcome measurements for "
-            f"'{candidate.predicted_outcome}', and replication across at least two matched contexts."
+            f"Intervention/control readouts for {focus_entity}, downstream outcome measurements for "
+            f"'{candidate.predicted_outcome}', and cycle-by-cycle quantum metrics "
+            f"(coherence, entanglement, interference, braid entropy)."
         )
         positive_signal = (
-            f"A reproducible shift toward '{candidate.predicted_outcome}' under the intervention, "
-            f"with effect size scaling alongside the candidate mechanism."
+            f"A reproducible shift toward '{candidate.predicted_outcome}' together with sustained "
+            f"constructive interference (mean interference {evaluation.quantum_metrics.stable_interference.mean_interference:.2f}) "
+            f"and braid entropy remaining elevated under matched repeats."
         )
         falsifier = (
-            f"No improvement in '{candidate.predicted_outcome}', or an effect that disappears once "
-            f"controls remove the proposed {', '.join(candidate.shared_themes[:2]) or 'shared-theme'} pathway."
+            f"No improvement in '{candidate.predicted_outcome}', or braid entropy/interference collapsing "
+            f"once the proposed causal bridge is perturbed or entity-mechanism pairings are scrambled."
         )
-
-        if evaluation.quantum_metrics.interference < 0.60:
-            falsifier += " Low interference also predicts that the cross-domain analogy should fail to generalize."
 
         return FalsificationPlan(
             experiment_name=experiment_name,
             required_data=required_data,
             positive_signal=positive_signal,
             falsifier=falsifier,
-            controls=control_notes,
+            controls=controls,
         )
 
-    def _simulate_quantum_metrics(self, candidate: CandidateHypothesis) -> SimulatedQuantumMetrics:
-        evidence_strength = self._average_evidence(candidate)
-        theme_overlap = self._theme_overlap(candidate)
-        cross_domain_bonus = 1.0 if len(set(candidate.source_domains)) > 1 else 0.2
+    def _build_prompt_cycles(self, candidate: CandidateHypothesis) -> List[str]:
+        supporting = [
+            self.observation_index[observation_id]
+            for observation_id in candidate.supporting_observation_ids
+            if observation_id in self.observation_index
+        ]
+        summaries = " ".join(observation.summary for observation in supporting)
+        titles = "; ".join(observation.title for observation in supporting)
+        domains = ", ".join(candidate.source_domains)
+        entities = ", ".join(candidate.premise_entities)
+        themes = ", ".join(candidate.shared_themes) or "causal coupling"
 
-        coherence_samples: List[float] = []
-        entanglement_samples: List[float] = []
-        interference_samples: List[float] = []
-        fidelity_samples: List[float] = []
+        prompts = [
+            f"Hypothesis cycle 1: {candidate.claim}",
+            f"Hypothesis cycle 2: TCL {candidate.tcl_expression}. Entities: {entities}.",
+            f"Hypothesis cycle 3: Mechanism {candidate.mechanism}. Outcome {candidate.predicted_outcome}. Domains {domains}.",
+            f"Hypothesis cycle 4: Supporting observations {titles}. Shared themes {themes}.",
+            f"Hypothesis cycle 5: Evidence {summaries}",
+        ]
+        return prompts[: self.inference_cycles]
 
-        for trial in range(self.interference_samples):
-            jitter = (_deterministic_unit(f"{candidate.id}:{trial}") - 0.5) * 0.10
-            jitter_secondary = (_deterministic_unit(f"{candidate.id}:secondary:{trial}") - 0.5) * 0.08
+    def _compute_braid_entropy(
+        self,
+        current_vector: np.ndarray,
+        prior_vector: Optional[np.ndarray],
+    ) -> float:
+        safe = np.clip(current_vector, 1e-8, None)
+        probability = safe / np.sum(safe)
+        local_entropy = float(-np.sum(probability * np.log(probability)) / np.log(len(probability)))
 
-            coherence = _clip(
-                0.44
-                + 0.18 * evidence_strength
-                + 0.16 * theme_overlap
-                + 0.10 * cross_domain_bonus
-                + jitter
-            )
-            entanglement = _clip(
-                0.28
-                + 0.24 * cross_domain_bonus
-                + 0.22 * theme_overlap
-                + 0.08 * evidence_strength
-                + jitter_secondary
-            )
-            interference = _clip(
-                0.40
-                + 0.22 * theme_overlap
-                + 0.20 * evidence_strength
-                + 0.12 * cross_domain_bonus
-                + 0.08 * coherence
-                + 0.05 * entanglement
-                + jitter
-            )
-            fidelity = _clip(
-                0.46
-                + 0.24 * evidence_strength
-                + 0.12 * theme_overlap
-                + 0.08 * coherence
-                - abs(jitter_secondary) * 0.4
-            )
+        if prior_vector is None:
+            weave = local_entropy
+            phase_shift = 0.0
+        else:
+            current_rank = np.argsort(current_vector)
+            prior_rank = np.argsort(prior_vector)
+            weave = float(np.mean(np.abs(current_rank - prior_rank)) / (len(current_vector) - 1))
+            phase_shift = float(np.mean(np.abs(current_vector - prior_vector)))
 
-            coherence_samples.append(coherence)
-            entanglement_samples.append(entanglement)
-            interference_samples.append(interference)
-            fidelity_samples.append(fidelity)
-
-        return SimulatedQuantumMetrics(
-            coherence=statistics.mean(coherence_samples),
-            entanglement=statistics.mean(entanglement_samples),
-            interference=statistics.mean(interference_samples),
-            quantum_fidelity=statistics.mean(fidelity_samples),
-            interference_samples=interference_samples,
-        )
+        return _clip(0.50 * local_entropy + 0.30 * weave + 0.20 * phase_shift)
 
     def _average_evidence(self, candidate: CandidateHypothesis) -> float:
         weights = [
@@ -543,12 +703,11 @@ class AutonomousHypothesisEngine:
         ]
         if not weights:
             return 0.5
-        return _clip(statistics.mean(weights))
+        return _clip(float(statistics.mean(weights)))
 
     def _theme_overlap(self, candidate: CandidateHypothesis) -> float:
         if not candidate.supporting_observation_ids:
             return 0.0
-
         theme_sets = [
             set(self.observation_index[observation_id].themes)
             for observation_id in candidate.supporting_observation_ids
@@ -558,7 +717,6 @@ class AutonomousHypothesisEngine:
             return 0.0
         if len(theme_sets) == 1:
             return _clip(min(1.0, len(theme_sets[0]) / 8.0))
-
         overlap = set.intersection(*theme_sets)
         union = set.union(*theme_sets)
         if not union:
@@ -572,8 +730,8 @@ class AutonomousHypothesisEngine:
             return 0.0
 
         support_values: List[float] = []
-        direct_mechanism_support = self.context.causality.causal_edges.get(mechanism_id, {}).get(outcome_id, 0.0)
-        support_values.append(direct_mechanism_support)
+        direct_support = self.context.causality.causal_edges.get(mechanism_id, {}).get(outcome_id, 0.0)
+        support_values.append(direct_support)
 
         for entity in candidate.premise_entities:
             entity_id = self._find_symbol_id(entity)
@@ -582,11 +740,13 @@ class AutonomousHypothesisEngine:
                     self.context.causality.causal_edges.get(entity_id, {}).get(mechanism_id, 0.0)
                 )
 
-        if not support_values:
-            return 0.0
-        return _clip(sum(support_values) / len(support_values))
+        return _clip(sum(support_values) / len(support_values)) if support_values else 0.0
 
-    def _estimate_testability(self, candidate: CandidateHypothesis) -> float:
+    def _estimate_testability(
+        self,
+        candidate: CandidateHypothesis,
+        quantum_metrics: QuantumMetricsTrace,
+    ) -> float:
         experiment_defined = any(
             self.observation_index[observation_id].proposed_experiment
             for observation_id in candidate.supporting_observation_ids
@@ -596,11 +756,15 @@ class AutonomousHypothesisEngine:
             keyword in candidate.predicted_outcome.lower()
             for keyword in ["fidelity", "load", "stability", "noise", "mutation", "accuracy"]
         ) else 0.65
-        entity_grounding = 1.0 if candidate.premise_entities else 0.5
-        return _clip(0.35 * measurable_outcome + 0.35 * entity_grounding + 0.30 * float(experiment_defined))
+        braid_ready = 1.0 if quantum_metrics.braid_entropy >= 0.45 else 0.6
+        return _clip(
+            0.35 * measurable_outcome
+            + 0.30 * float(experiment_defined)
+            + 0.20 * braid_ready
+            + 0.15 * bool(candidate.premise_entities)
+        )
 
     def _ensure_symbol(self, text: str) -> str:
-        normalized = _normalized_name(text)
         symbol_id = self._find_symbol_id(text)
         if symbol_id:
             return symbol_id
@@ -610,7 +774,7 @@ class AutonomousHypothesisEngine:
         if symbol_id:
             return symbol_id
 
-        # Fallback: concept symbols created from `compress_concept` use underscores.
+        normalized = _normalized_name(text)
         symbol_id = self._find_symbol_id(normalized)
         if symbol_id:
             return symbol_id

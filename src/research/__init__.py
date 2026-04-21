@@ -6,8 +6,11 @@ from .hypothesis_engine import (
     FalsificationPlan,
     HypothesisEvaluation,
     ProposedHypothesis,
+    QuantumMetricCycle,
+    QuantumMetricsTrace,
     ResearchObservation,
-    SimulatedQuantumMetrics,
+    StableInterferenceDetector,
+    StableInterferenceReport,
 )
 
 __all__ = [
@@ -16,6 +19,9 @@ __all__ = [
     "FalsificationPlan",
     "HypothesisEvaluation",
     "ProposedHypothesis",
+    "QuantumMetricCycle",
+    "QuantumMetricsTrace",
     "ResearchObservation",
-    "SimulatedQuantumMetrics",
+    "StableInterferenceDetector",
+    "StableInterferenceReport",
 ]
