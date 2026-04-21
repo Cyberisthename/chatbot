@@ -1,0 +1,50 @@
+[
+  {
+    "id": "qec_surface_code",
+    "title": "Surface-code syndrome decoding improves logical qubit fidelity",
+    "domain": "quantum_computing",
+    "summary": "Syndrome-guided redundancy detects correlated errors before they accumulate into logical failures.",
+    "entities": ["surface code", "syndrome decoder", "logical qubit"],
+    "mechanism": "syndrome-guided redundant error correction",
+    "outcome": "improved fidelity under correlated noise",
+    "evidence_weight": 0.86,
+    "year": 2024,
+    "proposed_experiment": "Benchmark adaptive syndrome-decoding policies against a correlated-noise baseline."
+  },
+  {
+    "id": "crispr_screening",
+    "title": "High-fidelity CRISPR screening reduces off-target edits",
+    "domain": "genomics",
+    "summary": "Guide-quality filtering and repair-pathway selection reduce off-target mutation burden during editing.",
+    "entities": ["CRISPR-Cas9", "guide RNA", "DNA repair"],
+    "mechanism": "fidelity-guided editing and off-target screening",
+    "outcome": "reduced off-target mutation load",
+    "evidence_weight": 0.81,
+    "year": 2023,
+    "proposed_experiment": "Compare standard Cas9 editing against high-fidelity guide screening across matched cell lines."
+  },
+  {
+    "id": "dna_repair_feedback",
+    "title": "DNA repair checkpoints use pre-commitment error sensing",
+    "domain": "genomics",
+    "summary": "Checkpoint signaling can detect damage signatures before full repair commitment, improving genome stability.",
+    "entities": ["DNA repair checkpoint", "damage sensor", "repair pathway"],
+    "mechanism": "error-syndrome detection before repair commitment",
+    "outcome": "improved genome stability",
+    "evidence_weight": 0.78,
+    "year": 2024,
+    "proposed_experiment": "Perturb checkpoint sensing and quantify the downstream effect on repair accuracy and genome stability."
+  },
+  {
+    "id": "protein_q_control",
+    "title": "Quantum-coherent control stabilizes noisy molecular trajectories",
+    "domain": "biophysics",
+    "summary": "Coherence-aware feedback can stabilize fragile molecular transitions that would otherwise drift under noise.",
+    "entities": ["coherence controller", "molecular trajectory", "feedback loop"],
+    "mechanism": "coherence-aware feedback stabilization",
+    "outcome": "noise-robust state transitions",
+    "evidence_weight": 0.74,
+    "year": 2024,
+    "proposed_experiment": "Measure whether coherence-aware feedback improves transition stability relative to open-loop control."
+  }
+]
