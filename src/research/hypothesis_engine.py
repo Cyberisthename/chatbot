@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 import numpy as np
 
+from ..quantum_llm.braid_math import get_braid_metrics
 from ..quantum_llm.quantum_transformer import QuantumTransformer, SimpleTokenizer
 from ..thought_compression import ThoughtCompressionEngine
 
@@ -208,6 +209,10 @@ class QuantumMetricsTrace:
     interference: float
     quantum_fidelity: float
     braid_entropy: float
+    information_density: float
+    novelty_regime: str
+    high_value_discovery: bool
+    braid_word: List[int] = field(default_factory=list)
     cycle_metrics: List[QuantumMetricCycle] = field(default_factory=list)
     stable_interference: Optional[StableInterferenceReport] = None
 
@@ -474,7 +479,7 @@ class AutonomousHypothesisEngine:
     def collect_quantum_metrics(self, candidate: CandidateHypothesis) -> QuantumMetricsTrace:
         prompt_cycles = self._build_prompt_cycles(candidate)
         cycle_metrics: List[QuantumMetricCycle] = []
-        prior_vector: Optional[np.ndarray] = None
+        metric_vectors: List[np.ndarray] = []
 
         for cycle_index in range(self.inference_cycles):
             prompt = prompt_cycles[cycle_index % len(prompt_cycles)]
@@ -491,9 +496,14 @@ class AutonomousHypothesisEngine:
                     float(live_metrics.get("avg_fidelity", 0.0)),
                 ]
             )
-            braid_entropy = self._compute_braid_entropy(current_vector, prior_vector)
-            prior_vector = current_vector
+            metric_vectors.append(current_vector)
 
+        braid_word, n_strands = self._construct_reasoning_braid(candidate, metric_vectors)
+        braid_metrics = get_braid_metrics(braid_word=braid_word, n_strands=n_strands)
+        braid_entropy = float(braid_metrics["braid_entropy"])
+
+        for cycle_index, (prompt, current_vector) in enumerate(zip(prompt_cycles, metric_vectors)):
+            cycle_entropy = self._cycle_braid_entropy(braid_entropy, cycle_index, len(metric_vectors))
             cycle_metrics.append(
                 QuantumMetricCycle(
                     cycle_index=cycle_index,
@@ -502,18 +512,24 @@ class AutonomousHypothesisEngine:
                     entanglement=current_vector[1],
                     interference=current_vector[2],
                     quantum_fidelity=current_vector[3],
-                    braid_entropy=braid_entropy,
+                    braid_entropy=cycle_entropy,
                 )
             )
 
         detector_report = self.detector.analyze([cycle.interference for cycle in cycle_metrics])
+        novelty_regime = str(braid_metrics["novelty_regime"])
+        high_value_discovery = novelty_regime.startswith("III")
         return QuantumMetricsTrace(
             source="transformer_forward",
             coherence=float(statistics.mean(cycle.coherence for cycle in cycle_metrics)),
             entanglement=float(statistics.mean(cycle.entanglement for cycle in cycle_metrics)),
             interference=float(statistics.mean(cycle.interference for cycle in cycle_metrics)),
             quantum_fidelity=float(statistics.mean(cycle.quantum_fidelity for cycle in cycle_metrics)),
-            braid_entropy=float(statistics.mean(cycle.braid_entropy for cycle in cycle_metrics)),
+            braid_entropy=braid_entropy,
+            information_density=float(braid_metrics["information_density"]),
+            novelty_regime=novelty_regime,
+            high_value_discovery=high_value_discovery,
+            braid_word=braid_word,
             cycle_metrics=cycle_metrics,
             stable_interference=detector_report,
         )
@@ -526,43 +542,48 @@ class AutonomousHypothesisEngine:
         cross_domain_bonus = 1.0 if len(set(candidate.source_domains)) > 1 else 0.25
         stability = quantum_metrics.stable_interference.stability_score if quantum_metrics.stable_interference else 0.0
         braid_novelty = quantum_metrics.braid_entropy
+        information_density = quantum_metrics.information_density
+        regime_bonus = self._novelty_regime_bonus(quantum_metrics.novelty_regime)
 
         novelty = _clip(
-            0.18
-            + 0.23 * cross_domain_bonus
-            + 0.15 * (1.0 - causal_support)
-            + 0.16 * min(theme_overlap * 1.5, 1.0)
-            + 0.28 * braid_novelty
+            0.12
+            + 0.18 * cross_domain_bonus
+            + 0.12 * (1.0 - causal_support)
+            + 0.12 * min(theme_overlap * 1.5, 1.0)
+            + 0.20 * _clip(braid_novelty / 3.0)
+            + 0.20 * information_density
+            + 0.18 * regime_bonus
         )
 
         plausibility = _clip(
-            0.38 * evidence_strength
+            0.35 * evidence_strength
             + 0.18 * causal_support
-            + 0.14 * quantum_metrics.coherence
-            + 0.10 * quantum_metrics.quantum_fidelity
-            + 0.10 * stability
-            + 0.10 * quantum_metrics.stable_interference.constructive_fraction
+            + 0.12 * quantum_metrics.coherence
+            + 0.08 * quantum_metrics.quantum_fidelity
+            + 0.12 * stability
+            + 0.08 * quantum_metrics.stable_interference.constructive_fraction
+            + 0.07 * regime_bonus
         )
 
         interference_gain = _clip(
             quantum_metrics.interference
-            * (0.55 + 0.45 * stability)
-            * (0.70 + 0.30 * braid_novelty)
+            * (0.50 + 0.50 * stability)
+            * (0.55 + 0.45 * information_density)
         )
         testability = self._estimate_testability(candidate, quantum_metrics)
 
         overall_score = _clip(
-            0.23 * novelty
-            + 0.27 * plausibility
+            0.22 * novelty
+            + 0.24 * plausibility
             + 0.24 * interference_gain
             + 0.14 * testability
-            + 0.12 * braid_novelty
+            + 0.16 * regime_bonus
         )
 
         stable_constructive_interference = (
             len(candidate.supporting_observation_ids) > 1
             and quantum_metrics.stable_interference.stable
-            and braid_novelty >= 0.38
+            and quantum_metrics.high_value_discovery
             and overall_score >= self.proposal_threshold
         )
 
@@ -638,12 +659,12 @@ class AutonomousHypothesisEngine:
         )
         positive_signal = (
             f"A reproducible shift toward '{candidate.predicted_outcome}' together with sustained "
-            f"constructive interference (mean interference {evaluation.quantum_metrics.stable_interference.mean_interference:.2f}) "
-            f"and braid entropy remaining elevated under matched repeats."
+            f"constructive interference (mean interference {evaluation.quantum_metrics.stable_interference.mean_interference:.2f}), "
+            f"a retained novelty regime of {evaluation.quantum_metrics.novelty_regime}, and braid entropy remaining elevated under matched repeats."
         )
         falsifier = (
-            f"No improvement in '{candidate.predicted_outcome}', or braid entropy/interference collapsing "
-            f"once the proposed causal bridge is perturbed or entity-mechanism pairings are scrambled."
+            f"No improvement in '{candidate.predicted_outcome}', or a drop from {evaluation.quantum_metrics.novelty_regime} to a lower regime "
+            f"with braid entropy/interference collapsing once the proposed causal bridge is perturbed or entity-mechanism pairings are scrambled."
         )
 
         return FalsificationPlan(
@@ -675,25 +696,51 @@ class AutonomousHypothesisEngine:
         ]
         return prompts[: self.inference_cycles]
 
-    def _compute_braid_entropy(
+    def _construct_reasoning_braid(
         self,
-        current_vector: np.ndarray,
-        prior_vector: Optional[np.ndarray],
-    ) -> float:
-        safe = np.clip(current_vector, 1e-8, None)
-        probability = safe / np.sum(safe)
-        local_entropy = float(-np.sum(probability * np.log(probability)) / np.log(len(probability)))
+        candidate: CandidateHypothesis,
+        metric_vectors: Sequence[np.ndarray],
+    ) -> tuple[List[int], int]:
+        concept_count = len(set(candidate.premise_entities + candidate.shared_themes))
+        n_strands = max(2, min(6, concept_count if concept_count else 2))
+        braid_word: List[int] = []
+        prior_rank: Optional[np.ndarray] = None
 
-        if prior_vector is None:
-            weave = local_entropy
-            phase_shift = 0.0
+        for vector in metric_vectors:
+            current_rank = np.argsort(vector)
+            deltas = np.diff(vector)
+            for idx, delta in enumerate(deltas, start=1):
+                generator = min(idx, n_strands - 1)
+                braid_word.append(generator if delta >= 0 else -generator)
+
+            if prior_rank is not None:
+                rank_shift = current_rank - prior_rank
+                for idx, shift in enumerate(rank_shift[1:], start=1):
+                    generator = min(idx, n_strands - 1)
+                    braid_word.append(generator if shift >= 0 else -generator)
+            prior_rank = current_rank
+
+        if len(set(candidate.source_domains)) > 1:
+            braid_word.extend([1, min(2, n_strands - 1), 1] * 3)
+        elif len(candidate.supporting_observation_ids) > 1:
+            braid_word.extend([1, min(2, n_strands - 1), -1] * 2)
         else:
-            current_rank = np.argsort(current_vector)
-            prior_rank = np.argsort(prior_vector)
-            weave = float(np.mean(np.abs(current_rank - prior_rank)) / (len(current_vector) - 1))
-            phase_shift = float(np.mean(np.abs(current_vector - prior_vector)))
+            braid_word.extend([1])
 
-        return _clip(0.50 * local_entropy + 0.30 * weave + 0.20 * phase_shift)
+        return [generator for generator in braid_word if generator != 0], n_strands
+
+    def _cycle_braid_entropy(self, base_entropy: float, cycle_index: int, total_cycles: int) -> float:
+        if total_cycles <= 1:
+            return base_entropy
+        fraction = (cycle_index + 1) / total_cycles
+        return float(base_entropy * (0.85 + 0.15 * fraction))
+
+    def _novelty_regime_bonus(self, novelty_regime: str) -> float:
+        if novelty_regime.startswith("III"):
+            return 1.0
+        if novelty_regime.startswith("II"):
+            return 0.55
+        return 0.15
 
     def _average_evidence(self, candidate: CandidateHypothesis) -> float:
         weights = [
