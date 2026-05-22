@@ -1,0 +1,96 @@
+{
+  "id": "adapter_f7f391bf",
+  "task_tags": [
+    "disease_pathology",
+    "mid_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "disease_pathology",
+    "era": "mid_1800s",
+    "era_range": [
+      1831,
+      1860
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_virchow_1858_cp_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/virchow_1858_cp_epoch1.json",
+      "symbol_count": 11,
+      "year": 1858,
+      "author": "Rudolf Virchow",
+      "title": "Cellular Pathology: Foundation of Modern Medicine"
+    },
+    "book_virchow_1858_cp_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/virchow_1858_cp_epoch2.json",
+      "symbol_count": 11,
+      "year": 1858,
+      "author": "Rudolf Virchow",
+      "title": "Cellular Pathology: Foundation of Modern Medicine"
+    },
+    "book_virchow_1858_cp_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/virchow_1858_cp_epoch3.json",
+      "symbol_count": 11,
+      "year": 1858,
+      "author": "Rudolf Virchow",
+      "title": "Cellular Pathology: Foundation of Modern Medicine"
+    }
+  },
+  "rules": [
+    "For questions about disease_pathology in mid_1800s, recall: Cellular Pathology: Foundation of Modern Medicine [11 TCL symbols available]",
+    "For questions about disease_pathology in mid_1800s, recall: Cellular Pathology: Foundation of Modern Medicine [11 TCL symbols available]",
+    "For questions about disease_pathology in mid_1800s, recall: Cellular Pathology: Foundation of Modern Medicine [11 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: Cellular Pathology: Foundation of Modern Medicine by Rudolf Virchow (1858) - pathology, medicine, cell",
+    "Historical knowledge: Cellular Pathology: Foundation of Modern Medicine by Rudolf Virchow (1858) - pathology, medicine, cell",
+    "Historical knowledge: Cellular Pathology: Foundation of Modern Medicine by Rudolf Virchow (1858) - pathology, medicine, cell"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.078373,
+  "last_used": 1768522729.2023294,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

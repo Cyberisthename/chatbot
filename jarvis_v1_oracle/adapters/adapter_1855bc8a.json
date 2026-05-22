@@ -1,0 +1,123 @@
+{
+  "id": "adapter_1855bc8a",
+  "task_tags": [
+    "cancer_research",
+    "early_quantum",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "cancer_research",
+    "era": "early_quantum",
+    "era_range": [
+      1900,
+      1930
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_yamagiwa_1915_esc_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/yamagiwa_1915_esc_epoch1.json",
+      "symbol_count": 12,
+      "year": 1915,
+      "author": "Katsusaburo Yamagiwa",
+      "title": "Experimental Studies on Cancer"
+    },
+    "book_abbe_1904_rtc_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/abbe_1904_rtc_epoch1.json",
+      "symbol_count": 10,
+      "year": 1904,
+      "author": "Robert Abbe",
+      "title": "Radium Therapy in Cancer"
+    },
+    "book_yamagiwa_1915_esc_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/yamagiwa_1915_esc_epoch2.json",
+      "symbol_count": 12,
+      "year": 1915,
+      "author": "Katsusaburo Yamagiwa",
+      "title": "Experimental Studies on Cancer"
+    },
+    "book_abbe_1904_rtc_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/abbe_1904_rtc_epoch2.json",
+      "symbol_count": 10,
+      "year": 1904,
+      "author": "Robert Abbe",
+      "title": "Radium Therapy in Cancer"
+    },
+    "book_yamagiwa_1915_esc_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/yamagiwa_1915_esc_epoch3.json",
+      "symbol_count": 12,
+      "year": 1915,
+      "author": "Katsusaburo Yamagiwa",
+      "title": "Experimental Studies on Cancer"
+    },
+    "book_abbe_1904_rtc_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/abbe_1904_rtc_epoch3.json",
+      "symbol_count": 10,
+      "year": 1904,
+      "author": "Robert Abbe",
+      "title": "Radium Therapy in Cancer"
+    }
+  },
+  "rules": [
+    "For questions about cancer_research in early_quantum, recall: Experimental Studies on Cancer [12 TCL symbols available]",
+    "For questions about cancer_research in early_quantum, recall: Radium Therapy in Cancer [10 TCL symbols available]",
+    "For questions about cancer_research in early_quantum, recall: Experimental Studies on Cancer [12 TCL symbols available]",
+    "For questions about cancer_research in early_quantum, recall: Radium Therapy in Cancer [10 TCL symbols available]",
+    "For questions about cancer_research in early_quantum, recall: Experimental Studies on Cancer [12 TCL symbols available]",
+    "For questions about cancer_research in early_quantum, recall: Radium Therapy in Cancer [10 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: Experimental Studies on Cancer by Katsusaburo Yamagiwa (1915) - disease, chemistry, cell",
+    "Historical knowledge: Radium Therapy in Cancer by Robert Abbe (1904) - cure, cancer, radiation",
+    "Historical knowledge: Experimental Studies on Cancer by Katsusaburo Yamagiwa (1915) - disease, chemistry, cell",
+    "Historical knowledge: Radium Therapy in Cancer by Robert Abbe (1904) - cure, cancer, radiation",
+    "Historical knowledge: Experimental Studies on Cancer by Katsusaburo Yamagiwa (1915) - disease, chemistry, cell",
+    "Historical knowledge: Radium Therapy in Cancer by Robert Abbe (1904) - cure, cancer, radiation"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.0864744,
+  "last_used": 1768522729.2137628,
+  "success_count": 6,
+  "total_calls": 6,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

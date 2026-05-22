@@ -1,0 +1,150 @@
+{
+  "id": "adapter_226dca1c",
+  "task_tags": [
+    "quantum_physics",
+    "early_quantum",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "quantum_physics",
+    "era": "early_quantum",
+    "era_range": [
+      1900,
+      1930
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_einstein_1917_qtr_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1917_qtr_epoch1.json",
+      "symbol_count": 12,
+      "year": 1917,
+      "author": "Albert Einstein",
+      "title": "On the Quantum Theory of Radiation"
+    },
+    "book_bohr_1918_qtls_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/bohr_1918_qtls_epoch1.json",
+      "symbol_count": 14,
+      "year": 1918,
+      "author": "Niels Bohr",
+      "title": "The Quantum Theory of Line Spectra"
+    },
+    "book_schrodinger_1926_wm_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/schrodinger_1926_wm_epoch1.json",
+      "symbol_count": 12,
+      "year": 1926,
+      "author": "Erwin Schr\u00f6dinger",
+      "title": "Wave Mechanics and Quantum Theory"
+    },
+    "book_einstein_1917_qtr_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1917_qtr_epoch2.json",
+      "symbol_count": 12,
+      "year": 1917,
+      "author": "Albert Einstein",
+      "title": "On the Quantum Theory of Radiation"
+    },
+    "book_bohr_1918_qtls_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/bohr_1918_qtls_epoch2.json",
+      "symbol_count": 14,
+      "year": 1918,
+      "author": "Niels Bohr",
+      "title": "The Quantum Theory of Line Spectra"
+    },
+    "book_schrodinger_1926_wm_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/schrodinger_1926_wm_epoch2.json",
+      "symbol_count": 12,
+      "year": 1926,
+      "author": "Erwin Schr\u00f6dinger",
+      "title": "Wave Mechanics and Quantum Theory"
+    },
+    "book_einstein_1917_qtr_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/einstein_1917_qtr_epoch3.json",
+      "symbol_count": 12,
+      "year": 1917,
+      "author": "Albert Einstein",
+      "title": "On the Quantum Theory of Radiation"
+    },
+    "book_bohr_1918_qtls_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/bohr_1918_qtls_epoch3.json",
+      "symbol_count": 14,
+      "year": 1918,
+      "author": "Niels Bohr",
+      "title": "The Quantum Theory of Line Spectra"
+    },
+    "book_schrodinger_1926_wm_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/schrodinger_1926_wm_epoch3.json",
+      "symbol_count": 12,
+      "year": 1926,
+      "author": "Erwin Schr\u00f6dinger",
+      "title": "Wave Mechanics and Quantum Theory"
+    }
+  },
+  "rules": [
+    "For questions about quantum_physics in early_quantum, recall: On the Quantum Theory of Radiation [12 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: The Quantum Theory of Line Spectra [14 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: Wave Mechanics and Quantum Theory [12 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: On the Quantum Theory of Radiation [12 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: The Quantum Theory of Line Spectra [14 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: Wave Mechanics and Quantum Theory [12 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: On the Quantum Theory of Radiation [12 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: The Quantum Theory of Line Spectra [14 TCL symbols available]",
+    "For questions about quantum_physics in early_quantum, recall: Wave Mechanics and Quantum Theory [12 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: On the Quantum Theory of Radiation by Albert Einstein (1917) - quantum, electromagnetic, radiation",
+    "Historical knowledge: The Quantum Theory of Line Spectra by Niels Bohr (1918) - quantum, atom, chemistry",
+    "Historical knowledge: Wave Mechanics and Quantum Theory by Erwin Schr\u00f6dinger (1926) - molecular, physics, quantum",
+    "Historical knowledge: On the Quantum Theory of Radiation by Albert Einstein (1917) - quantum, electromagnetic, radiation",
+    "Historical knowledge: The Quantum Theory of Line Spectra by Niels Bohr (1918) - quantum, atom, chemistry",
+    "Historical knowledge: Wave Mechanics and Quantum Theory by Erwin Schr\u00f6dinger (1926) - molecular, physics, quantum",
+    "Historical knowledge: On the Quantum Theory of Radiation by Albert Einstein (1917) - quantum, electromagnetic, radiation",
+    "Historical knowledge: The Quantum Theory of Line Spectra by Niels Bohr (1918) - quantum, atom, chemistry",
+    "Historical knowledge: Wave Mechanics and Quantum Theory by Erwin Schr\u00f6dinger (1926) - molecular, physics, quantum"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.0687547,
+  "last_used": 1768522729.1981914,
+  "success_count": 9,
+  "total_calls": 9,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

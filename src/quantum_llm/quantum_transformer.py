@@ -119,11 +119,23 @@ class QuantumLayer:
         
         # Cache for backprop
         self.cache = {}
+        
+        # Inference cache for redundant reasoning sub-paths
+        self.inference_cache = {}
     
-    def forward(self, x: np.ndarray, mask: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Dict[str, Any]]:
+    def forward(self, x: np.ndarray, mask: Optional[np.ndarray] = None, use_cache: bool = False, repair_bias: float = 1.0) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
-        Forward pass with caching
+        Forward pass with caching and biological repair bias
         """
+        if use_cache:
+            # Create a key based on a hash of the input, mask, and repair_bias
+            x_hash = hash(x.tobytes())
+            mask_hash = hash(mask.tobytes()) if mask is not None else 0
+            cache_key = (x_hash, mask_hash, repair_bias)
+            
+            if cache_key in self.inference_cache:
+                return self.inference_cache[cache_key]
+
         # 1. Layer norm 1
         x_norm1, norm1_cache = self._layer_norm_forward(x, self.gamma1, self.beta1)
         
@@ -133,7 +145,7 @@ class QuantumLayer:
         v = x_norm1 @ self.value_proj
         
         # 3. Quantum attention
-        attn_out, attn_weights, metrics = self.quantum_attention.compute_quantum_attention(q, k, v, mask)
+        attn_out, attn_weights, metrics = self.quantum_attention.compute_quantum_attention(q, k, v, mask, repair_bias=repair_bias)
         
         # 4. Residual 1
         x_res1 = x + attn_out
@@ -168,7 +180,15 @@ class QuantumLayer:
             "mask": mask
         }
         
-        return out, metrics
+        result = (out, metrics)
+        
+        if use_cache:
+            x_hash = hash(x.tobytes())
+            mask_hash = hash(mask.tobytes()) if mask is not None else 0
+            cache_key = (x_hash, mask_hash)
+            self.inference_cache[cache_key] = result
+            
+        return result
 
     def backward(self, grad_out: np.ndarray) -> Tuple[np.ndarray, Dict[str, np.ndarray]]:
         """
@@ -320,7 +340,17 @@ class QuantumTransformer:
         pe[:, 1::2] = np.cos(pos * div_term)
         return pe
 
-    def forward(self, input_ids: np.ndarray, mask: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Dict[str, Any]]:
+    def get_quantum_coherence(self) -> float:
+        """
+        Return the average quantum coherence across all layers from the last forward pass
+        """
+        if "avg_coherence" in self.cache.get("metrics", {}):
+            return self.cache["metrics"]["avg_coherence"]
+        
+        # Fallback if metrics not in cache (e.g. before first forward pass or if cache cleared)
+        return 0.5
+
+    def forward(self, input_ids: np.ndarray, mask: Optional[np.ndarray] = None, use_cache: bool = False, repair_bias: float = 1.0) -> Tuple[np.ndarray, Dict[str, Any]]:
         batch_size, seq_len = input_ids.shape
         
         # 1. Embedding
@@ -333,27 +363,31 @@ class QuantumTransformer:
         layer_metrics = []
         layer_inputs = [x]
         for layer in self.layers:
-            x, metrics = layer.forward(x, mask)
+            x, metrics = layer.forward(x, mask, use_cache=use_cache, repair_bias=repair_bias)
             layer_inputs.append(x)
             layer_metrics.append(metrics)
             
         # 4. Final Projection
         logits = x @ self.output_projection
         
-        # Store cache
-        self.cache = {
-            "input_ids": input_ids,
-            "layer_inputs": layer_inputs,
-            "logits": logits,
-            "mask": mask
-        }
-        
         # Aggregate metrics
+        # For Tier-2 Scaled Inference, we now support returning per-batch metrics
         avg_metrics = {
             "avg_coherence": np.mean([m.get("coherence", 0) for m in layer_metrics]),
             "avg_entanglement": np.mean([m.get("entanglement", 0) for m in layer_metrics]),
             "avg_interference": np.mean([m.get("interference", 0) for m in layer_metrics]),
             "avg_fidelity": np.mean([m.get("quantum_fidelity", 0) for m in layer_metrics]),
+            # Per-batch metrics for syndrome decoding
+            "batch_interference": np.mean([m.get("batch_interference", np.zeros(batch_size)) for m in layer_metrics], axis=0).tolist()
+        }
+        
+        # Store cache
+        self.cache = {
+            "input_ids": input_ids,
+            "layer_inputs": layer_inputs,
+            "logits": logits,
+            "mask": mask,
+            "metrics": avg_metrics
         }
         
         return logits, avg_metrics

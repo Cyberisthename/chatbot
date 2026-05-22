@@ -1,0 +1,96 @@
+{
+  "id": "adapter_0e8eb2a7",
+  "task_tags": [
+    "cell_biology",
+    "mid_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "cell_biology",
+    "era": "mid_1800s",
+    "era_range": [
+      1831,
+      1860
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_darwin_1859_origin_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/darwin_1859_origin_epoch1.json",
+      "symbol_count": 7,
+      "year": 1859,
+      "author": "Charles Darwin",
+      "title": "On the Origin of Species"
+    },
+    "book_darwin_1859_origin_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/darwin_1859_origin_epoch2.json",
+      "symbol_count": 7,
+      "year": 1859,
+      "author": "Charles Darwin",
+      "title": "On the Origin of Species"
+    },
+    "book_darwin_1859_origin_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/darwin_1859_origin_epoch3.json",
+      "symbol_count": 7,
+      "year": 1859,
+      "author": "Charles Darwin",
+      "title": "On the Origin of Species"
+    }
+  },
+  "rules": [
+    "For questions about cell_biology in mid_1800s, recall: On the Origin of Species [7 TCL symbols available]",
+    "For questions about cell_biology in mid_1800s, recall: On the Origin of Species [7 TCL symbols available]",
+    "For questions about cell_biology in mid_1800s, recall: On the Origin of Species [7 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: On the Origin of Species by Charles Darwin (1859) - evolution, biology, genetics",
+    "Historical knowledge: On the Origin of Species by Charles Darwin (1859) - evolution, biology, genetics",
+    "Historical knowledge: On the Origin of Species by Charles Darwin (1859) - evolution, biology, genetics"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.0930936,
+  "last_used": 1768522729.217275,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

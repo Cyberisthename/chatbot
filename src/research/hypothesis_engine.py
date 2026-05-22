@@ -167,6 +167,7 @@ class CandidateHypothesis:
     supporting_observation_ids: List[str]
     source_domains: List[str]
     shared_themes: List[str] = field(default_factory=list)
+    ensemble_groups: List[List[str]] = field(default_factory=list) # Tier-2 Ensembles
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -474,6 +475,13 @@ class AutonomousHypothesisEngine:
                 )
             )
 
+        # Tier-2: Redundant-guide ensembles for high-weight mechanisms
+        for cand in candidates:
+            # Create ensemble of 3 redundant guides (represented as perturbed mechanisms)
+            # This simulates fault-tolerant targeting in biology (Milestone A)
+            redundant_guides = [f"{cand.mechanism}_α", f"{cand.mechanism}_β", f"{cand.mechanism}_γ"]
+            cand.ensemble_groups.append(redundant_guides)
+
         return candidates
 
     def collect_quantum_metrics(self, candidate: CandidateHypothesis) -> QuantumMetricsTrace:
@@ -481,12 +489,16 @@ class AutonomousHypothesisEngine:
         cycle_metrics: List[QuantumMetricCycle] = []
         metric_vectors: List[np.ndarray] = []
 
+        # Tier-2: Biological repair pathway conditioning (Milestone C)
+        repair_bias_str = self.context.metrics.repair_pathway_bias
+        repair_bias_val = 1.1 if repair_bias_str == "HDR" else 1.0
+
         for cycle_index in range(self.inference_cycles):
             prompt = prompt_cycles[cycle_index % len(prompt_cycles)]
             encoded = self.tokenizer.encode(prompt)
             encoded = encoded[-self.quantum_model.max_seq_len :]
             input_ids = np.array(encoded, dtype=np.int64).reshape(1, -1)
-            _, live_metrics = self.quantum_model.forward(input_ids)
+            _, live_metrics = self.quantum_model.forward(input_ids, use_cache=True, repair_bias=repair_bias_val)
 
             current_vector = np.array(
                 [
@@ -534,6 +546,47 @@ class AutonomousHypothesisEngine:
             stable_interference=detector_report,
         )
 
+    def _syndrome_decoder_score(self, candidate: CandidateHypothesis) -> float:
+        """Aggregate signals from redundant-guide ensembles using batched inference."""
+        if not candidate.ensemble_groups:
+            return 0.0
+            
+        # Tier-2: Biological repair pathway conditioning (Milestone C)
+        repair_bias_str = self.context.metrics.repair_pathway_bias
+        repair_bias_val = 1.1 if repair_bias_str == "HDR" else 1.0
+
+        all_group_scores = []
+        for group in candidate.ensemble_groups:
+            # Batch inference for the whole group (Milestone B)
+            batch_prompts = [f"Validation of guide {g} for mechanism {candidate.mechanism}" for g in group]
+            encoded_batch = []
+            for p in batch_prompts:
+                ids = self.tokenizer.encode(p)
+                # Ensure correct sequence length for the model
+                if len(ids) > self.quantum_model.max_seq_len:
+                    ids = ids[-self.quantum_model.max_seq_len:]
+                elif len(ids) < self.quantum_model.max_seq_len:
+                    ids = [0]*(self.quantum_model.max_seq_len - len(ids)) + ids
+                encoded_batch.append(ids)
+                
+            input_ids = np.array(encoded_batch, dtype=np.int64)
+            _, metrics = self.quantum_model.forward(input_ids, use_cache=True, repair_bias=repair_bias_val)
+            
+            # Syndrome Decoding: Aggregate signals across the redundant ensemble
+            # We take the top 3 consensus signals (ignoring low-performing outliers/noise)
+            batch_interferences = metrics.get("batch_interference", [0.0]*len(group))
+            
+            # Convert to list if it's a numpy array
+            if isinstance(batch_interferences, np.ndarray):
+                batch_interferences = batch_interferences.tolist()
+                
+            batch_interferences.sort(reverse=True)
+            # Use statistics.mean for robust aggregation
+            consensus_signal = statistics.mean(batch_interferences[:3]) 
+            all_group_scores.append(consensus_signal)
+            
+        return float(statistics.mean(all_group_scores))
+
     def score_candidate(self, candidate: CandidateHypothesis) -> HypothesisEvaluation:
         quantum_metrics = self.collect_quantum_metrics(candidate)
         evidence_strength = self._average_evidence(candidate)
@@ -544,15 +597,18 @@ class AutonomousHypothesisEngine:
         braid_novelty = quantum_metrics.braid_entropy
         information_density = quantum_metrics.information_density
         regime_bonus = self._novelty_regime_bonus(quantum_metrics.novelty_regime)
+        syndrome_score = self._syndrome_decoder_score(candidate)
+        repair_bias = self.context.metrics.repair_pathway_bias
+        repair_adjustment = 1.1 if repair_bias == "HDR" else 1.0 # HDR is more precise
 
         novelty = _clip(
-            0.12
+            (0.12
             + 0.18 * cross_domain_bonus
             + 0.12 * (1.0 - causal_support)
             + 0.12 * min(theme_overlap * 1.5, 1.0)
             + 0.20 * _clip(braid_novelty / 3.0)
             + 0.20 * information_density
-            + 0.18 * regime_bonus
+            + 0.18 * regime_bonus) * repair_adjustment
         )
 
         plausibility = _clip(
@@ -563,6 +619,7 @@ class AutonomousHypothesisEngine:
             + 0.12 * stability
             + 0.08 * quantum_metrics.stable_interference.constructive_fraction
             + 0.07 * regime_bonus
+            + 0.10 * syndrome_score
         )
 
         interference_gain = _clip(

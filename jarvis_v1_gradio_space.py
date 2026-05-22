@@ -35,6 +35,7 @@ except ImportError:
 from src.quantum_llm.quantum_transformer import QuantumTransformer
 from src.quantum_llm.jarvis_interface import JarvisQuantumLLM
 from src.thought_compression.tcl_engine import ThoughtCompressionEngine
+from src.bio_knowledge.qec_crispr_adapter import QECCRISPRKnowledgeAdapter
 
 
 class JarvisOracleInference:
@@ -54,6 +55,7 @@ class JarvisOracleInference:
         self.tokenizer = None
         self.tcl_engine = None
         self.adapters = {}
+        self.python_adapters = []
         self.tcl_seeds = {}
         
         # Load everything
@@ -61,8 +63,17 @@ class JarvisOracleInference:
         self._load_tokenizer()
         self._load_tcl_engine()
         self._load_adapters()
+        self._load_python_adapters()
         
         print("✅ Jarvis Oracle inference engine initialized")
+    
+    def _load_python_adapters(self):
+        """Load Python-based knowledge adapters"""
+        try:
+            self.python_adapters.append(QECCRISPRKnowledgeAdapter())
+            print("✅ Loaded QECCRISPRKnowledgeAdapter")
+        except Exception as e:
+            print(f"⚠️ Failed to load Python adapters: {e}")
     
     def _load_config(self) -> Dict[str, Any]:
         """Load model configuration"""
@@ -160,8 +171,13 @@ class JarvisOracleInference:
             for adapter_file in adapters_dir.glob("*.json"):
                 with open(adapter_file, 'r') as f:
                     adapter_data = json.load(f)
-                    adapter_id = adapter_data['adapter']['adapter_id']
-                    self.adapters[adapter_id] = adapter_data
+                    if 'adapter' in adapter_data:
+                        adapter_id = adapter_data['adapter'].get('id', adapter_data['adapter'].get('adapter_id', adapter_file.stem))
+                        self.adapters[adapter_id] = adapter_data
+                    else:
+                        # Fallback for differently structured adapters
+                        adapter_id = adapter_data.get('id', adapter_data.get('adapter_id', adapter_file.stem))
+                        self.adapters[adapter_id] = adapter_data
             
             print(f"✅ Loaded {len(self.adapters)} adapters")
         
@@ -202,30 +218,54 @@ class JarvisOracleInference:
         # Find relevant adapters
         relevant_adapters = self._find_relevant_adapters(query)
         
+        # Incorporate Python adapters context
+        python_context = ""
+        for adapter in self.python_adapters:
+            python_context += adapter.get_context_for_query(query) + " "
+        
         # Generate tokens
         generated_ids = self._sample_tokens(outputs[0], max_tokens, temperature, coercion_strength)
         
         # Decode
         response_text = self.tokenizer.decode(generated_ids)
         
+        # If query is about QEC/CRISPR, prepend python context (simplified integration)
+        if "qec" in query.lower() or "crispr" in query.lower():
+            response_text = f"[2024-2026 Research Context: {python_context.strip()}] " + response_text
+        
         # Compute quantum metrics
-        quantum_metrics = self._compute_quantum_metrics(outputs, coercion_strength)
+        quantum_metrics = self._compute_quantum_metrics(outputs, coercion_strength, query)
         
         # Add adapter info
-        quantum_metrics['adapters_used'] = len(relevant_adapters)
-        quantum_metrics['adapter_names'] = [
-            self.adapters[aid]['book_title'] for aid in relevant_adapters[:3]
-        ] if relevant_adapters else []
+        quantum_metrics['adapters_used'] = len(relevant_adapters) + len(self.python_adapters)
+        adapter_names = []
+        for aid in relevant_adapters[:3]:
+            adapter_data = self.adapters[aid]
+            if 'book_title' in adapter_data:
+                adapter_names.append(adapter_data['book_title'])
+            elif 'adapter' in adapter_data and 'parameters' in adapter_data['adapter'] and 'book_title' in adapter_data['adapter']['parameters']:
+                adapter_names.append(adapter_data['adapter']['parameters']['book_title'])
+            else:
+                adapter_names.append(aid)
+        
+        adapter_names.extend([a.title for a in self.python_adapters])
+        quantum_metrics['adapter_names'] = adapter_names
         
         return response_text, quantum_metrics
-    
+
     def _find_relevant_adapters(self, query: str) -> List[str]:
         """Find adapters relevant to query"""
         query_lower = query.lower()
         relevant = []
         
         for adapter_id, adapter_data in self.adapters.items():
-            title = adapter_data['book_title'].lower()
+            if 'book_title' in adapter_data:
+                title = adapter_data['book_title'].lower()
+            elif 'adapter' in adapter_data and 'parameters' in adapter_data['adapter'] and 'book_title' in adapter_data['adapter']['parameters']:
+                title = adapter_data['adapter']['parameters']['book_title'].lower()
+            else:
+                title = adapter_id.lower()
+            
             # Simple keyword matching
             if any(word in title for word in query_lower.split()):
                 relevant.append(adapter_id)
@@ -240,36 +280,59 @@ class JarvisOracleInference:
         """Sample tokens from model output"""
         tokens = []
         
+        # Ensure we have (seq_len, vocab_size) by taking the first batch
+        if len(logits.shape) == 3:
+            logits = logits[0]
+            
+        # Take the last token's logits
+        if len(logits.shape) == 2:
+            logits = logits[-1]
+        
         # Apply temperature and coercion
         adjusted_logits = logits * (1.0 + coercion) / temperature
         
         # Sample tokens (simplified)
-        for _ in range(max_tokens):
+        for i in range(max_tokens):
             # Get probabilities
-            probs = np.exp(adjusted_logits) / np.sum(np.exp(adjusted_logits))
+            # Use stable softmax
+            exp_logits = np.exp(adjusted_logits - np.max(adjusted_logits))
+            probs = exp_logits / np.sum(exp_logits)
             
             # Sample
             token = np.random.choice(len(probs), p=probs)
             tokens.append(int(token))
             
             # Stop at end token
-            if token == 3:  # <EOS>
+            if token == 1:  # <EOS> is 1 in SimpleTokenizer
                 break
         
         return tokens
-    
+
     def _compute_quantum_metrics(self, 
-                                outputs: np.ndarray, 
-                                coercion: float) -> Dict[str, Any]:
+                                outputs: Tuple[np.ndarray, Dict[str, Any]], 
+                                coercion: float,
+                                query: str = "") -> Dict[str, Any]:
         """Compute quantum state metrics"""
+        logits, layer_metrics = outputs
+        
         # Get quantum coherence from model
         coherence = self.model.get_quantum_coherence()
         
         # Compute entanglement (simplified)
-        entanglement = np.mean(np.abs(outputs)) * (1.0 + coercion)
+        entanglement = np.mean(np.abs(logits)) * (1.0 + coercion)
         
         # Compute interference strength
-        interference = float(np.std(outputs))
+        interference = float(np.std(logits))
+        
+        # Compute Braid Entropy and Novelty (from Python adapters)
+        braid_entropy = 0.0
+        novelty_regime = "Regime I (Baseline Topological Noise)"
+        
+        if self.python_adapters:
+            # Aggregate from first python adapter for now
+            adapter = self.python_adapters[0]
+            braid_entropy = adapter.compute_braid_entropy(query)
+            novelty_regime = adapter.get_novelty_regime(braid_entropy)
         
         # Time coercion shift
         time_shift = coercion * 100  # Arbitrary units
@@ -278,6 +341,8 @@ class JarvisOracleInference:
             'coherence': float(coherence),
             'entanglement': float(entanglement),
             'interference': interference,
+            'braid_entropy': braid_entropy,
+            'novelty_regime': novelty_regime,
             'time_coercion_shift': time_shift,
             'coercion_applied': coercion
         }
@@ -363,6 +428,8 @@ class DemoInferenceEngine:
             'coherence': 0.650 + np.random.rand() * 0.1,
             'entanglement': 0.420 + np.random.rand() * 0.1,
             'interference': 0.180 + np.random.rand() * 0.05,
+            'braid_entropy': 0.450 + np.random.rand() * 0.2,
+            'novelty_regime': 'Regime II (Emergent Constructive Interference)',
             'time_coercion_shift': coercion_strength * 100,
             'coercion_applied': coercion_strength,
             'adapters_used': 3,
@@ -396,6 +463,8 @@ def gradio_interface(query: str, coercion: float, temperature: float) -> Tuple[s
 - **Coherence**: {metrics['coherence']:.4f} (quantum state purity)
 - **Entanglement**: {metrics['entanglement']:.4f} (information correlation)
 - **Interference**: {metrics['interference']:.4f} (wave superposition strength)
+- **Braid Entropy**: {metrics.get('braid_entropy', 0.0):.4f} (topological complexity)
+- **Novelty Regime**: {metrics.get('novelty_regime', 'N/A')}
 - **Time Coercion Shift**: {metrics['time_coercion_shift']:.2f} units (probability forcing)
 - **Coercion Applied**: {metrics['coercion_applied']:.2f}
 

@@ -118,7 +118,8 @@ class QuantumAttention:
         query: np.ndarray, 
         key: np.ndarray, 
         value: np.ndarray,
-        mask: Optional[np.ndarray] = None
+        mask: Optional[np.ndarray] = None,
+        repair_bias: float = 1.0
     ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """
         Compute quantum attention scores
@@ -128,6 +129,7 @@ class QuantumAttention:
             key: Key vectors [batch, seq_len, d_model]
             value: Value vectors [batch, seq_len, d_model]
             mask: Optional attention mask
+            repair_bias: Tier-2 biological repair bias factor (HDR=1.1, NHEJ=1.0)
             
         Returns:
             Tuple of (attention_output, attention_weights, quantum_metrics)
@@ -145,28 +147,29 @@ class QuantumAttention:
         v = value_reshaped.transpose(0, 2, 1, 3)
         
         # Apply quantum rotation gates
-        rotated_query = np.zeros_like(q)
-        rotated_key = np.zeros_like(k)
+        # Vectorized rotation for all heads
+        # self.rotation_matrices is a list of [head_dim, head_dim]
+        # We can stack them to [n_heads, head_dim, head_dim]
+        stacked_rotations = np.stack(self.rotation_matrices) # [n_heads, d, d]
         
-        for head in range(self.n_heads):
-            rotated_query[:, head] = q[:, head] @ self.rotation_matrices[head].T
-            rotated_key[:, head] = k[:, head] @ self.rotation_matrices[head].T
+        # q: [batch, n_heads, seq_len, head_dim]
+        # stacked_rotations: [n_heads, head_dim, head_dim]
+        # Result: [batch, n_heads, seq_len, head_dim]
+        rotated_query = np.einsum('b h s d, h r d -> b h s r', q, stacked_rotations)
+        rotated_key = np.einsum('b h s d, h r d -> b h s r', k, stacked_rotations)
         
         # Compute quantum attention scores using complex-valued inner product
         # Convert to complex domain for quantum interference
         query_complex = rotated_query.astype(np.complex128)
         key_complex = rotated_key.astype(np.complex128)
         
-        # Quantum attention: complex inner product
-        attention_scores = np.zeros((batch_size, self.n_heads, seq_len, seq_len), dtype=np.complex128)
+        # Optimized batched complex inner product using einsum
+        # [batch, n_heads, seq_len, head_dim] x [batch, n_heads, seq_len, head_dim] -> [batch, n_heads, seq_len, seq_len]
+        attention_scores = np.einsum('bhqd,bhkd->bhqk', query_complex, key_complex.conj())
         
-        for b in range(batch_size):
-            for h in range(self.n_heads):
-                # Matrix multiplication in complex domain
-                attention_scores[b, h] = query_complex[b, h] @ key_complex[b, h].conj().T
-        
-        # Scale scores
-        attention_scores = attention_scores / self.temperature
+        # Scale scores and apply biological repair bias
+        # Higher bias (HDR) focuses the attention distribution (sharper interference)
+        attention_scores = (attention_scores / self.temperature) * repair_bias
         
         # Apply mask if provided
         if mask is not None:
@@ -181,11 +184,9 @@ class QuantumAttention:
         attention_weights_real = np.abs(attention_weights_complex)
         attention_weights_real = attention_weights_real / (np.sum(attention_weights_real, axis=-1, keepdims=True) + 1e-10)
         
-        # Apply attention to values
-        output_complex = np.zeros_like(v, dtype=np.complex128)
-        for b in range(batch_size):
-            for h in range(self.n_heads):
-                output_complex[b, h] = attention_weights_real[b, h] @ v[b, h].astype(np.complex128)
+        # Optimized batched application of attention weights to values
+        # [batch, n_heads, seq_len, seq_len] x [batch, n_heads, seq_len, head_dim] -> [batch, n_heads, seq_len, head_dim]
+        output_complex = np.einsum('bhqk,bhkd->bhqd', attention_weights_real, v.astype(np.complex128))
         
         # Take real part for final output
         out = np.real(output_complex)
@@ -199,7 +200,9 @@ class QuantumAttention:
             "coherence": self._compute_coherence(attention_weights_real),
             "entanglement": self._compute_entanglement(attention_weights_real),
             "interference": self._compute_interference(attention_weights_complex),
-            "quantum_fidelity": self._compute_fidelity(attention_weights_real)
+            "quantum_fidelity": self._compute_fidelity(attention_weights_real),
+            # New for Tier-2: Per-batch interference for syndrome decoding
+            "batch_interference": self._compute_batch_interference(attention_weights_complex)
         }
 
         # Store cache for backward pass
@@ -228,16 +231,12 @@ class QuantumAttention:
         weights = self.cache["attention_weights_real"]
         
         # dL/dv = weights.T @ grad_output
-        grad_v = np.zeros_like(v)
-        for b in range(batch_size):
-            for h in range(n_heads):
-                grad_v[b, h] = weights[b, h].T @ grad_output[b, h]
+        # weights: [batch, n_heads, seq_len, seq_len]
+        # grad_output: [batch, n_heads, seq_len, head_dim]
+        grad_v = np.einsum('b h k s, b h s d -> b h k d', weights, grad_output)
         
         # dL/dweights = grad_output @ v.T
-        grad_weights = np.zeros_like(weights)
-        for b in range(batch_size):
-            for h in range(n_heads):
-                grad_weights[b, h] = grad_output[b, h] @ v[b, h].T
+        grad_weights = np.einsum('b h s d, b h k d -> b h s k', grad_output, v)
                 
         # dL/dscores (simplified for real part of exp)
         # S = softmax(scores) -> dL/dscores = S * (grad_weights - sum(S * grad_weights))
@@ -246,19 +245,17 @@ class QuantumAttention:
         
         # dL/dq = grad_scores @ k
         # dL/dk = grad_scores.T @ q
-        grad_q_rotated = np.zeros_like(q)
-        grad_k_rotated = np.zeros_like(k)
-        for b in range(batch_size):
-            for h in range(n_heads):
-                grad_q_rotated[b, h] = grad_scores[b, h] @ self.cache["rotated_key"][b, h]
-                grad_k_rotated[b, h] = grad_scores[b, h].T @ self.cache["rotated_query"][b, h]
+        # grad_scores: [batch, n_heads, seq_len, seq_len]
+        # rotated_key: [batch, n_heads, seq_len, head_dim]
+        grad_q_rotated = np.einsum('b h q k, b h k d -> b h q d', grad_scores, self.cache["rotated_key"])
+        grad_k_rotated = np.einsum('b h q k, b h q d -> b h k d', grad_scores, self.cache["rotated_query"])
         
         # Backprop through rotations
-        grad_q = np.zeros_like(q)
-        grad_k = np.zeros_like(k)
-        for h in range(n_heads):
-            grad_q[:, h] = grad_q_rotated[:, h] @ self.rotation_matrices[h]
-            grad_k[:, h] = grad_k_rotated[:, h] @ self.rotation_matrices[h]
+        stacked_rotations = np.stack(self.rotation_matrices) # [n_heads, head_dim, head_dim]
+        # grad_q_rotated: [batch, n_heads, seq_len, head_dim]
+        # stacked_rotations: [n_heads, head_dim, head_dim]
+        grad_q = np.einsum('b h s r, h r d -> b h s d', grad_q_rotated, stacked_rotations)
+        grad_k = np.einsum('b h s r, h r d -> b h s d', grad_k_rotated, stacked_rotations)
             
         # Reshape back
         grad_q = grad_q.transpose(0, 2, 1, 3).reshape(batch_size, seq_len, -1)
@@ -309,17 +306,25 @@ class QuantumAttention:
         """
         Compute quantum interference from complex attention weights
         """
+        batch_interference = self._compute_batch_interference(weights_complex)
+        return float(np.mean(batch_interference))
+    
+    def _compute_batch_interference(self, weights_complex: np.ndarray) -> np.ndarray:
+        """
+        Compute per-batch quantum interference
+        """
         # Measure phase coherence
         phases = np.angle(weights_complex)
         
-        # Compute circular variance
-        mean_cos = np.mean(np.cos(phases))
-        mean_sin = np.mean(np.sin(phases))
+        # Compute circular variance per batch item
+        # weights_complex: [batch, n_heads, seq_len, seq_len]
+        mean_cos = np.mean(np.cos(phases), axis=(1, 2, 3))
+        mean_sin = np.mean(np.sin(phases), axis=(1, 2, 3))
         
         circular_variance = 1.0 - np.sqrt(mean_cos**2 + mean_sin**2)
         interference = 1.0 - circular_variance
         
-        return float(interference)
+        return interference
     
     def _compute_fidelity(self, weights: np.ndarray) -> float:
         """

@@ -1,0 +1,96 @@
+{
+  "id": "adapter_422693ce",
+  "task_tags": [
+    "classical_physics",
+    "late_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "classical_physics",
+    "era": "late_1800s",
+    "era_range": [
+      1861,
+      1890
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_maxwell_1873_em_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/maxwell_1873_em_epoch1.json",
+      "symbol_count": 13,
+      "year": 1873,
+      "author": "James Clerk Maxwell",
+      "title": "A Treatise on Electricity and Magnetism"
+    },
+    "book_maxwell_1873_em_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/maxwell_1873_em_epoch2.json",
+      "symbol_count": 13,
+      "year": 1873,
+      "author": "James Clerk Maxwell",
+      "title": "A Treatise on Electricity and Magnetism"
+    },
+    "book_maxwell_1873_em_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/maxwell_1873_em_epoch3.json",
+      "symbol_count": 13,
+      "year": 1873,
+      "author": "James Clerk Maxwell",
+      "title": "A Treatise on Electricity and Magnetism"
+    }
+  },
+  "rules": [
+    "For questions about classical_physics in late_1800s, recall: A Treatise on Electricity and Magnetism [13 TCL symbols available]",
+    "For questions about classical_physics in late_1800s, recall: A Treatise on Electricity and Magnetism [13 TCL symbols available]",
+    "For questions about classical_physics in late_1800s, recall: A Treatise on Electricity and Magnetism [13 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: A Treatise on Electricity and Magnetism by James Clerk Maxwell (1873) - electromagnetic, radiation, physics",
+    "Historical knowledge: A Treatise on Electricity and Magnetism by James Clerk Maxwell (1873) - electromagnetic, radiation, physics",
+    "Historical knowledge: A Treatise on Electricity and Magnetism by James Clerk Maxwell (1873) - electromagnetic, radiation, physics"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.102667,
+  "last_used": 1768522729.2245722,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

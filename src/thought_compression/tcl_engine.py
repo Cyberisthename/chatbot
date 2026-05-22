@@ -158,6 +158,38 @@ class ThoughtCompressionEngine:
             'conceptual_density': self._calculate_density(compressed_symbols),
             'cognitive_weight': sum(symbol.cognitive_weight for symbol in compressed_symbols) / len(compressed_symbols)
         }
+
+    def compress_ensemble(self, session_id: str, ensemble_name: str, concepts: List[str]) -> Dict[str, Any]:
+        """Compress an ensemble of concepts into a redundant TCL symbol"""
+        if session_id not in self.sessions:
+            raise ValueError(f"Session {session_id} not found")
+            
+        context = self.sessions[session_id]
+        
+        member_symbols = []
+        for concept in concepts:
+            member_symbols.extend(self._decompose_concept(concept, context))
+            
+        # Create an ensemble symbol
+        ensemble_id = f"ensemble_{hash(ensemble_name)}"
+        ensemble_symbol = TCLSymbol(
+            id=ensemble_id,
+            name=ensemble_name.replace(" ", "_"),
+            type=SymbolType.ENSEMBLE,
+            definition=f"Ensemble of: {', '.join(concepts)}",
+            relationships={s.name: 0.9 for s in member_symbols},
+            causal_links=[],
+            compression_ratio=0.8, # High initial compression due to redundancy
+            cognitive_weight=0.9
+        )
+        context.symbols.add_symbol(ensemble_symbol)
+        
+        return {
+            'ensemble_name': ensemble_name,
+            'ensemble_symbol_id': ensemble_id,
+            'member_count': len(concepts),
+            'redundancy_factor': len(member_symbols) / max(len(concepts), 1)
+        }
     
     def generate_causal_chain(self, session_id: str, cause_symbol: str, depth: int = 5) -> Dict[str, Any]:
         """Generate causal chains starting from a cause symbol"""

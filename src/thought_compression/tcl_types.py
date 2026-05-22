@@ -18,6 +18,7 @@ class CognitiveMetrics:
     cognitive_load: float = 0.0
     thinking_speed: float = 0.0
     abstract_reasoning_score: float = 0.0
+    repair_pathway_bias: str = "NHEJ"  # "NHEJ" or "HDR"
 
 @dataclass 
 class TCLExecutionContext:

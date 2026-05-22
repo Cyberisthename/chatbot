@@ -1,0 +1,96 @@
+{
+  "id": "adapter_92cb90fe",
+  "task_tags": [
+    "disease_pathology",
+    "late_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "disease_pathology",
+    "era": "late_1800s",
+    "era_range": [
+      1861,
+      1890
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_pasteur_1878_germ_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/pasteur_1878_germ_epoch1.json",
+      "symbol_count": 12,
+      "year": 1878,
+      "author": "Louis Pasteur",
+      "title": "The Germ Theory and Its Applications to Medicine and Surgery"
+    },
+    "book_pasteur_1878_germ_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/pasteur_1878_germ_epoch2.json",
+      "symbol_count": 12,
+      "year": 1878,
+      "author": "Louis Pasteur",
+      "title": "The Germ Theory and Its Applications to Medicine and Surgery"
+    },
+    "book_pasteur_1878_germ_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/pasteur_1878_germ_epoch3.json",
+      "symbol_count": 12,
+      "year": 1878,
+      "author": "Louis Pasteur",
+      "title": "The Germ Theory and Its Applications to Medicine and Surgery"
+    }
+  },
+  "rules": [
+    "For questions about disease_pathology in late_1800s, recall: The Germ Theory and Its Applications to Medicine and Surgery [12 TCL symbols available]",
+    "For questions about disease_pathology in late_1800s, recall: The Germ Theory and Its Applications to Medicine and Surgery [12 TCL symbols available]",
+    "For questions about disease_pathology in late_1800s, recall: The Germ Theory and Its Applications to Medicine and Surgery [12 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: The Germ Theory and Its Applications to Medicine and Surgery by Louis Pasteur (1878) - medicine, disease, chemistry",
+    "Historical knowledge: The Germ Theory and Its Applications to Medicine and Surgery by Louis Pasteur (1878) - medicine, disease, chemistry",
+    "Historical knowledge: The Germ Theory and Its Applications to Medicine and Surgery by Louis Pasteur (1878) - medicine, disease, chemistry"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.1184924,
+  "last_used": 1768522729.237852,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

@@ -1,0 +1,96 @@
+{
+  "id": "adapter_62ef19e4",
+  "task_tags": [
+    "cell_biology",
+    "late_1800s",
+    "historical_knowledge"
+  ],
+  "y_bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "z_bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "x_bits": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "parameters": {
+    "topic": "cell_biology",
+    "era": "late_1800s",
+    "era_range": [
+      1861,
+      1890
+    ],
+    "books": {},
+    "created_from_training": true,
+    "book_mendel_1866_genetics_epoch1": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/mendel_1866_genetics_epoch1.json",
+      "symbol_count": 7,
+      "year": 1866,
+      "author": "Gregor Mendel",
+      "title": "Experiments in Plant Hybridization"
+    },
+    "book_mendel_1866_genetics_epoch2": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/mendel_1866_genetics_epoch2.json",
+      "symbol_count": 7,
+      "year": 1866,
+      "author": "Gregor Mendel",
+      "title": "Experiments in Plant Hybridization"
+    },
+    "book_mendel_1866_genetics_epoch3": {
+      "tcl_seed_path": "jarvis_historical_knowledge/tcl_seeds/mendel_1866_genetics_epoch3.json",
+      "symbol_count": 7,
+      "year": 1866,
+      "author": "Gregor Mendel",
+      "title": "Experiments in Plant Hybridization"
+    }
+  },
+  "rules": [
+    "For questions about cell_biology in late_1800s, recall: Experiments in Plant Hybridization [7 TCL symbols available]",
+    "For questions about cell_biology in late_1800s, recall: Experiments in Plant Hybridization [7 TCL symbols available]",
+    "For questions about cell_biology in late_1800s, recall: Experiments in Plant Hybridization [7 TCL symbols available]"
+  ],
+  "prompts": [
+    "Historical knowledge: Experiments in Plant Hybridization by Gregor Mendel (1866) - evolution, biology, genetics",
+    "Historical knowledge: Experiments in Plant Hybridization by Gregor Mendel (1866) - evolution, biology, genetics",
+    "Historical knowledge: Experiments in Plant Hybridization by Gregor Mendel (1866) - evolution, biology, genetics"
+  ],
+  "parent_ids": [],
+  "child_ids": [],
+  "created_at": 1768522729.0976057,
+  "last_used": 1768522729.2207134,
+  "success_count": 3,
+  "total_calls": 3,
+  "domains": [],
+  "status": "active",
+  "version": 1
+}

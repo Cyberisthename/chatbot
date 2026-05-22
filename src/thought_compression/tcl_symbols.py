@@ -19,6 +19,7 @@ class SymbolType(Enum):
     CAUSALITY = "causality"      # Causal relationships
     CONSTRAINT = "constraint"    # Logical constraints
     ACTION = "action"           # Executable operations
+    ENSEMBLE = "ensemble"       # Group of redundant symbols
     META = "meta"               # Self-referential
 
 @dataclass
