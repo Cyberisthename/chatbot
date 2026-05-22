@@ -113,7 +113,7 @@ class CrisprFalsificationSimulator:
         self.base_seed = base_seed
         self.engine = engine or AutonomousHypothesisEngine(inference_cycles=inference_cycles)
         self.base_observations = self.engine.load_observations_from_json(
-            Path("demos/modern_research_observations.json")
+            Path("research_data/modern_research_observations.json")
         )
         self.qec_observation = next(obs for obs in self.base_observations if obs.id == "qec_surface_code")
         self.candidate = CandidateHypothesis(

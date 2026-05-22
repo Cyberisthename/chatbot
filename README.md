@@ -8,7 +8,7 @@
 
 ## ✨ What's Included
 
-### 🧬 Quantum Cancer Research Demo
+### 🧬 Quantum Cancer Research Interface
 - Time-entangled quantum computation on cancer cells
 - Post-selection experiments with retroactive cure shifts
 - Multiverse-parallel virtual cell simulations
@@ -43,8 +43,8 @@ Or use the web UI to upload these files:
 - `requirements.txt` (dependencies)
 - `README.md` (this file)
 - `src/` folder (all source code)
-- `gradio_quantum_cancer_demo.py` (cancer demo)
-- `jarvis_v1_gradio_space.py` (jarvis demo)
+- `gradio_quantum_cancer_demo.py` (cancer research interface)
+- `jarvis_v1_gradio_space.py` (jarvis research interface)
 
 ### 3. That's It! 🎉
 Hugging Face automatically builds and deploys your Space. Access it at:
@@ -91,7 +91,7 @@ https://huggingface.co/spaces/YOUR_USERNAME/jarvis-quantum-ai
 - **Interference**: Complex inner products
 - **TCL Compression**: Real semantic hashing
 
-### What's Demo ⚠️
+### Simulation Scope ⚠️
 - **Cancer experiments**: Scientifically-grounded simulation
 - **Model outputs**: Limited training data (synthetic for testing)
 - **Clinical predictions**: Not for medical advice
@@ -117,8 +117,8 @@ This is a **scientific research platform** for educational purposes:
 │   ├── quantum_llm/              # Quantum LLM
 │   └── thought_compression/      # TCL engine
 │
-├── gradio_quantum_cancer_demo.py  # Cancer demo ⭐
-├── jarvis_v1_gradio_space.py     # Jarvis demo ⭐
+├── gradio_quantum_cancer_demo.py  # Cancer research interface ⭐
+├── jarvis_v1_gradio_space.py     # Jarvis research interface ⭐
 │
 ├── README_HF.md                   # HF docs
 ├── DEPLOYMENT_GUIDE.md            # Deployment guide
@@ -130,7 +130,7 @@ This is a **scientific research platform** for educational purposes:
 
 ---
 
-## 🧪 Using the Demos
+## 🧪 Using the Research Interfaces
 
 ### Cancer Research
 1. Select a cancer gene (PIK3CA, TP53, KRAS, EGFR, BRAF)
