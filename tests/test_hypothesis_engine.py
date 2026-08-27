@@ -12,7 +12,7 @@ from src.research import AutonomousHypothesisEngine
 class TestAutonomousHypothesisEngine(unittest.TestCase):
     def setUp(self):
         self.engine = AutonomousHypothesisEngine(inference_cycles=4)
-        self.data_path = Path(__file__).resolve().parents[1] / "demos" / "modern_research_observations.json"
+        self.data_path = Path(__file__).resolve().parents[1] / "research_data" / "modern_research_observations.json"
         self.observations = self.engine.load_observations_from_json(self.data_path)
 
     def test_load_observations(self):
