@@ -139,8 +139,7 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# mkdocs documentation (site/ is now the TanStack Start web app — see site/.gitignore)
 
 # mypy
 .mypy_cache/
