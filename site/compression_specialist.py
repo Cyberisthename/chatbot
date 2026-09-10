@@ -178,6 +178,7 @@ class FractalBraidSeedCompressor:
             "effective_qubits": self.n,
             "effective_qudits": self.n,
             "qudit_dimension": 2,
+            "qudit_dim": 2,  # alias for downstream consumers (variational_seed_optimizer)
             "qudit_basis": "qubit",
             "total_hilbert_dim": int(2 ** self.n),
             # Honest exponential compression: dense Hilbert entries (2^N complex
@@ -259,6 +260,7 @@ class FractalBraidSeedCompressor:
             "effective_qudits": self.n,
             "effective_qubits": self.n,  # kept for v1 consumers (logical unit count)
             "qudit_dimension": d,
+            "qudit_dim": d,  # alias for downstream consumers (variational_seed_optimizer)
             "qudit_basis": self.QUDIT_NAMES.get(d, f"d={d}"),
             "total_hilbert_dim": int(total_hilbert),
             # Honest exponential compression: dense Hilbert entries (d^N complex
