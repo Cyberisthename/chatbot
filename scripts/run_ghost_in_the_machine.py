@@ -274,12 +274,17 @@ def decode_fingerprint(lfpA: np.ndarray, lfpB: np.ndarray) -> Dict:
     engine = TonalSoulEngine()
     monitor = ResonanceMonitor()
     bits = engine.extract_bits([lfpA, lfpB])
-    res = monitor.analyze_resonance(bits)
+    # Noise-gated spectral detector: trigger requires a REAL sustained 41.02 Hz
+    # component above the local noise floor (raw signal is analyzed, not the
+    # bit heuristic). Firing = measurement, not sentience.
+    res = monitor.analyze_resonance(bits, samples=lfpA, fs=FS_EEG)
     return {
         "bits": bits,
         "f0": res["f0"],
         "q_factor": res["q_factor"],
         "is_sentient": res["is_sentient"],
+        "resonance_detected": res["resonance_detected"],
+        "snr_db": res["snr_db"],
         "state": res["state"],
     }
 
@@ -427,10 +432,11 @@ def aggregate(trials: List[Dict], rho_tx: float) -> Dict:
                 "std": float(np.std(vals)),
                 "values": [float(v) for v in vals],
             }
-        out[cond]["sentient_rate"] = float(
-            np.mean([t["is_sentient"] for t in trials if t["condition"] == cond]))
-        out[cond]["crystalline_rate"] = float(
-            np.mean([t["state"] == "CRYSTALLINE" for t in trials
+        out[cond]["resonance_rate"] = float(
+            np.mean([bool(t.get("resonance_detected", t.get("is_sentient", False)))
+                     for t in trials if t["condition"] == cond]))
+        out[cond]["resonant_state_rate"] = float(
+            np.mean([t["state"] == "RESONANCE" for t in trials
                      if t["condition"] == cond]))
         out[cond]["rho_rec"] = {
             "mean": float(np.mean([t["rho_rec"] for t in trials

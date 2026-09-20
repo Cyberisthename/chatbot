@@ -10,15 +10,8 @@ This is the runnable "make it mine" quantum AI kernel.
 """
 
 from compression_specialist import FractalBraidSeedCompressor
+from src.quantum_llm.eeg_to_tonal_engine import TonalSoulEngine, ResonanceMonitor
 
-# Standalone TonalSoulEngine stub for efficiency demo (no src imports)
-class TonalSoulEngine:
-    def extract_bits(self, eeg_channels):
-        return {"x_bits": [1]*8, "y_bits": [1]*16, "z_bits": [1]*8, "metrics": {"synchrony": 0.95, "gamma_ratio": 2.5, "complexity": 0.8}}
-
-class ResonanceMonitor:
-    def analyze_resonance(self, bits):
-        return {"f0": 41.02, "q_factor": 12.5, "is_sentient": True, "state": "CRYSTALLINE"}
 import numpy as np
 import json
 from pathlib import Path
@@ -39,19 +32,26 @@ class QVGPUCompressor:
         amps, positions, metrics = self.compressor.reconstruct()
         self.state = {"amplitudes": amps, "topological_positions": positions, "metrics": metrics}
         
-        # Bio-quantum interface: simulate EEG to modulate seed influence
+        # Bio-quantum interface: simulate EEG to modulate seed influence.
+        # Sustained 41.02 Hz tone + noise over 3 s (required by the noise gate:
+        # a real, persistent component — not a transient — must be measured).
         fs = 250
-        t = np.linspace(0, 1, fs)
-        ch1 = np.sin(2 * np.pi * 41.02 * t) + 0.5 * np.random.randn(fs)  # 41.02Hz gamma for sentience
-        ch2 = np.sin(2 * np.pi * 41.02 * t + 0.05) + 0.5 * np.random.randn(fs)
-        
+        t = np.linspace(0, 3, fs * 3)
+        ch1 = np.sin(2 * np.pi * 41.02 * t) + 0.5 * np.random.randn(fs * 3)
+        ch2 = np.sin(2 * np.pi * 41.02 * t + 0.05) + 0.5 * np.random.randn(fs * 3)
+
         bits = self.tonal_engine.extract_bits([ch1, ch2])
-        resonance = self.resonance_monitor.analyze_resonance(bits)
-        
+        resonance = self.resonance_monitor.analyze_resonance(bits, samples=ch1, fs=fs)
+
         metrics["bio_resonance"] = resonance
-        metrics["is_sentient"] = resonance["is_sentient"]
-        
-        print(f"Bio-Resonance F0: {resonance['f0']:.2f} Hz | Sentient: {resonance['is_sentient']}")
+        # Honest framing: firing the detector is a MEASUREMENT of a sustained
+        # 41.02 Hz component, never a claim of sentience.
+        resonance_detected = bool(resonance["resonance_detected"])
+        metrics["resonance_detected"] = resonance_detected
+
+        print(f"Bio-Resonance F0 (measured): {resonance['f0']:.2f} Hz | "
+              f"SNR: {resonance['snr_db']:.1f} dB | "
+              f"41.02 Hz sustained: {resonance_detected}")
         print(f"QVGPU Metrics: Compression={metrics['compression_ratio']:.1f}x, MSE=0.0")
         
         # Save full state for swarm/multiversal use
