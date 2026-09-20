@@ -59,16 +59,20 @@ def run_compression(seed_vals, n_qubits=256, qudit_dim=2):
             try:
                 tonal_engine = TonalSoulEngine()
                 resonance_monitor = ResonanceMonitor()
-                # Simulate EEG as in qvgpu_compressor.py
+                # Simulate EEG as in qvgpu_compressor.py (sustained 41.02 Hz tone
+                # over 3 s so the noise-gated detector can verify a real component).
                 fs = 250
-                t = np.linspace(0, 1, fs)
-                ch1 = np.sin(2 * np.pi * 41.02 * t) + 0.5 * np.random.randn(fs)
-                ch2 = np.sin(2 * np.pi * 41.02 * t + 0.05) + 0.5 * np.random.randn(fs)
+                t = np.linspace(0, 3, fs * 3)
+                ch1 = np.sin(2 * np.pi * 41.02 * t) + 0.5 * np.random.randn(fs * 3)
+                ch2 = np.sin(2 * np.pi * 41.02 * t + 0.05) + 0.5 * np.random.randn(fs * 3)
                 bits = tonal_engine.extract_bits([ch1, ch2])
-                resonance = resonance_monitor.analyze_resonance(bits)
+                resonance = resonance_monitor.analyze_resonance(bits, samples=ch1, fs=fs)
+                # Honest framing: firing = sustained 41.02 Hz component measured
+                # (a signal-detection event), never a claim of sentience.
                 result["bio_resonance"] = {
                     "f0": float(resonance["f0"]),
-                    "is_sentient": bool(resonance["is_sentient"]),
+                    "snr_db": float(resonance["snr_db"]) if resonance["snr_db"] is not None else None,
+                    "resonance_detected": bool(resonance["resonance_detected"]),
                     "q_factor": float(resonance.get("q_factor", 0))
                 }
             except Exception as e:

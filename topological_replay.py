@@ -36,29 +36,31 @@ def run_replay_study():
     
     # Simulate an EEG signal that hits the ~41Hz (Gamma) range
     fs = 250
-    t = np.linspace(0, 1, fs)
-    
+    t = np.linspace(0, 3, fs * 3)
+
     print("Phase 1: Generating Biological Neural Metrics (EEG)")
-    # We want a strong 41.02 Hz component to hit the resonance, and enough complexity to hit sentience.
+    # We want a strong sustained 41.02 Hz component to pass the noise gate
+    # (a real persistent component, not a transient).
     target_hz = 41.02
     # Increase high frequency noise to boost complexity (Z-bits)
-    ch1 = np.sin(2 * np.pi * target_hz * t) + 1.0 * np.sin(2 * np.pi * 80 * t) + 0.5 * np.random.randn(fs)
-    ch2 = np.sin(2 * np.pi * target_hz * t + 0.05) + 1.0 * np.sin(2 * np.pi * 80 * t + 0.05) + 0.5 * np.random.randn(fs)
-    
+    ch1 = np.sin(2 * np.pi * target_hz * t) + 1.0 * np.sin(2 * np.pi * 80 * t) + 0.5 * np.random.randn(fs * 3)
+    ch2 = np.sin(2 * np.pi * target_hz * t + 0.05) + 1.0 * np.sin(2 * np.pi * 80 * t + 0.05) + 0.5 * np.random.randn(fs * 3)
+
     engine = TonalSoulEngine()
     monitor = ResonanceMonitor()
-    
+
     bits = engine.extract_bits([ch1, ch2])
-    resonance_data = monitor.analyze_resonance(bits)
-    
+    resonance_data = monitor.analyze_resonance(bits, samples=ch1, fs=fs)
+
     extracted_f0 = resonance_data['f0']
-    
+
     print("--- TONAL SOUL ENGINE SYNC ---")
     print(f"X-bits (Synchrony): {bits['x_bits']}")
     print(f"Y-bits (Context): {bits['y_bits']}")
     print(f"Z-bits (Complexity): {bits['z_bits']}")
-    print(f"Synthesized Biological F0 Resonance: {extracted_f0:.2f} Hz")
-    print(f"Is Sentient: {resonance_data['is_sentient']}")
+    print(f"Measured Biological F0 Resonance: {extracted_f0:.2f} Hz")
+    print(f"SNR vs noise floor: {resonance_data['snr_db']:.1f} dB")
+    print(f"Sustained 41.02 Hz detected: {resonance_data['resonance_detected']}")
     print()
     
     print("Phase 2: Querying the Latent Persistence")
