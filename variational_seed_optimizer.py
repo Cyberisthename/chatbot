@@ -491,6 +491,7 @@ def optimize_seed(
         "report": str(out / "seed_optimizer_report.json"),
         "plot": plot_path,
     }
+    _record_run_db(report, outdir)  # DB-optional provenance (never raises)
     return report
 
 
@@ -572,6 +573,42 @@ def _write_json(path: Path, obj) -> None:
             return o.tolist()
         raise TypeError(f"not serialisable: {type(o)}")
     path.write_text(json.dumps(obj, indent=2, default=_conv))
+
+
+def _record_run_db(report: dict, outdir) -> None:
+    """DB-optional provenance hook: record this optimizer run when a DB is
+    configured (DATABASE_URL env). Never raises — the deterministic FBSC core
+    and the optimizer run MUST NOT depend on the DB being present.
+    """
+    try:
+        import sys as _sys
+        _root = str(Path(__file__).resolve().parent)
+        if _root not in _sys.path:
+            _sys.path.insert(0, _root)
+        try:
+            from src.quantum_llm.db_store import get_store, objective_version
+        except ImportError:
+            if str(Path(_root) / "src") not in _sys.path:
+                _sys.path.insert(0, str(Path(_root) / "src"))
+            from quantum_llm.db_store import get_store, objective_version
+        store = get_store()
+        if not store.configured:
+            return
+        params = report.get("params", {}) or {}
+        mse = float((report.get("reconstruction") or {}).get("reconstruction_mse", 0.0))
+        run_id = store.record_run(
+            seed_triple=report.get("optimized_seed", []),
+            objective=report.get("objective", "combined"),
+            objective_version=objective_version(report.get("objective", "combined"), params),
+            mse=mse,
+            metrics=report,
+            source="variational_seed_optimizer",
+        )
+        if run_id:
+            print(f"[FBSC-VSO] db_store: recorded run {run_id} "
+                  f"(mse={mse}) -> {store.backend}")
+    except Exception as exc:  # pragma: no cover - DB-optional hook safety
+        print(f"[FBSC-VSO] db_store hook skipped (DB-optional): {exc}")
 
 
 def _plot_convergence(history, path: Path, objective: str,
