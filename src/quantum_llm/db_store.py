@@ -1,9 +1,13 @@
 """
-JARVIS database storage layer — run/state/experiment provenance (DB-optional).
+JARVIS database storage layer — run/state/experiment provenance (repo-local).
 
-Owned original code; stdlib-only core. Reads ``DATABASE_URL`` from the
-environment and provides a lazy, DB-optional store for:
+Owned original code; stdlib-only core. **Repo-local pivot (owner direction
+2026-09-22):** there is no external database — the store defaults to a
+repo-local ``jarvis.db`` SQLite file, needs no env vars, no credentials and
+no network. An explicit ``sqlite://...`` URL is accepted only as an override
+for tests/dev. Backends beyond SQLite were removed (no Postgres / psycopg2).
 
+Store contents:
 - runs:       one row per optimizer execution (seed triple, run_id hash,
               timestamp, objective version, reconstruction MSE, metrics JSON)
 - states:     optimized seeds + verified metrics (e.g. synced from
@@ -11,18 +15,12 @@ environment and provides a lazy, DB-optional store for:
 - experiments: provenance rows for anyon / validation / training experiments
               (id, kind, artifact path, verdict JSON)
 
-Backends
---------
-- ``sqlite:///path`` or ``sqlite:///:memory:``  -> stdlib sqlite3 (dev/tests)
-- ``postgres://...`` or ``postgresql://...``    -> psycopg2 (optional install:
-  ``pip install "psycopg2-binary>=2.9"``). The driver is imported lazily so the
-  module stays importable without it.
-
 Graceful degradation
 --------------------
-If ``DATABASE_URL`` is absent the store is in DISABLED state: ``configured`` is
-``False``, write calls are no-ops returning ``None`` (or raise a clear
-``DbNotConfiguredError`` when ``strict=True``), and nothing ever connects.
+If ``jarvis.db`` is missing it is created and migrated via the init SQL on
+first use (``sqlite3`` creates the file; ``init_db()`` creates the tables).
+The store is always configured; a DB write failure never blocks the
+deterministic FBSC core (the optimizer hook is wrapped and never raises).
 
 Honesty boundary
 ----------------
@@ -37,17 +35,18 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import sqlite3
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 log = logging.getLogger("quantum_llm.db_store")
 
-ENV_DATABASE_URL = "DATABASE_URL"
+# Repo-local default: <repo root>/jarvis.db (module lives in src/quantum_llm/,
+# so parents[2] is the repo root). No env vars, no credentials, no network.
+DEFAULT_DB_PATH = str(Path(__file__).resolve().parents[2] / "jarvis.db")
+DEFAULT_DB_URL = f"sqlite:///{DEFAULT_DB_PATH}"
 
 SCHEMA_VERSION = 1
 OBJECTIVE_VERSION_PREFIX = "v1"  # bump when the objective-space encoding changes
@@ -93,10 +92,6 @@ CREATE TABLE IF NOT EXISTS experiments (
 );
 CREATE INDEX IF NOT EXISTS idx_experiments_kind ON experiments (kind);
 """
-
-
-class DbNotConfiguredError(RuntimeError):
-    """Raised when a strict DB operation is requested but DATABASE_URL is absent."""
 
 
 def _now_iso() -> str:
@@ -174,27 +169,29 @@ def _trim_report(report: Dict[str, Any]) -> Dict[str, Any]:
 
 
 class DbStore:
-    """Lazy, DB-optional store. All ops are no-ops when not configured."""
+    """Lazy, repo-local SQLite store. Always configured (defaults to
+    ``<repo root>/jarvis.db``); an explicit ``sqlite://`` URL overrides the
+    default for tests/dev. No env vars, no credentials, no network.
+    """
 
     def __init__(self, database_url: Optional[str] = None):
-        self._url = database_url if database_url is not None else os.environ.get(ENV_DATABASE_URL)
+        self._url = database_url if database_url is not None else DEFAULT_DB_URL
         self._conn: Any = None
-        self._psycopg = None
-        self._backend: Optional[str] = None  # 'sqlite' | 'postgres' | None
+        self._backend: Optional[str] = None  # 'sqlite' | 'unsupported'
         self._last_insert_id: Optional[int] = None  # captured in _execute()
 
     # ------------------------------------------------------------------ state
     @property
     def configured(self) -> bool:
-        return bool(self._url)
+        # Always True: the store defaults to repo-local jarvis.db and is
+        # created+migrated on first use. Kept for the optimizer hook's guard.
+        return True
 
     @property
     def backend(self) -> Optional[str]:
-        if self._backend is None and self._url:
+        if self._backend is None:
             if self._url.startswith("sqlite://"):
                 self._backend = "sqlite"
-            elif self._url.startswith(("postgres://", "postgresql://")):
-                self._backend = "postgres"
             else:
                 self._backend = "unsupported"
         return self._backend
@@ -203,58 +200,31 @@ class DbStore:
     def database_url(self) -> Optional[str]:
         return self._url
 
-    def require_db(self) -> None:
-        """Raise with a clear message if no DATABASE_URL is configured."""
-        if not self._url:
-            raise DbNotConfiguredError(
-                "JARVIS DB store is DISABLED: DATABASE_URL is not set. "
-                "Set DATABASE_URL (postgres://... for Tiger Cloud / Postgres, "
-                "or sqlite:///path for local dev) to enable run/state/experiment "
-                "provenance. The FBSC core runs deterministically without it."
-            )
-
     # ---------------------------------------------------------------- connect
     def _connect(self):
         """Lazy connect: no connection is ever opened until first use."""
-        self.require_db()
         if self._conn is not None:
             return self._conn
-        backend = self.backend
-        if backend == "sqlite":
-            raw = self._url[len("sqlite://"):]
-            # Normalize: sqlite://, sqlite:///:memory: and sqlite://:memory:
-            # all mean an in-memory database in sqlite3 terms.
-            if raw in ("", "/:memory:", ":memory:"):
-                path = ":memory:"
-            else:
-                path = raw
-            self._conn = sqlite3.connect(path)
-            self._conn.row_factory = sqlite3.Row
-        elif backend == "postgres":
-            try:
-                import psycopg2  # type: ignore
-                self._psycopg = psycopg2
-            except ImportError as exc:  # pragma: no cover - driver absence path
-                raise RuntimeError(
-                    "DATABASE_URL points at Postgres (postgres://) but psycopg2 is "
-                    "not installed. Install it with: pip install \"psycopg2-binary>=2.9\", "
-                    "or point DATABASE_URL at sqlite:///... for local dev."
-                ) from exc
-            self._conn = self._psycopg.connect(self._url)
-            self._conn.row_factory = self._psycopg.extras.RealDictRow if hasattr(
-                self._psycopg, "extras") else None
-        else:
+        if not self._url.startswith("sqlite://"):
             raise ValueError(
-                f"Unsupported DATABASE_URL scheme for JARVIS DB store: "
-                f"{self._url!r}. Use sqlite:///... or postgres://... .")
+                f"Unsupported DB URL for JARVIS DB store: {self._url!r}. "
+                f"The repo-local pivot supports sqlite:// URLs only "
+                f"(default: {DEFAULT_DB_URL}).")
+        raw = self._url[len("sqlite://"):]
+        # Normalize: sqlite://, sqlite:///:memory: and sqlite://:memory:
+        # all mean an in-memory database in sqlite3 terms.
+        if raw in ("", "/:memory:", ":memory:"):
+            path = ":memory:"
+        else:
+            path = raw
+        self._conn = sqlite3.connect(path)
+        self._conn.row_factory = sqlite3.Row
         self.init_db()
         return self._conn
 
     def _q(self, sql: str) -> str:
         """Map %s placeholders to ? for sqlite (dialect portability)."""
-        if self.backend == "sqlite":
-            return sql.replace("%s", "?")
-        return sql
+        return sql.replace("%s", "?")
 
     def _execute(self, sql: str, params: tuple = ()):
         conn = self._connect()
@@ -299,19 +269,13 @@ class DbStore:
         metrics: Optional[Dict[str, Any]] = None,
         source: str = "unknown",
         started_at: Optional[str] = None,
-        strict: bool = False,
     ) -> Optional[str]:
-        """Insert one optimizer run. Returns run_id, or None if disabled.
+        """Insert one optimizer run and return its run_id.
 
-        ``strict=True`` raises DbNotConfiguredError when no DATABASE_URL is set;
-        the default is a safe no-op so the deterministic FBSC core never
-        depends on the DB.
+        The store is always configured (repo-local jarvis.db); a DB write
+        failure propagates, but the optimizer hook wraps this and never lets
+        the deterministic FBSC core depend on the DB.
         """
-        if not self.configured:
-            if strict:
-                self.require_db()
-            log.info("db_store disabled: run not recorded (DATABASE_URL unset)")
-            return None
         started_at = started_at or _now_iso()
         objective_version = objective_version or _objective_version_fn(objective)
         seed_json = _canonical_seed(seed_triple)
@@ -330,8 +294,6 @@ class DbStore:
 
     def list_runs(self, limit: int = 50,
                   objective_version: Optional[str] = None) -> List[Dict[str, Any]]:
-        if not self.configured:
-            return []
         sql = "SELECT * FROM runs"
         params: list = []
         if objective_version:
@@ -350,14 +312,8 @@ class DbStore:
         mse: Optional[float] = None,
         source_file: Optional[str] = None,
         source_run: Optional[str] = None,
-        strict: bool = False,
     ) -> Optional[int]:
-        """Upsert one verified state. Returns state_id, or None when disabled."""
-        if not self.configured:
-            if strict:
-                self.require_db()
-            log.info("db_store disabled: state not recorded (DATABASE_URL unset)")
-            return None
+        """Upsert one verified state and return its state_id."""
         seed_json = _canonical_seed(seed_triple)
         metrics_json = _dumps(metrics or {})
         if mse is None:
@@ -386,8 +342,6 @@ class DbStore:
         return self._last_id()
 
     def list_states(self, limit: int = 50) -> List[Dict[str, Any]]:
-        if not self.configured:
-            return []
         return self._rows(
             "SELECT * FROM states ORDER BY updated_at DESC LIMIT %s", (int(limit),))
 
@@ -398,17 +352,11 @@ class DbStore:
         kind: str,
         verdict: Dict[str, Any],
         artifact_path: Optional[str] = None,
-        strict: bool = False,
     ) -> bool:
         """Insert/update one experiment provenance row. Returns True if written."""
         if kind not in EXPERIMENT_KINDS:
             raise ValueError(
                 f"experiment kind must be one of {EXPERIMENT_KINDS}, got {kind!r}")
-        if not self.configured:
-            if strict:
-                self.require_db()
-            log.info("db_store disabled: experiment not recorded (DATABASE_URL unset)")
-            return False
         verdict_json = _dumps(verdict or {})
         now = _now_iso()
         rows = self._rows("SELECT id FROM experiments WHERE id=%s", (experiment_id,))
@@ -427,8 +375,6 @@ class DbStore:
         return True
 
     def list_experiments(self, limit: int = 50) -> List[Dict[str, Any]]:
-        if not self.configured:
-            return []
         return self._rows(
             "SELECT * FROM experiments ORDER BY created_at DESC LIMIT %s",
             (int(limit),))
@@ -445,15 +391,10 @@ class DbStore:
         return rows
 
     def _last_id(self) -> Optional[int]:
-        if self.backend == "sqlite":
-            rid = self._last_insert_id
-            return int(rid) if rid is not None else None
-        rows = self._rows("SELECT LASTVAL() AS id")
-        return int(rows[0]["id"]) if rows else None
+        rid = self._last_insert_id
+        return int(rid) if rid is not None else None
 
     def counts(self) -> Dict[str, int]:
-        if not self.configured:
-            return {"runs": 0, "states": 0, "experiments": 0}
         result = {"runs": 0, "states": 0, "experiments": 0}
         for table in result:
             rows = self._rows(f"SELECT COUNT(*) AS n FROM {table}")
@@ -521,7 +462,8 @@ class DbStore:
 
 # --------------------------------------------------------------------- export
 def get_store(database_url: Optional[str] = None) -> DbStore:
-    """Singleton-ish accessor. Reads DATABASE_URL from env unless overridden."""
+    """Singleton-ish accessor. Defaults to the repo-local jarvis.db store;
+    ``database_url`` overrides (sqlite://... URLs only) for tests/dev."""
     if not hasattr(get_store, "_singleton") or get_store._singleton is None:
         get_store._singleton = DbStore(database_url)  # type: ignore[attr-defined]
     return get_store._singleton
@@ -552,9 +494,9 @@ def _ts_from_mtime(path: Path) -> str:
 def _cli(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="db_store",
-        description="JARVIS run/state/experiment provenance store (DB-optional).")
+        description="JARVIS run/state/experiment provenance store (repo-local).")
     ap.add_argument("--url", default=None,
-                    help="DATABASE_URL override (default: env DATABASE_URL)")
+                    help=f"sqlite:// URL override (default: {DEFAULT_DB_URL})")
     ap.add_argument("--init", action="store_true",
                     help="create tables (idempotent)")
     ap.add_argument("--sync-seedopt", metavar="PATH",
@@ -566,15 +508,11 @@ def _cli(argv: Optional[List[str]] = None) -> int:
     args = ap.parse_args(argv)
 
     store = DbStore(args.url)
-    if not store.configured:
-        print("JARVIS DB store DISABLED: DATABASE_URL is not set.", file=sys.stderr)
-        print("Set DATABASE_URL (postgres://... or sqlite:///path). "
-              "The FBSC core runs deterministically without it.", file=sys.stderr)
-        return 2
 
     if args.init:
         store.init_db()
-        print(f"DB initialised ({store.backend}): tables runs/states/experiments.")
+        print(f"DB initialised ({store.backend}) at {store.database_url}: "
+              f"tables runs/states/experiments.")
     if args.sync_seedopt:
         files = store.sync_seedopt(args.sync_seedopt)
         print(f"sync_seedopt: ingested {len(files)} report(s).")

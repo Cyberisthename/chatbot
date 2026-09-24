@@ -176,6 +176,9 @@ bit_patterns.json
 models/
 releases/
 extracted_bundles/
+# Repo-local JARVIS provenance DB (created+migrated on first use; runtime data)
+jarvis.db
+jarvis.db-journal
 
 # Build outputs
 .next/

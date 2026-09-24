@@ -2,16 +2,15 @@
 """Unit tests for src/quantum_llm/db_store.py (JARVIS DB provenance layer).
 
 Run:  python3 -m unittest tests.test_db_store -v
-Uses sqlite in-memory only — no Postgres / DATABASE_URL needed.
+Uses sqlite in-memory only — no Postgres, no env vars, no network.
 """
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
 
 from src.quantum_llm.db_store import (
-    DbNotConfiguredError,
+    DEFAULT_DB_URL,
     DbStore,
     EXPERIMENT_KINDS,
     objective_version,
@@ -43,42 +42,49 @@ class TestObjectiveVersion(unittest.TestCase):
         self.assertTrue(objective_version("combined").startswith("v1:combined:"))
 
 
-class TestDisabledMode(unittest.TestCase):
-    """No DATABASE_URL -> everything degrades gracefully."""
+class TestRepoLocalDefaults(unittest.TestCase):
+    """Repo-local pivot: the store defaults to <repo root>/jarvis.db and is
+    always configured — no env vars, no DATABASE_URL, no disabled mode."""
 
     def setUp(self):
-        self._url = os.environ.pop("DATABASE_URL", None)
-        self.store = DbStore(database_url=None)
+        self.store = DbStore()  # no URL -> repo-local default
 
-    def tearDown(self):
-        if self._url is not None:
-            os.environ["DATABASE_URL"] = self._url
+    def test_default_url_points_at_repo_local_jarvis_db(self):
+        self.assertTrue(DEFAULT_DB_URL.startswith("sqlite:///"))
+        self.assertTrue(DEFAULT_DB_URL.endswith("jarvis.db"))
+        self.assertEqual(self.store.database_url, DEFAULT_DB_URL)
 
-    def test_not_configured(self):
-        self.assertFalse(self.store.configured)
-        self.assertIsNone(self.store.backend)
+    def test_always_configured(self):
+        self.assertTrue(self.store.configured)
+        self.assertEqual(self.store.backend, "sqlite")
 
-    def test_record_run_noop(self):
-        self.assertIsNone(self.store.record_run(
-            [0.5, 1.0, 2.0], "combined", strict=False))
+    def test_missing_file_created_and_migrated_on_first_use(self):
+        # Graceful degradation: a missing jarvis.db is created + migrated
+        # on first use (init SQL runs automatically on connect).
+        with tempfile.TemporaryDirectory() as td:
+            db_path = Path(td) / "jarvis.db"
+            store = DbStore(f"sqlite:///{db_path}")
+            self.assertFalse(db_path.exists())
+            run_id = store.record_run([0.5, 1.0, 2.0], "combined")
+            self.assertIsNotNone(run_id)
+            self.assertTrue(db_path.exists())
+            self.assertEqual(store.counts(),
+                             {"runs": 1, "states": 0, "experiments": 0})
 
-    def test_record_run_strict_raises_clear_error(self):
-        with self.assertRaises(DbNotConfiguredError) as ctx:
-            self.store.record_run([0.5, 1.0, 2.0], "combined", strict=True)
-        self.assertIn("DATABASE_URL", str(ctx.exception))
+    def test_unsupported_scheme_raises(self):
+        bad = DbStore("mysql://user:pass@host/db")
+        with self.assertRaises(ValueError):
+            bad.record_run([0.5, 1.0, 2.0], "combined")
 
-    def test_record_state_noop(self):
-        self.assertIsNone(self.store.record_state([0.5, 1.0, 2.0], {}, strict=False))
-
-    def test_record_experiment_noop(self):
-        self.assertFalse(self.store.record_experiment("e1", "anyon", {}, strict=False))
-
-    def test_lists_empty(self):
-        self.assertEqual(self.store.list_runs(), [])
-        self.assertEqual(self.store.list_states(), [])
-        self.assertEqual(self.store.list_experiments(), [])
-        self.assertEqual(self.store.counts(),
-                         {"runs": 0, "states": 0, "experiments": 0})
+    def test_no_env_var_read(self):
+        # Even if a DATABASE_URL env var exists it must be ignored (the pivot
+        # forbids env-var config); the default store still points at jarvis.db.
+        import os
+        os.environ["DATABASE_URL"] = "postgres://should:not@be/used"
+        try:
+            self.assertEqual(DbStore().database_url, DEFAULT_DB_URL)
+        finally:
+            os.environ.pop("DATABASE_URL", None)
 
 
 class TestSqliteStore(unittest.TestCase):
@@ -199,11 +205,6 @@ class TestSqliteStore(unittest.TestCase):
             ingested = self.store.sync_seedopt(td)
         self.assertEqual(ingested, [])
         self.assertEqual(self.store.counts()["states"], 0)
-
-    def test_unsupported_scheme_raises(self):
-        bad = DbStore("mysql://user:pass@host/db")
-        with self.assertRaises(ValueError):
-            bad.record_run([0.5, 1.0, 2.0], "combined", strict=True)
 
 
 if __name__ == "__main__":
