@@ -1,0 +1,280 @@
+{
+  "meta": {
+    "engine": "QLM braid-semantic kernel (FBSC)",
+    "n_qubits": 6,
+    "word_len": 3,
+    "dim": 64,
+    "corpus": "/home/team/shared/lineara/linearA_corpus_clean.tsv",
+    "vocab_size": 60,
+    "honest": "classical simulation; no quantum hardware; no meaning claim; structure-only kernel"
+  },
+  "vocab_top": [
+    "KU-RO",
+    "SA-RA₂",
+    "KI-RO",
+    "*411-VS",
+    "A-TA-I-*301-WA-JA",
+    "A-DU",
+    "KU-PA₃-NU",
+    "I-RA₂",
+    "DA-RE",
+    "JA-SA-SA-RA-ME",
+    "SI-RU-TE",
+    "MA-DI",
+    "KA-PA",
+    "DI-NA-U",
+    "SA-RU",
+    "SI-KA",
+    "I-PI-NA-MA",
+    "KU-NI-SU",
+    "DA-KA",
+    "*409-VS",
+    "I-DA",
+    "KI-RE-TA-NA",
+    "SA-MA",
+    "TA-NA-TI",
+    "JE-DI",
+    "QA-*310-I",
+    "PA-JA-RE",
+    "SA-RO",
+    "*306-TU",
+    "DA-RI-DA",
+    "DA-SI-*118",
+    "A-SE",
+    "DA-ME",
+    "MI-NU-TE",
+    "KU-PA",
+    "U-NA-KA-NA-SI",
+    "JA-SA",
+    "*86-RO",
+    "*408-VS",
+    "QE-RA₂-U",
+    "A-KA-RU",
+    "DA-QE-RA",
+    "PA₃-NI-NA",
+    "TE-TU",
+    "*21F-TU-NE",
+    "PA-DE",
+    "*324-DI-RA",
+    "TA-I-AROM",
+    "U-*325-ZA",
+    "RE-ZA",
+    "U-*34-SI",
+    "KA-KU-PA",
+    "MA-RU-ME",
+    "DI-DE-RU",
+    "A-RA",
+    "TE-RI",
+    "I-GRA+PA",
+    "QA-QA-RU",
+    "PA-SE-JA",
+    "PA-TA-NE"
+  ],
+  "n_labeled": 20,
+  "registers_in_eval": [
+    "R1",
+    "R3"
+  ],
+  "ari_hash_seed": -0.0016,
+  "ari_structure_seed": 0.1079,
+  "ari_jaccard_baseline": -0.102,
+  "braid_dist_same_register_mean": 0.8618,
+  "braid_dist_cross_register_mean": 0.902,
+  "ku_ro_nearest": [
+    [
+      "PA-DE",
+      0.4217
+    ],
+    [
+      "DA-ME",
+      0.4309
+    ],
+    [
+      "SI-RU-TE",
+      0.4527
+    ],
+    [
+      "I-RA₂",
+      0.4726
+    ],
+    [
+      "SA-RA₂",
+      0.4972
+    ]
+  ],
+  "jassarame_nearest": [
+    [
+      "*408-VS",
+      0.7244
+    ],
+    [
+      "*409-VS",
+      0.7244
+    ],
+    [
+      "DI-NA-U",
+      0.7416
+    ],
+    [
+      "KA-KU-PA",
+      0.7525
+    ],
+    [
+      "MI-NU-TE",
+      0.7844
+    ]
+  ],
+  "collocation_distances": {
+    "KU-RO__KI-RO_both_R1": 0.9324,
+    "KU-RO__JASASARAME_cross": 0.9698,
+    "KI-RO__SIRUTE_cross": 0.9868,
+    "JASASARAME__SIRUTE_both_R3": 0.9982,
+    "JASASARAME__ATAI301WAJA_both_R3": 0.9954
+  },
+  "fbsc_embedding_demo": {
+    "KU": {
+      "seed": [
+        1.3265,
+        0.5741,
+        1.677
+      ],
+      "centroid_xyz": [
+        0.0184,
+        -0.0032,
+        1.0254
+      ]
+    },
+    "RO": {
+      "seed": [
+        0.5017,
+        1.0439,
+        0.3906
+      ],
+      "centroid_xyz": [
+        0.0128,
+        -0.0001,
+        0.2481
+      ]
+    },
+    "KI": {
+      "seed": [
+        1.983,
+        1.4671,
+        1.1815
+      ],
+      "centroid_xyz": [
+        0.0643,
+        -0.0,
+        0.7515
+      ]
+    },
+    "SA": {
+      "seed": [
+        0.8167,
+        0.3894,
+        1.5741
+      ],
+      "centroid_xyz": [
+        0.0018,
+        -0.0,
+        0.9453
+      ]
+    },
+    "RA": {
+      "seed": [
+        1.0291,
+        0.2208,
+        1.2177
+      ],
+      "centroid_xyz": [
+        0.1912,
+        -0.0007,
+        0.6062
+      ]
+    },
+    "ME": {
+      "seed": [
+        1.157,
+        0.8893,
+        1.5201
+      ],
+      "centroid_xyz": [
+        0.0827,
+        -0.0031,
+        0.9668
+      ]
+    },
+    "JA": {
+      "seed": [
+        0.7586,
+        0.7838,
+        1.4481
+      ],
+      "centroid_xyz": [
+        0.0006,
+        -0.0048,
+        0.9094
+      ]
+    },
+    "WA": {
+      "seed": [
+        1.768,
+        0.7744,
+        1.8905
+      ],
+      "centroid_xyz": [
+        0.0139,
+        -0.0031,
+        1.1671
+      ]
+    },
+    "TA": {
+      "seed": [
+        0.5194,
+        1.0405,
+        1.132
+      ],
+      "centroid_xyz": [
+        0.0115,
+        -0.0052,
+        0.7188
+      ]
+    },
+    "I": {
+      "seed": [
+        1.4858,
+        1.175,
+        0.9446
+      ],
+      "centroid_xyz": [
+        0.0025,
+        -0.0057,
+        0.5938
+      ]
+    },
+    "NA": {
+      "seed": [
+        0.693,
+        0.9163,
+        0.9842
+      ],
+      "centroid_xyz": [
+        0.044,
+        -0.0,
+        0.6247
+      ]
+    },
+    "KA": {
+      "seed": [
+        1.3178,
+        0.7371,
+        0.6079
+      ],
+      "centroid_xyz": [
+        0.0767,
+        -0.0025,
+        0.3817
+      ]
+    }
+  }
+}
