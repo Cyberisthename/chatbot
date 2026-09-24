@@ -576,9 +576,10 @@ def _write_json(path: Path, obj) -> None:
 
 
 def _record_run_db(report: dict, outdir) -> None:
-    """DB-optional provenance hook: record this optimizer run when a DB is
-    configured (DATABASE_URL env). Never raises — the deterministic FBSC core
-    and the optimizer run MUST NOT depend on the DB being present.
+    """Repo-local provenance hook: record this optimizer run into the
+    repo-local ``jarvis.db`` (default store; no env vars, no network).
+    Never raises — the deterministic FBSC core and the optimizer run MUST
+    NOT depend on the DB being present.
     """
     try:
         import sys as _sys
@@ -592,8 +593,6 @@ def _record_run_db(report: dict, outdir) -> None:
                 _sys.path.insert(0, str(Path(_root) / "src"))
             from quantum_llm.db_store import get_store, objective_version
         store = get_store()
-        if not store.configured:
-            return
         params = report.get("params", {}) or {}
         mse = float((report.get("reconstruction") or {}).get("reconstruction_mse", 0.0))
         run_id = store.record_run(
