@@ -76,6 +76,26 @@ class TestRepoLocalDefaults(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad.record_run([0.5, 1.0, 2.0], "combined")
 
+    def test_postgres_override_recognized_but_never_default(self):
+        # postgres:// stays a valid EXPLICIT override (lead scope: option not
+        # removed, just never the default) — but the default store is always
+        # the repo-local sqlite jarvis.db, regardless of env.
+        pg = DbStore("postgres://user:pass@localhost:5432/jarvis")
+        self.assertEqual(pg.backend, "postgres")
+        self.assertNotEqual(pg.database_url, DEFAULT_DB_URL)
+        # A write against postgres either needs the (absent) driver or a
+        # reachable server; either way it must NOT silently fall back to the
+        # repo-local default.
+        try:
+            import psycopg2  # noqa: F401  (driver present -> real connect fails)
+            with self.assertRaises(Exception):
+                pg.record_run([0.5, 1.0, 2.0], "combined")
+        except ImportError:
+            with self.assertRaises(RuntimeError):
+                pg.record_run([0.5, 1.0, 2.0], "combined")
+        # ...and the no-arg store is still repo-local sqlite.
+        self.assertEqual(DbStore().backend, "sqlite")
+
     def test_no_env_var_read(self):
         # Even if a DATABASE_URL env var exists it must be ignored (the pivot
         # forbids env-var config); the default store still points at jarvis.db.

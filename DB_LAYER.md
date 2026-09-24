@@ -17,16 +17,21 @@ this layer only records *what ran and what came out of it*.
 > the next CMA-ES/evolutionary search) is a separate task; see the PR
 > description for the training-design note.
 
-## Configuration — none
+## Configuration — none (default); explicit overrides optional
 
 There is nothing to configure. The store always points at the repo-local
-`jarvis.db` (created + migrated automatically on first use). An explicit
-`sqlite://...` URL may be passed for tests/dev only; no other backend exists.
+`jarvis.db` (created + migrated automatically on first use). No env vars, no
+credentials, no network.
 
-- Default path: `<repo root>/jarvis.db` (stdlib `sqlite3`; no pip installs).
-- Override for tests: `DbStore("sqlite:///:memory:")` or any `sqlite:///path`.
-- Any other scheme raises a clear `ValueError` (no Postgres / psycopg2 code
-  remains — external databases were removed by the pivot).
+Explicit overrides (accepted for tests/dev only — **never the default, never
+env-driven**):
+
+- `sqlite:///path` or `sqlite:///:memory:` — any SQLite path (stdlib `sqlite3`).
+- `postgres://...` / `postgresql://...` — Postgres remains a supported
+  override (the option is not removed, it is just never the default). Requires
+  `pip install "psycopg2-binary>=2.9"` (lazy import; the module stays
+  importable without it) and a reachable server.
+- Any other scheme raises a clear `ValueError`.
 - A DB write failure can never block the deterministic FBSC core: the
   optimizer hook wraps every call and never raises.
 
@@ -62,7 +67,7 @@ python3 -m quantum_llm.db_store --list-runs --list-states --list-experiments
 ```
 
 Flags: `--init`, `--sync-seedopt <file|dir>`, `--list-runs`, `--list-states`,
-`--list-experiments`, `--counts`, `--url <sqlite:// override>`.
+`--list-experiments`, `--counts`, `--url <explicit sqlite:// or postgres:// override>`.
 
 ## import path
 
@@ -72,5 +77,6 @@ From the repo root: `from src.quantum_llm.db_store import get_store` (or
 ## Tests
 
 `tests/test_db_store.py` (Python `unittest`, no external DB needed — sqlite
-in-memory + a `DbStore` built on explicit `sqlite:///:memory:` URLs).
+in-memory + a `DbStore` built on explicit `sqlite:///:memory:` URLs, plus
+repo-local-default, env-ignored, and explicit-override coverage).
 Run with `python3 -m unittest tests.test_db_store -v`.

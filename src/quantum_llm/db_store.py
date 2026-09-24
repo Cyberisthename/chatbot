@@ -2,10 +2,11 @@
 JARVIS database storage layer — run/state/experiment provenance (repo-local).
 
 Owned original code; stdlib-only core. **Repo-local pivot (owner direction
-2026-09-22):** there is no external database — the store defaults to a
-repo-local ``jarvis.db`` SQLite file, needs no env vars, no credentials and
-no network. An explicit ``sqlite://...`` URL is accepted only as an override
-for tests/dev. Backends beyond SQLite were removed (no Postgres / psycopg2).
+2026-09-22):** the default store is a repo-local ``jarvis.db`` SQLite file —
+no env vars, no credentials, no network. Explicit ``sqlite://...`` or
+``postgres://...`` / ``postgresql://...`` URLs are accepted as overrides
+only (never the default, never env-driven); Postgres is an opt-in dev/test
+capability (psycopg2 imported lazily).
 
 Store contents:
 - runs:       one row per optimizer execution (seed triple, run_id hash,
@@ -169,15 +170,19 @@ def _trim_report(report: Dict[str, Any]) -> Dict[str, Any]:
 
 
 class DbStore:
-    """Lazy, repo-local SQLite store. Always configured (defaults to
-    ``<repo root>/jarvis.db``); an explicit ``sqlite://`` URL overrides the
-    default for tests/dev. No env vars, no credentials, no network.
+    """Lazy provenance store. Always configured: defaults to repo-local
+    ``<repo root>/jarvis.db`` (stdlib sqlite3, created+migrated on first use).
+    Explicit ``sqlite://...`` or ``postgres://...`` / ``postgresql://...``
+    URLs are accepted as overrides only — they are never the default and
+    nothing is ever read from the environment. No env vars, no credentials,
+    no network unless an explicit postgres URL is supplied.
     """
 
     def __init__(self, database_url: Optional[str] = None):
         self._url = database_url if database_url is not None else DEFAULT_DB_URL
         self._conn: Any = None
-        self._backend: Optional[str] = None  # 'sqlite' | 'unsupported'
+        self._psycopg = None
+        self._backend: Optional[str] = None  # 'sqlite' | 'postgres' | 'unsupported'
         self._last_insert_id: Optional[int] = None  # captured in _execute()
 
     # ------------------------------------------------------------------ state
@@ -192,6 +197,8 @@ class DbStore:
         if self._backend is None:
             if self._url.startswith("sqlite://"):
                 self._backend = "sqlite"
+            elif self._url.startswith(("postgres://", "postgresql://")):
+                self._backend = "postgres"
             else:
                 self._backend = "unsupported"
         return self._backend
@@ -205,26 +212,47 @@ class DbStore:
         """Lazy connect: no connection is ever opened until first use."""
         if self._conn is not None:
             return self._conn
-        if not self._url.startswith("sqlite://"):
+        backend = self.backend
+        if backend == "sqlite":
+            raw = self._url[len("sqlite://"):]
+            # Normalize: sqlite://, sqlite:///:memory: and sqlite://:memory:
+            # all mean an in-memory database in sqlite3 terms.
+            if raw in ("", "/:memory:", ":memory:"):
+                path = ":memory:"
+            else:
+                path = raw
+            self._conn = sqlite3.connect(path)
+            self._conn.row_factory = sqlite3.Row
+        elif backend == "postgres":
+            # Explicit override only (never the default, never env-driven).
+            # psycopg2 is imported lazily so the module stays importable
+            # without it.
+            try:
+                import psycopg2  # type: ignore
+                self._psycopg = psycopg2
+            except ImportError as exc:  # pragma: no cover - driver absence path
+                raise RuntimeError(
+                    "Explicit postgres:// override requested but psycopg2 is "
+                    "not installed. Install it with: pip install "
+                    "\"psycopg2-binary>=2.9\", or omit the override to use the "
+                    f"default repo-local store ({DEFAULT_DB_URL})."
+                ) from exc
+            self._conn = self._psycopg.connect(self._url)
+            self._conn.row_factory = self._psycopg.extras.RealDictRow if hasattr(
+                self._psycopg, "extras") else None
+        else:
             raise ValueError(
                 f"Unsupported DB URL for JARVIS DB store: {self._url!r}. "
-                f"The repo-local pivot supports sqlite:// URLs only "
-                f"(default: {DEFAULT_DB_URL}).")
-        raw = self._url[len("sqlite://"):]
-        # Normalize: sqlite://, sqlite:///:memory: and sqlite://:memory:
-        # all mean an in-memory database in sqlite3 terms.
-        if raw in ("", "/:memory:", ":memory:"):
-            path = ":memory:"
-        else:
-            path = raw
-        self._conn = sqlite3.connect(path)
-        self._conn.row_factory = sqlite3.Row
+                f"Supported: sqlite://... and postgres://... as explicit "
+                f"overrides; default is {DEFAULT_DB_URL}.")
         self.init_db()
         return self._conn
 
     def _q(self, sql: str) -> str:
         """Map %s placeholders to ? for sqlite (dialect portability)."""
-        return sql.replace("%s", "?")
+        if self.backend == "sqlite":
+            return sql.replace("%s", "?")
+        return sql
 
     def _execute(self, sql: str, params: tuple = ()):
         conn = self._connect()
@@ -391,8 +419,11 @@ class DbStore:
         return rows
 
     def _last_id(self) -> Optional[int]:
-        rid = self._last_insert_id
-        return int(rid) if rid is not None else None
+        if self.backend == "sqlite":
+            rid = self._last_insert_id
+            return int(rid) if rid is not None else None
+        rows = self._rows("SELECT LASTVAL() AS id")
+        return int(rows[0]["id"]) if rows else None
 
     def counts(self) -> Dict[str, int]:
         result = {"runs": 0, "states": 0, "experiments": 0}
@@ -463,7 +494,8 @@ class DbStore:
 # --------------------------------------------------------------------- export
 def get_store(database_url: Optional[str] = None) -> DbStore:
     """Singleton-ish accessor. Defaults to the repo-local jarvis.db store;
-    ``database_url`` overrides (sqlite://... URLs only) for tests/dev."""
+    ``database_url`` overrides (sqlite:// or postgres:// URLs only —
+    never env-driven) for tests/dev."""
     if not hasattr(get_store, "_singleton") or get_store._singleton is None:
         get_store._singleton = DbStore(database_url)  # type: ignore[attr-defined]
     return get_store._singleton
@@ -496,7 +528,8 @@ def _cli(argv: Optional[List[str]] = None) -> int:
         prog="db_store",
         description="JARVIS run/state/experiment provenance store (repo-local).")
     ap.add_argument("--url", default=None,
-                    help=f"sqlite:// URL override (default: {DEFAULT_DB_URL})")
+                    help=f"explicit sqlite:// or postgres:// override "
+                         f"(default: {DEFAULT_DB_URL})")
     ap.add_argument("--init", action="store_true",
                     help="create tables (idempotent)")
     ap.add_argument("--sync-seedopt", metavar="PATH",
