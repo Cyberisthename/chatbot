@@ -1,0 +1,357 @@
+{
+  "meta": {
+    "experiment": "anyon braid fault-tolerance",
+    "n_strands": 6,
+    "word_len": 20,
+    "t_grid": [
+      "-1",
+      "2",
+      "0.5+0.5i"
+    ],
+    "max_kinks": 40,
+    "flip_trials": 400,
+    "rng_seed": 2026,
+    "honest": "mathematical immunity proven in exact classical simulation; no physical anyon realization, no hardware run, no error-free UQC; invariant DETECTS, does not CORRECT; fidelity gate-error rates are RECONSTRUCTED (original lost with validate_benchmark.py)"
+  },
+  "curve_a_isotopy": [
+    {
+      "kinks": 0,
+      "gates": 20,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.785821,
+      "fidelity_current-typical": 0.893818,
+      "fidelity_best-emerging": 0.96655
+    },
+    {
+      "kinks": 1,
+      "gates": 22,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.767107,
+      "fidelity_current-typical": 0.883841,
+      "fidelity_best-emerging": 0.963267
+    },
+    {
+      "kinks": 2,
+      "gates": 24,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.748838,
+      "fidelity_current-typical": 0.873975,
+      "fidelity_best-emerging": 0.959995
+    },
+    {
+      "kinks": 3,
+      "gates": 26,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.731005,
+      "fidelity_current-typical": 0.86422,
+      "fidelity_best-emerging": 0.956734
+    },
+    {
+      "kinks": 4,
+      "gates": 28,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.713597,
+      "fidelity_current-typical": 0.854573,
+      "fidelity_best-emerging": 0.953485
+    },
+    {
+      "kinks": 5,
+      "gates": 30,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.696603,
+      "fidelity_current-typical": 0.845034,
+      "fidelity_best-emerging": 0.950246
+    },
+    {
+      "kinks": 6,
+      "gates": 32,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.680013,
+      "fidelity_current-typical": 0.835601,
+      "fidelity_best-emerging": 0.947019
+    },
+    {
+      "kinks": 7,
+      "gates": 34,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.663819,
+      "fidelity_current-typical": 0.826273,
+      "fidelity_best-emerging": 0.943802
+    },
+    {
+      "kinks": 8,
+      "gates": 36,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.648011,
+      "fidelity_current-typical": 0.81705,
+      "fidelity_best-emerging": 0.940597
+    },
+    {
+      "kinks": 9,
+      "gates": 38,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.632579,
+      "fidelity_current-typical": 0.80793,
+      "fidelity_best-emerging": 0.937402
+    },
+    {
+      "kinks": 10,
+      "gates": 40,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.617514,
+      "fidelity_current-typical": 0.798911,
+      "fidelity_best-emerging": 0.934218
+    },
+    {
+      "kinks": 11,
+      "gates": 42,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.602808,
+      "fidelity_current-typical": 0.789994,
+      "fidelity_best-emerging": 0.931045
+    },
+    {
+      "kinks": 12,
+      "gates": 44,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.588453,
+      "fidelity_current-typical": 0.781175,
+      "fidelity_best-emerging": 0.927883
+    },
+    {
+      "kinks": 13,
+      "gates": 46,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.574439,
+      "fidelity_current-typical": 0.772455,
+      "fidelity_best-emerging": 0.924731
+    },
+    {
+      "kinks": 14,
+      "gates": 48,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.560759,
+      "fidelity_current-typical": 0.763833,
+      "fidelity_best-emerging": 0.92159
+    },
+    {
+      "kinks": 15,
+      "gates": 50,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.547405,
+      "fidelity_current-typical": 0.755307,
+      "fidelity_best-emerging": 0.91846
+    },
+    {
+      "kinks": 16,
+      "gates": 52,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.534369,
+      "fidelity_current-typical": 0.746875,
+      "fidelity_best-emerging": 0.915341
+    },
+    {
+      "kinks": 17,
+      "gates": 54,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.521643,
+      "fidelity_current-typical": 0.738538,
+      "fidelity_best-emerging": 0.912232
+    },
+    {
+      "kinks": 18,
+      "gates": 56,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.50922,
+      "fidelity_current-typical": 0.730295,
+      "fidelity_best-emerging": 0.909133
+    },
+    {
+      "kinks": 19,
+      "gates": 58,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.497093,
+      "fidelity_current-typical": 0.722143,
+      "fidelity_best-emerging": 0.906045
+    },
+    {
+      "kinks": 20,
+      "gates": 60,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.485255,
+      "fidelity_current-typical": 0.714082,
+      "fidelity_best-emerging": 0.902968
+    },
+    {
+      "kinks": 21,
+      "gates": 62,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.473699,
+      "fidelity_current-typical": 0.706111,
+      "fidelity_best-emerging": 0.899901
+    },
+    {
+      "kinks": 22,
+      "gates": 64,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.462418,
+      "fidelity_current-typical": 0.698229,
+      "fidelity_best-emerging": 0.896845
+    },
+    {
+      "kinks": 23,
+      "gates": 66,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.451406,
+      "fidelity_current-typical": 0.690435,
+      "fidelity_best-emerging": 0.893798
+    },
+    {
+      "kinks": 24,
+      "gates": 68,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.440656,
+      "fidelity_current-typical": 0.682728,
+      "fidelity_best-emerging": 0.890763
+    },
+    {
+      "kinks": 25,
+      "gates": 70,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.430162,
+      "fidelity_current-typical": 0.675107,
+      "fidelity_best-emerging": 0.887737
+    },
+    {
+      "kinks": 26,
+      "gates": 72,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.419918,
+      "fidelity_current-typical": 0.667571,
+      "fidelity_best-emerging": 0.884722
+    },
+    {
+      "kinks": 27,
+      "gates": 74,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.409918,
+      "fidelity_current-typical": 0.660119,
+      "fidelity_best-emerging": 0.881717
+    },
+    {
+      "kinks": 28,
+      "gates": 76,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.400156,
+      "fidelity_current-typical": 0.652751,
+      "fidelity_best-emerging": 0.878722
+    },
+    {
+      "kinks": 29,
+      "gates": 78,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.390626,
+      "fidelity_current-typical": 0.645464,
+      "fidelity_best-emerging": 0.875738
+    },
+    {
+      "kinks": 30,
+      "gates": 80,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.381324,
+      "fidelity_current-typical": 0.638259,
+      "fidelity_best-emerging": 0.872763
+    },
+    {
+      "kinks": 31,
+      "gates": 82,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.372243,
+      "fidelity_current-typical": 0.631135,
+      "fidelity_best-emerging": 0.869799
+    },
+    {
+      "kinks": 32,
+      "gates": 84,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.363378,
+      "fidelity_current-typical": 0.62409,
+      "fidelity_best-emerging": 0.866845
+    },
+    {
+      "kinks": 33,
+      "gates": 86,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.354724,
+      "fidelity_current-typical": 0.617123,
+      "fidelity_best-emerging": 0.8639
+    },
+    {
+      "kinks": 34,
+      "gates": 88,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.346277,
+      "fidelity_current-typical": 0.610235,
+      "fidelity_best-emerging": 0.860966
+    },
+    {
+      "kinks": 35,
+      "gates": 90,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.33803,
+      "fidelity_current-typical": 0.603423,
+      "fidelity_best-emerging": 0.858042
+    },
+    {
+      "kinks": 36,
+      "gates": 92,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.32998,
+      "fidelity_current-typical": 0.596687,
+      "fidelity_best-emerging": 0.855128
+    },
+    {
+      "kinks": 37,
+      "gates": 94,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.322122,
+      "fidelity_current-typical": 0.590027,
+      "fidelity_best-emerging": 0.852223
+    },
+    {
+      "kinks": 38,
+      "gates": 96,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.314451,
+      "fidelity_current-typical": 0.583441,
+      "fidelity_best-emerging": 0.849329
+    },
+    {
+      "kinks": 39,
+      "gates": 98,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.306962,
+      "fidelity_current-typical": 0.576928,
+      "fidelity_best-emerging": 0.846444
+    },
+    {
+      "kinks": 40,
+      "gates": 100,
+      "invariant_distance": 0.0,
+      "fidelity_early-NISQ-conservative": 0.299652,
+      "fidelity_current-typical": 0.570488,
+      "fidelity_best-emerging": 0.843569
+    }
+  ],
+  "curve_b_flips": {
+    "detections": 400,
+    "trials": 400,
+    "detection_rate": 1.0,
+    "first_flip_distance": 1.5
+  },
+  "collapse_depths_50pct_gates": {
+    "early-NISQ-conservative": 58,
+    "current-typical": 124,
+    "best-emerging": 408
+  }
+}
