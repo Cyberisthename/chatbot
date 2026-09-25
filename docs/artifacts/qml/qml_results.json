@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "round": 1,
+    "dataset": "Linear A top-60 formulas (real, 20 register-labeled)",
+    "regeneration_note": "RECORDED values from the DB task result (f338a3e0). The Linear A dataset was lost in the 2026-09-24 disk-full event; these numbers are preserved as recorded and are NOT re-measurable from surviving sources.",
+    "tags": "measured at time of original run; recorded, not re-measurable"
+  },
+  "measured": {
+    "hash_seed_ari": -0.002,
+    "struct_seed_ari": 0.108,
+    "bag_of_signs_ari": -0.102,
+    "same_register_pair_distance": 0.862,
+    "cross_register_pair_distance": 0.902
+  },
+  "honest_limits": [
+    "recovery partial/lopsided: accounting clusters via shared -RO suffix",
+    "ritual family does NOT cluster (frequency+positional seeds miss family membership)",
+    "weaker than n-gram/LZ; complementary, not competitive",
+    "no meaning/decipherment claim"
+  ]
+}
