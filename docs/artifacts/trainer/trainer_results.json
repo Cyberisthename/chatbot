@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "trainer": "quantum_topological_trainer (3-phase)",
+    "task": "non-convex tanh regression",
+    "n_strands": 6,
+    "word_len": 8,
+    "burau_t": 2.0,
+    "n_samples": 64,
+    "rng_seed": 2026,
+    "honest": "no quantum hardware; no true quantum tunneling; simulated annealing/evolution over braid space is the deterministic analogue; measured wall-clock epochs"
+  },
+  "task": {
+    "teacher_loss_floor": 0.0
+  },
+  "phase1_noise_immunity": {
+    "braid_isotopy_weight_change": 0.0,
+    "braid_crossingflip_weight_change": 0.5,
+    "braid_crossingflip_invariant_distance": 0.995356,
+    "float_gaussian_noise_weight_change": 0.00161,
+    "verdict": "braid weights are EXACTLY immune to isotopy noise (0 by theorem: sigma_i sigma_i^-1 = identity); float weights move under any noise; the invariant detects crossing flips"
+  },
+  "phase2_annealing": {
+    "loss": 0.06431845,
+    "evals": 2000
+  },
+  "phase3_evolution": {
+    "loss": 0.0,
+    "evals": 2100
+  },
+  "baselines": {
+    "gradient_descent": {
+      "loss": 0.0,
+      "evals": 2000
+    },
+    "seed_optimizer": {
+      "loss": 0.05364867,
+      "evals": 170
+    }
+  },
+  "gate": {
+    "tolerance": 1e-06,
+    "trainer_best_loss": 0.0,
+    "gradient_descent_loss": 0.0,
+    "seed_optimizer_loss": 0.05364867,
+    "beats_gd": false,
+    "beats_seed": true,
+    "verdict": "trainer vs GD is a TIE at ~0 loss (both reach the optimum); trainer BEATS the seed optimizer; annealing does NOT beat GD on this task (it gets stuck at a local minimum)"
+  },
+  "wall_clock_seconds": 2.644
+}
