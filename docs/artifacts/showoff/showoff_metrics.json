@@ -1,0 +1,12 @@
+{
+  "atom_cloud": "MSE=0, fresh n=4 braided state",
+  "fold_geometry": "fold factor 67.27 (report), MSE=0",
+  "wigner": "negative-volume witness from fresh run",
+  "chsh_landscape": {
+    "max": 2.828123101128156,
+    "owner": 2.824953287427449
+  },
+  "mps_challenger": "D=16 at n=8 vs 3-number exact seed",
+  "timelapse": "90 frames -> h264 mp4, 12 fps (~7.5s)",
+  "tags": "measured unless annotated interpretation in titles; no hardware claim"
+}
