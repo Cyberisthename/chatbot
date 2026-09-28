@@ -1,0 +1,24 @@
+{
+  "owner_seed": [
+    0.57721,
+    1.618034,
+    2.71828
+  ],
+  "params": {
+    "scale": 1.65442,
+    "phase": 5.083203727658507,
+    "fold_depth": 11
+  },
+  "metadata": {
+    "description": "FBSC v1 - Owner-controlled 3-number exact quantum reconstructor",
+    "effective_qubits": 16,
+    "integrates_with": [
+      "qvgpu_trained.npz",
+      "VQC braiding",
+      "TonalSoulEngine"
+    ],
+    "version": "1.0-quantum-fold",
+    "note": "This seed + deterministic process fully owns/rebuilds the entire multiversal state.",
+    "reconstruction": "RECONSTRUCTED 2026-09-24 from owner_quantum_seed_d2.json (byte-values identical: seed+params; base omits qudit_dim). NOT byte-identical to lost original file; values are."
+  }
+}

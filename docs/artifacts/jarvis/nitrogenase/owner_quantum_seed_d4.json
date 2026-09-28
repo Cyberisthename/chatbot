@@ -1,0 +1,26 @@
+{
+  "owner_seed": [
+    0.57721,
+    1.618034,
+    2.71828
+  ],
+  "params": {
+    "scale": 1.65442,
+    "phase": 5.083203727658507,
+    "fold_depth": 11,
+    "qudit_dim": 4
+  },
+  "metadata": {
+    "description": "FBSC v2 - Owner-controlled 3-number exact qudit reconstructor",
+    "effective_qudits": 16,
+    "qudit_dim": 4,
+    "integrates_with": [
+      "qvgpu_trained.npz",
+      "VQC braiding",
+      "TonalSoulEngine",
+      "bio-resonance"
+    ],
+    "version": "2.0-qudit-fold",
+    "note": "This seed + deterministic process fully owns/rebuilds the entire multiversal qudit state. MSE=0 exact."
+  }
+}

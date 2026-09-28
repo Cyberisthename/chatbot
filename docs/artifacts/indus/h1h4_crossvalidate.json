@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "Indus H1\u2013H4 structural cross-validation (rebuilt harness)",
+    "author": "agent-compression-specialist",
+    "date": "2026-09-28",
+    "status": "REBUILT after disk-full incident; re-derived from raw corpus",
+    "corpus": "/home/team/shared/indus/corpus_raw/corpus",
+    "corpus_sha16": "4b5f0794a8ff357e",
+    "n_seqs": 179,
+    "n_tokens": 1003,
+    "tags": "measured / interpretation / speculation per house standard",
+    "caveat": "179-side Mohenjo-Daro CISI subset, NOT full Mahadevan concordance. Full-corpus run gated on digitized Mahadevan landing (task b5c9f3c9)."
+  },
+  "H1_P385_initial": {
+    "measured_initial": 29,
+    "n_seqs": 179,
+    "base_rate": 0.16201117318435754,
+    "shuffle_mean": 6.8925,
+    "shuffle_sd": 2.2474304772339453,
+    "z_score": 9.836789268431163,
+    "perms": 400,
+    "tag": "measured"
+  },
+  "H2_P385_P122_collocation": {
+    "measured": 29,
+    "expected_independent": 2.1787479038457906,
+    "enrichment": 13.310397200525586,
+    "shuffle_mean": 2.2675,
+    "shuffle_sd": 1.419839339502889,
+    "z_score": 18.827834429041477,
+    "perms": 400,
+    "tag": "measured"
+  },
+  "H3_short_range_context": {
+    "H1_bits": 6.285878165557775,
+    "H2_bits": 8.698563474362967,
+    "H3_bits": 9.112459598550975,
+    "H2_given_H1_bits": 2.3252307166462693,
+    "H3_given_H21_bits": 0.6702257619293489,
+    "reduction_H21_vs_H1_pct": 63.008657574896844,
+    "n_bigrams": 824,
+    "bigrams_used": 551,
+    "approved_convention_H2_minus_H1_bits": 2.4126853088051923,
+    "approved_convention_H3_minus_H2_bits": 0.413896124188009,
+    "tag": "measured"
+  },
+  "H4_long_range": {
+    "lz_real": 1.04,
+    "lz_token_shuffle_mean": 1.188260606060606,
+    "lz_per_seq_shuffle_mean": 1.1796363636363636,
+    "lz_gap_vs_token_shuffle_pct": 12.477111948710363,
+    "lz_gap_vs_per_seq_shuffle_pct": 11.83723797780517,
+    "far_repeated_bigrams_real": 0,
+    "far_repeated_bigrams_shuffle_mean": 0.02,
+    "perms": 200,
+    "tag": "measured"
+  }
+}

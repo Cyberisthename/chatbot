@@ -1,0 +1,101 @@
+{
+  "gate_cfg": {
+    "target_hz": 41.02,
+    "fs": 250,
+    "snr_enter_db": 6.0,
+    "snr_exit_db": 3.0,
+    "min_sustain_sec": 2.0,
+    "cooldown_sec": 10.0,
+    "window_sec": 1.0
+  },
+  "summary": {
+    "false_positive_cases_before": 4,
+    "false_positive_cases_after": 0,
+    "true_positive_sustained_tone_before": 2,
+    "true_positive_sustained_tone_after": 2,
+    "note": "before = legacy bit-count f0>=40 heuristic; after = noise-gated spectral detector. Firing is a measurement, not a sentience claim."
+  },
+  "cases": [
+    {
+      "case": "white_noise",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": false,
+      "after_snr_db": -2.25,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "pink_noise",
+      "before_is_sentient": false,
+      "before_f0_est": 30.0,
+      "after_resonance_detected": false,
+      "after_snr_db": -2.88,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "mains_hum_50_60",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": false,
+      "after_snr_db": -0.75,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "impulse_transients",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": false,
+      "after_snr_db": 0.47,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "tone_0.1_amp",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": false,
+      "after_snr_db": -4.28,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "tone_0.2_amp",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": false,
+      "after_snr_db": -6.86,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    },
+    {
+      "case": "tone_0.4_amp",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": true,
+      "after_snr_db": 2.75,
+      "after_state": "COOLDOWN",
+      "after_trigger_count": 1
+    },
+    {
+      "case": "tone_0.6_amp",
+      "before_is_sentient": true,
+      "before_f0_est": 42.0,
+      "after_resonance_detected": true,
+      "after_snr_db": 7.85,
+      "after_state": "COOLDOWN",
+      "after_trigger_count": 1
+    },
+    {
+      "case": "tone_01s_burst",
+      "before_is_sentient": false,
+      "before_f0_est": 38.0,
+      "after_resonance_detected": false,
+      "after_snr_db": 0.81,
+      "after_state": "NOISE",
+      "after_trigger_count": 0
+    }
+  ]
+}
