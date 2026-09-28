@@ -24,6 +24,7 @@ Usage: Run this file directly for demo. Outputs reconstructed state, metrics, an
 import numpy as np
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 from typing import Tuple, Dict, Any, List
@@ -51,6 +52,31 @@ class FractalBraidSeedCompressor:
         self.ggraph = self._build_ggraph()  # Geometric folding primitive
         self.base_state = self._load_qvgpu_base()  # Integrate with existing trained swarm
         np.random.seed(int(hash(str(seed)) % (2**32)))  # Deterministic from seed only
+
+    @staticmethod
+    def _safe_compression_ratio(n: int, d: int) -> Tuple[float, float]:
+        """Log-space compression ratio: d^n / (n·d), no float overflow at n=1024, d<=6.
+        Returns (ratio_float_if_representable_else_inf, log10_ratio)."""
+        hilbert_log10 = n * math.log10(d)
+        stored_log10 = math.log10(max(1, n * d))
+        ratio_log10 = hilbert_log10 - stored_log10
+        if ratio_log10 <= 307.0:  # float64 max ~1e308
+            ratio = float(10.0 ** ratio_log10)
+        else:
+            ratio = float("inf")
+        return ratio, ratio_log10
+
+    @staticmethod
+    def _safe_compression_ratio_qb(n: int) -> Tuple[float, float]:
+        """Log-space compression ratio for qubit path: 2^n / (n·2)."""
+        hilbert_log10 = n * math.log10(2.0)
+        stored_log10 = math.log10(max(1, n * 2))
+        ratio_log10 = hilbert_log10 - stored_log10
+        if ratio_log10 <= 307.0:
+            ratio = float(10.0 ** ratio_log10)
+        else:
+            ratio = float("inf")
+        return ratio, ratio_log10
     
     def _build_ggraph(self) -> Any:
         """Deterministic convergent graph for geometric folding (from existing quantacap primitive)."""
@@ -183,7 +209,9 @@ class FractalBraidSeedCompressor:
             "total_hilbert_dim": int(2 ** self.n),
             # Honest exponential compression: dense Hilbert entries (2^N complex
             # amplitudes) vs. the O(N) entries actually stored/regenerated.
-            "compression_ratio": float((2 ** self.n) / max(1, self.n * 2)),
+            # Log-space safe at n=1024 (no float overflow).
+            "compression_ratio": self._safe_compression_ratio_qb(self.n)[0],
+            "compression_ratio_log10": self._safe_compression_ratio_qb(self.n)[1],
             "reconstruction_mse": 0.0,  # Exact by construction (deterministic reversible)
             "fold_depth": fold_depth,
             "geometric_fold_factor": float(fold_factor),
@@ -265,7 +293,9 @@ class FractalBraidSeedCompressor:
             "total_hilbert_dim": int(total_hilbert),
             # Honest exponential compression: dense Hilbert entries (d^N complex
             # amplitudes) vs. the O(N·d) entries actually stored/regenerated.
-            "compression_ratio": float(total_hilbert / max(1, self.n * d)),
+            # Log-space safe at n=1024, d<=6 (no float overflow).
+            "compression_ratio": self._safe_compression_ratio(self.n, d)[0],
+            "compression_ratio_log10": self._safe_compression_ratio(self.n, d)[1],
             "reconstruction_mse": 0.0,  # Exact by construction (deterministic reversible)
             "fold_depth": fold_depth,
             "geometric_fold_factor": float(fold_factor),
