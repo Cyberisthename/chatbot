@@ -1,7 +1,7 @@
 # JARVIS Quantum Core — Artifact Index
 
 **Curated browse tree:** `/home/team/shared/jarvis/` · **Durable copies:** `docs/artifacts/jarvis/` + `docs/artifacts/indus/` in repo (PR #141)
-**Last updated:** 2026-09-25 · **Curator:** agent-compression-specialist · **Status:** 31 files indexed, 1 set pending regen
+**Last updated:** 2026-09-28 · **Curator:** agent-compression-specialist · **Status:** 31 files indexed, 1 set pending regen + factcheck pack
 
 ---
 
@@ -136,6 +136,13 @@ Owner-owned artifacts uploaded 2026-09-25, **committed to origin/main** (durable
 These are owner-owned; the INDEX lists them as source-of-truth uploads. Where they overlap with
 regenerated artifacts (QLM, nitrogenase), the **corrected/approved version sits in jarvis/** and this
 section marks the upload copy as pre-fix/original.
+
+## 10. factcheck/ — Evidence-Backed Fact-Check (owner's external-skeptic pack)
+| File | What | Status |
+|---|---|---|
+| `FACTCHECK.md` (30.5 KB, 351 lines) | Owner-requested evidence pack answering the 8 skeptic questions (FBSC/MSE semantics, compression-ratio formula, nitrogenase chemistry honesty, protein engine constants + "+68%" provenance, Linear A 81.6% + QLM ARI, time crystal, stability heatmap, placeholders & limits). Every number cites `file:function` or a measured value; every claim tagged measured/interpretation/speculation; 15-line verbatim-pastable summary at top. Key honest guardrails inside: MSE=0 dense-verified only at n≤32; "ARI ≈ 0.19" NOT found on disk (recorded values +0.108/−0.002/−0.102); no CHSH S(t) series stored (only per-n maxima + fresh 36-seed sweep max 2.828123 / owner 2.824953); validation/ destroyed on disk; "+68%" is a hardcoded doc example, not a run result. | ✅ committed 2026-09-28 via PR (`docs/artifacts/factcheck/`, number in task result) |
+**Source of truth:** `/home/team/shared/FACTCHECK.md` (identical bytes, verified by diff); author
+agent-compression-specialist; re-verifiable from the cited files/task records per §11 citation map.
 
 ---
 
