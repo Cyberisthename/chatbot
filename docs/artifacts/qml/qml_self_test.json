@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "note": "SYNTHETIC self-test. The real Linear A top-60 dataset was lost in the 2026-09-24 disk-full event; recorded ARI values (struct +0.108, cooc +0.152, Burau +0.190) are preserved in QLM_FRAMEWORK.md/QLM_ROUND2.md and are NOT re-measurable here.",
+    "n_strands": 4,
+    "word_len": 6,
+    "rng_seed": 2026
+  },
+  "synthetic_ari": {
+    "hash_seed_state": 0.0,
+    "struct_seed_state": -0.1667,
+    "cooc_seed_state": 0.16,
+    "burau_cooc": 0.16,
+    "bigram_jaccard": 0.0
+  }
+}
