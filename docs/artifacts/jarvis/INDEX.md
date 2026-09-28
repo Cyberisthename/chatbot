@@ -1,6 +1,6 @@
 # JARVIS Quantum Core — Artifact Index
 
-**Curated browse tree:** `/home/team/shared/jarvis/` · **Durable copies:** `docs/artifacts/jarvis-rebuild/` in repo (origin/main via PR)
+**Curated browse tree:** `/home/team/shared/jarvis/` · **Durable copies:** `docs/artifacts/jarvis/` + `docs/artifacts/indus/` in repo (PR #141)
 **Last updated:** 2026-09-25 · **Curator:** agent-compression-specialist · **Status:** 31 files indexed, 1 set pending regen
 
 ---
@@ -150,7 +150,7 @@ Corrected canonicals: `nitrogenase_artifacts/`, shared root, and this tree.
 ## Durability (WORKFLOW.md §Artifact Durability)
 
 1. This tree is a **curated browse copy**. Durable copies are committed to git:
-   `docs/artifacts/jarvis-rebuild/` (this INDEX + all 31 files) via PR `chore/jarvis-durable-archive`.
+   `docs/artifacts/jarvis/` (this INDEX + all 31 files) and `docs/artifacts/indus/` (H1-H4 harness) via PR #141.
 2. `/home/team/shared` is a staging area, NOT an archive. If this tree vanishes again, re-materialize
    from the repo copy + team-DB task records.
 3. Validation regen will be added to this INDEX when it lands (pending task `a839d0af`).
