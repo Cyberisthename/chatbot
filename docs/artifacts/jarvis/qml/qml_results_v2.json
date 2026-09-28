@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "round": 2,
+    "dataset": "Linear A top-60 formulas (real, 20 register-labeled)",
+    "regeneration_note": "RECORDED values from the DB task result (b65a40c6). The Linear A dataset was lost in the 2026-09-24 disk-full event; these numbers are preserved as recorded and are NOT re-measurable from surviving sources.",
+    "tags": "measured at time of original run; recorded, not re-measurable"
+  },
+  "ari": {
+    "hash_seed_null": -0.002,
+    "struct_seed_r1": 0.108,
+    "cooc_seed_r2": 0.152,
+    "burau_invariant_r2": 0.190,
+    "combined_naive_average": 0.020,
+    "unigram_jaccard": -0.102,
+    "bigram_jaccard": 0.000
+  },
+  "collocation_before_after": {
+    "KU-RO_vs_KI-RO": {"before": 0.932, "after": 0.004},
+    "JA-SA-SA-RA-ME_vs_A-TA-I-301-WA-JA": {"before": 0.995, "after": 0.901},
+    "JA-SA-SA-RA-ME_vs_SI-RU-TE": {"before": 0.998, "after": 0.966}
+  },
+  "honest_status": [
+    "gate 'beat n-gram/LZ' cleared narrowly: Burau +0.19 vs bigram 0.00",
+    "ARI 0.19 is weak in absolute terms",
+    "ritual family only partially recovered",
+    "Burau result on a single t-grid (robustness sweep pending)",
+    "naive combination proven wrong (must be learned, not averaged)"
+  ]
+}

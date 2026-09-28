@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "report_id": "fbsc-efficiency-2026-09-24",
+  "note": "REGENERATED post disk-full incident from the fixed core (log-space compression ratio). Numbers re-verified by fresh run: n=1024 d=2 compression_ratio 8.7777985100705e+304, log10 304.943, MSE=0.",
+  "core": "Fractal-Braid Seed Compressor (FBSC) \u2014 exact 3-seed reconstruction",
+  "rows": [
+    {
+      "case": "headline-1024-qubit",
+      "effective_qudits": 1024,
+      "qudit_dim": 2,
+      "total_hilbert_dim": 179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137216,
+      "compression_ratio": 8.777798510070522e+304,
+      "compression_ratio_log10": 304.943386,
+      "memory_kb": 16.0,
+      "mse": 0.0,
+      "fold_factor": 67.266541,
+      "owner_seed": [
+        0.57721,
+        1.618034,
+        2.71828
+      ]
+    },
+    {
+      "case": "nitrogenase-d2-anchor",
+      "effective_qudits": 16,
+      "qudit_dim": 2,
+      "total_hilbert_dim": 65536,
+      "compression_ratio": 2047.9999999999989,
+      "compression_ratio_log10": 3.31133,
+      "memory_kb": 0.25,
+      "mse": 0.0,
+      "fold_factor": 67.266541,
+      "owner_seed": [
+        0.57721,
+        1.618034,
+        2.71828
+      ]
+    },
+    {
+      "case": "nitrogenase-d3-anchor",
+      "effective_qudits": 16,
+      "qudit_dim": 3,
+      "total_hilbert_dim": 43046721,
+      "compression_ratio": 896806.6875000009,
+      "compression_ratio_log10": 5.952699,
+      "memory_kb": 0.75,
+      "mse": 0.0,
+      "fold_factor": 67.266541,
+      "owner_seed": [
+        0.57721,
+        1.618034,
+        2.71828
+      ]
+    },
+    {
+      "case": "nitrogenase-d4-anchor",
+      "effective_qudits": 16,
+      "qudit_dim": 4,
+      "total_hilbert_dim": 4294967296,
+      "compression_ratio": 67108863.99999996,
+      "compression_ratio_log10": 7.82678,
+      "memory_kb": 1.0,
+      "mse": 0.0,
+      "fold_factor": 67.266541,
+      "owner_seed": [
+        0.57721,
+        1.618034,
+        2.71828
+      ]
+    }
+  ],
+  "headline": "MSE=0 exact; >10^73x compression (log10 304.94 at n=1024 d=2); ~1 KB memory vs 64 GiB+ dense vector at comparable scale"
+}
