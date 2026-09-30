@@ -53,7 +53,7 @@ SCHEMA_VERSION = 1
 OBJECTIVE_VERSION_PREFIX = "v1"  # bump when the objective-space encoding changes
 
 # Kinds allowed in the experiments table.
-EXPERIMENT_KINDS = ("anyon", "validation", "training")
+EXPERIMENT_KINDS = ("anyon", "validation", "training", "probe_battery")
 
 INIT_SQL = """
 CREATE TABLE IF NOT EXISTS runs (
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS states (
 
 CREATE TABLE IF NOT EXISTS experiments (
     id            TEXT PRIMARY KEY,
-    kind          TEXT NOT NULL CHECK (kind IN ('anyon', 'validation', 'training')),
+    kind          TEXT NOT NULL CHECK (kind IN ('anyon', 'validation', 'training', 'probe_battery')),
     artifact_path TEXT,
     verdict       TEXT NOT NULL,                   -- JSON blob
     created_at    TEXT NOT NULL,
@@ -276,11 +276,43 @@ class DbStore:
         conn = self._connect()
         cur = conn.cursor()
         try:
+            if self.backend == "sqlite":
+                self._migrate_experiments_check(conn, cur)
             for stmt in [s.strip() for s in INIT_SQL.split(";") if s.strip()]:
                 cur.execute(self._q(stmt))
             conn.commit()
         finally:
             cur.close()
+
+    def _migrate_experiments_check(self, conn, cur) -> None:
+        """Rebuild the experiments table if its CHECK predates probe_battery.
+
+        SQLite cannot alter a CHECK constraint in place, so an existing DB
+        created by a pre-battery db_store rejects kind='probe_battery' rows.
+        Detect the old schema and rebuild the table (rename -> create ->
+        copy -> drop). Data is preserved; idempotent; no-op on current schema.
+        """
+        row = cur.execute(
+            "SELECT sql FROM sqlite_master WHERE type='table' AND name='experiments'"
+        ).fetchone()
+        if not row or not row[0]:
+            return  # table not created yet — INIT_SQL will create it correctly
+        if "probe_battery" in row[0]:
+            return  # already current schema
+        try:
+            cur.execute('ALTER TABLE experiments RENAME TO experiments_old')
+            cur.execute("DROP INDEX IF EXISTS idx_experiments_kind")
+            for stmt in [s.strip() for s in INIT_SQL.split(";") if s.strip()]:
+                if "CREATE TABLE IF NOT EXISTS experiments" in stmt:
+                    cur.execute(stmt)
+            cols = ", ".join(
+                r["name"] for r in cur.execute("PRAGMA table_info(experiments_old)"))
+            cur.execute(f"INSERT INTO experiments ({cols}) SELECT {cols} FROM experiments_old")
+            cur.execute("DROP TABLE experiments_old")
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
 
     @staticmethod
     def init_sql() -> str:
