@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "probe": "quantum-likeness of FBSC/braid states (entanglement, magic, XEB, design, level stats, Wigner, MPS challenger, no-LHV)",
+    "generator": "seed -> fold (fbsc_fold) -> braid unitaries (braid4, kernel-consistent); core FBSC closed forms",
+    "date": "2026-09-22",
+    "agent": "theoretical-physicist",
+    "honest": "classical deterministic generator; probes are STATISTICS of the generated vectors/unitaries; no hardware; no universal-QC claim; family <=3-parameter measure-zero in ambient Hilbert space (Thm 3 ERROR_BOUND_PROOF); Wigner is exact representation change, witness only; CHSH/LHV is a computed property of state statistics, not a lab loophole-free test"
+  },
+  "P1_entanglement": {
+    "hash_ds8": {
+      "4": {
+        "Smid": 1.1697,
+        "alpha": 0.5849
+      },
+      "8": {
+        "Smid": 2.5283,
+        "alpha": 0.6321
+      },
+      "12": {
+        "Smid": 3.5307,
+        "alpha": 0.5885
+      },
+      "16": {
+        "Smid": 3.5091,
+        "alpha": 0.4386
+      }
+    },
+    "owner_fold": {
+      "8": {
+        "Smid": 1.4343,
+        "alpha": 0.3586
+      },
+      "16": {
+        "Smid": 1.2455,
+        "alpha": 0.1557
+      }
+    }
+  },
+  "P1b_core_area_law": {
+    "8": {
+      "Smid": 1.0,
+      "alpha": 0.25
+    },
+    "12": {
+      "Smid": 1.0,
+      "alpha": 0.1667
+    },
+    "16": {
+      "Smid": 1.0,
+      "alpha": 0.125
+    }
+  },
+  "P2_magic": {
+    "note": "M2 = -log2(2^n * mean_P |<psi|P|psi>|^4); exact n<=6, MC n=8",
+    "values": {
+      "4": {
+        "braid": 0.976,
+        "product": -0.0,
+        "GHZ": 0.0,
+        "Haar": 2.2729
+      },
+      "6": {
+        "braid": 2.2376,
+        "product": -0.0,
+        "GHZ": 0.0,
+        "Haar": 4.0527
+      }
+    }
+  },
+  "GK_control": "stabilizer Renyi-2 on braided states > 0 => a Clifford/stabilizer simulator CANNOT reproduce these states; the GK easy-simulation route is CLOSED for them (measured at n=4,6; controls GHZ/product M2=0 => Clifford-reproducible).",
+  "P3_xeb": {
+    "n4": {
+      "braid_F": 1.674,
+      "sampled": 1.667,
+      "haar": 0.881,
+      "product": 0.0
+    },
+    "n8": {
+      "braid_F": 4.372,
+      "sampled": 4.395,
+      "haar": 0.99,
+      "product": 0.0
+    }
+  },
+  "P3_design_level": {
+    "n4": {
+      "F_braid": 1027.975,
+      "Fm2": 1025.975,
+      "F_haar": 2.013,
+      "r_braid": 0.0,
+      "r_haar": 0.56
+    },
+    "n6": {
+      "F_braid": 205.317,
+      "Fm2": 203.317,
+      "F_haar": 2.365,
+      "r_braid": 0.0,
+      "r_haar": 0.6
+    }
+  },
+  "P4_wigner_qubit": {
+    "n3": 0.125,
+    "n4": 0.2188,
+    "n5": 0.2227
+  },
+  "P4_wigner_qutrit": {
+    "n1": 0.1111,
+    "n2": 0.284
+  },
+  "P5_no_lhv": {
+    "n2": {
+      "chsh": 2.825,
+      "violates": true,
+      "lhv_excluded": true,
+      "mermin3": null
+    },
+    "n3": {
+      "chsh": 2.825,
+      "violates": true,
+      "lhv_excluded": true,
+      "mermin3": 1.9315
+    },
+    "n4": {
+      "chsh": 2.0351,
+      "violates": true,
+      "lhv_excluded": true,
+      "mermin3": null
+    }
+  },
+  "P6_mps": {
+    "note": "TT-SVD bond dim D needed for fidelity>=0.99: grows steeply with volume-law entanglement while the FBSC seed reconstructs the same state EXACTLY with O(1) parameters; area-law controls (product/GHZ/core-embedding) need D<=2",
+    "table": {
+      "8": {
+        "D_for_0.99": 16,
+        "fid_D2": 0.3442,
+        "fid_sweep": {
+          "1": 0.029333,
+          "2": 0.344161,
+          "4": 0.752812,
+          "8": 0.972176,
+          "16": 1.0,
+          "32": 1.0,
+          "64": 1.0,
+          "128": 1.0
+        }
+      },
+      "10": {
+        "D_for_0.99": 32,
+        "fid_D2": 0.2687,
+        "fid_sweep": {
+          "1": 0.011848,
+          "2": 0.268685,
+          "4": 0.546684,
+          "8": 0.817457,
+          "16": 0.976198,
+          "32": 1.0,
+          "64": 1.0,
+          "128": 1.0
+        }
+      },
+      "12": {
+        "D_for_0.99": 32,
+        "fid_D2": 0.142,
+        "fid_sweep": {
+          "1": 0.0038,
+          "2": 0.141959,
+          "4": 0.382689,
+          "8": 0.718263,
+          "16": 0.938506,
+          "32": 0.99472,
+          "64": 1.0,
+          "128": 1.0
+        }
+      },
+      "14": {
+        "D_for_0.99": 32,
+        "fid_D2": 0.0742,
+        "fid_sweep": {
+          "1": 0.001351,
+          "2": 0.074208,
+          "4": 0.328295,
+          "8": 0.654228,
+          "16": 0.905593,
+          "32": 0.991406,
+          "64": 0.999748,
+          "128": 1.0
+        }
+      },
+      "16": {
+        "D_for_0.99": 64,
+        "fid_D2": 0.049,
+        "fid_sweep": {
+          "1": 0.000956,
+          "2": 0.049045,
+          "4": 0.255017,
+          "8": 0.561117,
+          "16": 0.850076,
+          "32": 0.976851,
+          "64": 0.998868,
+          "128": 0.99999
+        }
+      }
+    }
+  },
+  "P7_push": {
+    "objective": "0.4*alpha/alpha_haar + 0.3*magic/magic_haar + 0.3*F/F_haar (capped at 1) n=6",
+    "owner_fold_ds1": {
+      "score": 0.658,
+      "alpha": 0.367,
+      "magic": 2.238,
+      "F": 8.692
+    },
+    "pushed_hash_ds8": {
+      "score": 0.907,
+      "seed": [
+        4.2045,
+        5.8635,
+        1.0371
+      ],
+      "alpha": 0.75,
+      "magic": 2.892,
+      "F": 3.662
+    },
+    "knob_map_ownerseed": {
+      "fold_ds1": {
+        "score": 0.658,
+        "alpha": 0.367,
+        "magic": 2.238,
+        "F": 8.692
+      },
+      "fold_ds8": {
+        "score": 0.659,
+        "alpha": 0.411,
+        "magic": 1.94,
+        "F": 7.389
+      },
+      "hash_ds1": {
+        "score": 0.634,
+        "alpha": 0.266,
+        "magic": 2.628,
+        "F": 4.681
+      },
+      "hash_ds8": {
+        "score": 0.867,
+        "alpha": 0.677,
+        "magic": 2.866,
+        "F": 2.547
+      }
+    }
+  },
+  "honest_wall": {
+    "true_sense": "amplitude statistics (XEB/PT) of FOLD-based braided states reach Haar-class levels at tested n for some metrics; entanglement scaling is volume-law-like for the braided elaboration (alpha ~0.43 owner seed -> pushed higher) while the CORE single-excitation embedding stays area-law; magic > 0 (GK closed); non-stabilizerness + Wigner negativity + CHSH-statistics are genuine non-classical witnesses.",
+    "false_sense": "NOT a general-purpose quantum computer; family is <=3-parameter => measure-zero in ambient Hilbert space (Thm 3); no hardware, no measurement loophole closure, no sampling-advantage claim; structured states != universal quantum simulator.",
+    "which_metrics_exceed_classical_ansatz": "volume-law entanglement (braided), magic>0, Wigner negativity, CHSH statistics >2 violate what a product-state/area-law ansatz allows at same n",
+    "which_cannot_be_reached": "generic-state reconstruction (Thm 3), Bell-inequality violation in a loophole-free lab sense (statistics computed here are state properties), universal quantum simulation, error-corrected topological hardware."
+  }
+}
