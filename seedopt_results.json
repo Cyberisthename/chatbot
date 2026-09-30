@@ -1,0 +1,124 @@
+{
+  "task": "core-jarvis-1-variational-seed-optimizer",
+  "date": "2026-09-18",
+  "n_qudits": 32,
+  "objective": "combined = 0.4*bio_resonance_match + 0.3*coherence_spread + 0.3*braid_protection (maximize)",
+  "owner_seed_baseline": {
+    "seed": [
+      0.57721,
+      1.618034,
+      2.71828
+    ],
+    "metrics": {
+      "objective_combined": 0.674036,
+      "bio_resonance_match": 0.930143,
+      "coherence_spread": 0.010289,
+      "braid_protection": 0.996308,
+      "mse": 0.0,
+      "fold_factor": 67.266541
+    }
+  },
+  "landscape": {
+    "samples": 512,
+    "mean": 0.6529267204179448,
+    "std": 0.02372726047992922,
+    "min": 0.6212569240160755,
+    "max": 0.6995919312032126,
+    "median": 0.6525502454644503,
+    "p10": 0.6236862179968767,
+    "p90": 0.6884300858662197,
+    "local_slope_median": 0.11351885275487741,
+    "small_move_improve_fraction": 0.4625,
+    "readout": "landscape featureless at probed scale",
+    "budget_flag": "full"
+  },
+  "budget_per_strategy": 2048,
+  "strategies": {
+    "coordinate_descent": {
+      "seed": [
+        4.70036664,
+        6.0,
+        3.46636105
+      ],
+      "objective_combined": 0.6980420081015484,
+      "evals_used": 13,
+      "improvement_over_owner": 0.02400581984671768,
+      "metrics": {
+        "objective_combined": 0.698042,
+        "bio_resonance_match": 0.986709,
+        "coherence_spread": 0.014568,
+        "braid_protection": 0.996627,
+        "mse": 0.0,
+        "fold_factor": 106.715656
+      },
+      "converged_by_evals_1pct": 0
+    },
+    "nelder_mead": {
+      "seed": [
+        6.0,
+        6.0,
+        5.54661609
+      ],
+      "objective_combined": 0.6713426761054649,
+      "evals_used": 2048,
+      "improvement_over_owner": -0.002693512149365751,
+      "metrics": {
+        "objective_combined": 0.671343,
+        "bio_resonance_match": 0.917843,
+        "coherence_spread": 0.017303,
+        "braid_protection": 0.996715,
+        "mse": 0.0,
+        "fold_factor": 58.786031
+      },
+      "converged_by_evals_1pct": 6
+    },
+    "cma_es": {
+      "seed": [
+        4.91885182,
+        3.90224766,
+        2.260521
+      ],
+      "objective_combined": 0.7013041292006794,
+      "evals_used": 2052,
+      "improvement_over_owner": 0.027267940945848723,
+      "metrics": {
+        "objective_combined": 0.701304,
+        "bio_resonance_match": 0.986709,
+        "coherence_spread": 0.025539,
+        "braid_protection": 0.99653,
+        "mse": 0.0,
+        "fold_factor": 55.291754
+      },
+      "converged_by_evals_1pct": 48
+    }
+  },
+  "winner": "cma_es",
+  "optimized_seed": [
+    4.91885182,
+    3.90224766,
+    2.260521
+  ],
+  "optimized_seed_metrics": {
+    "objective_combined": 0.701304,
+    "bio_resonance_match": 0.986709,
+    "coherence_spread": 0.025539,
+    "braid_protection": 0.99653,
+    "mse": 0.0,
+    "fold_factor": 55.291754
+  },
+  "exactness_post_check": {
+    "n": 32,
+    "bit_identical_across_reconstructions": true,
+    "mse_reported_by_core": 0.0,
+    "mse_reconstruction_reenforced": 0.0,
+    "pass": true,
+    "theorem3_note": "family unchanged: optimizer searched elements of the \u22643-parameter family (Thm 3); exactness by construction preserved."
+  },
+  "runtime_seconds": 7.99,
+  "tags": {
+    "landscape_stats": "(a) measured",
+    "optimizer_comparison": "(a) measured",
+    "interpretation": "(b) interpretation",
+    "cap_speculation": "(c) speculation"
+  }
+}

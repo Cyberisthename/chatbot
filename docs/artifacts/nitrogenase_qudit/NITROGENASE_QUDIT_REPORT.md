@@ -1,18 +1,18 @@
 # Nitrogenase FeMo-co Qudit Simulation Report (v2 — qudit extension)
 **Core:** owned FBSC v2 (3-seed exact reconstruction, qudit-generalized)
 **Simulation ID:** nitro-qudit-c35bca531ec4
-**Date:** 2026-09-10 21:11:40
+**Date:** 2026-09-24 14:06:46
 **Owner seed:** (0.57721, 1.618034, 2.71828)
 
 ## Headline result
 - Best dimension: **ququart (d=4)** — Hilbert dim 4,294,967,296
-- Energy barrier: 96.9 kJ/mol (variational gain 69.1%)
-- Synthetic V-Fe-S catalyst barrier: 78 kJ/mol — ambient viable at 298K / 1 atm
+- Energy barrier: 100.8 kJ/mol (variational gain 69.1%)
+- Synthetic V-Fe-S catalyst barrier: 81 kJ/mol — ambient viable at 298K / 1 atm
 - Feasibility: 0.91
-- Compression: >1e+73× with **MSE = 0** (exact), 1.0 KB total
-- Coherence: 0.9811 after 41.02 Hz bio-resonance boost
-- Topological protection: 0.9955
-- Time-reversal fidelity: 0.0165
+- Compression: >7e+07× with **MSE = 0** (exact), 1.0 KB total
+- Coherence: 0.9029 after 41.02 Hz bio-resonance boost
+- Topological protection: 0.9951
+- Time-reversal fidelity: 0.0606
 
 ## Why qudits matter for FeMo-co
 The FeMo-co active site (Fe7MoS9C homocitrate) holds transition-metal centers whose
@@ -25,15 +25,15 @@ represented *without* artificial level truncation.
 ## Comparison across dimensions
 | metric | d=2 (qubit) | d=3 (qutrit) | d=4 (ququart) |
 |---|---|---|---|
-| _Hilbert dim_ | 152,587,890,625 | 43,046,721 | 4,294,967,296 |
-| Coherence (boosted) | 0.9936 | 0.9419 | 0.9811 |
-| Topological protection | 0.9964 | 0.9958 | 0.9955 |
-| Bio-resonance match | 0.9515 | 0.8090 | 0.8502 |
-| Energy barrier (kJ/mol) | 144.3 | 123.5 | 96.9 |
+| _Hilbert dim_ | 65,536 | 43,046,721 | 4,294,967,296 |
+| Coherence (boosted) | 0.9874 | 0.8371 | 0.9029 |
+| Topological protection | 0.9972 | 0.9968 | 0.9951 |
+| Bio-resonance match | 0.9515 | 0.8015 | 0.9515 |
+| Energy barrier (kJ/mol) | 144.7 | 130.0 | 100.8 |
 | Variational gain | 0.536 | 0.613 | 0.691 |
-| Synthetic barrier (kJ/mol) | 115.4 | 98.8 | 77.5 |
-| Feasibility | 0.87 | 0.88 | 0.91 |
-| Time-reversal fidelity | 0.041 | 0.081 | 0.017 |
+| Synthetic barrier (kJ/mol) | 115.8 | 104.0 | 80.6 |
+| Feasibility | 0.88 | 0.87 | 0.91 |
+| Time-reversal fidelity | 0.142 | 0.070 | 0.061 |
 
 ## Interpretation
 Higher-d qudits enlarge the captured chemical Hilbert space **without any memory

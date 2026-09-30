@@ -61,7 +61,17 @@ def coherence_of(state: np.ndarray) -> float:
     """Level-spread coherence: how uniformly population is distributed across the
     d levels of the qudit manifold (1 = maximally coherent superposition over all
     levels; 0 = fully classical, all population in a single level). Original
-    participation-ratio style measure, normalised per qudit dimension."""
+    participation-ratio style measure, normalised per qudit dimension.
+    1-D qubit register (d=2): the n register entries play the role of the
+    'levels' in the participation-ratio measures (shape-safe fix)."""
+    if state.ndim == 1:
+        p = np.abs(state) ** 2                        # register entries = levels
+        p = p / (p.sum() + 1e-12)
+        d = int(p.size)
+        uniform = 1.0 / d
+        denom = 1.0 - uniform if d > 1 else 1.0
+        coherence = 1.0 - float(np.sum((p - uniform) ** 2)) / (denom * denom)
+        return float(np.clip(coherence, 0.0, 1.0))
     d = state.shape[1]
     p = np.mean(np.abs(state) ** 2, axis=0)          # mean population per level
     p = p / (p.sum() + 1e-12)
@@ -84,7 +94,12 @@ def braid_pathways(state: np.ndarray, positions: np.ndarray, n_paths: int = 6) -
     pathways = []
     prots = []
     fids = []
-    n, d = state.shape
+    if state.ndim == 1:
+        # 1-D qubit register: treat the n register entries as the 'levels'.
+        state2 = state.reshape(-1, 1)
+    else:
+        state2 = state
+    n, d = state2.shape
     for p in range(n_paths):
         idx = np.linspace(0, n - 1, max(4, n // n_paths)).astype(int)
         theta = float(np.mean(np.abs(positions[idx, 0]) * np.pi))
@@ -97,7 +112,7 @@ def braid_pathways(state: np.ndarray, positions: np.ndarray, n_paths: int = 6) -
         num_w = 0.0
         wsum = 0.0
         for i, k in np.ndindex(len(idx), d):
-            w = abs(state[idx[i], k]) ** 2
+            w = abs(state2[idx[i], k]) ** 2
             wsum += w
             num_s += w * np.exp(1j * eps_s[i, k])
             num_w += w * np.exp(1j * eps_w[i, k])
@@ -123,7 +138,11 @@ def bio_resonance(state: np.ndarray, seed: tuple) -> dict:
     reconstructed state phases against the 41.02 Hz bio trigger, then apply the
     coherence boost the resonance grants (original TonalSoul-style logic)."""
     phases = np.angle(state)
-    freqs = np.abs(np.fft.rfft(phases.mean(axis=1)[: min(64, state.shape[0])]))
+    if state.ndim == 1:
+        phases_row = phases
+    else:
+        phases_row = phases.mean(axis=1)
+    freqs = np.abs(np.fft.rfft(phases_row[: min(64, state.shape[0])]))
     if len(freqs) < 2:
         dom = BIO_RESONANCE_HZ
     else:
