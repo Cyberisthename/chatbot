@@ -1,0 +1,270 @@
+{
+  "meta": {
+    "method": "CGLMP I_d numerically maximized over local Haar-random bases (+refinement), deterministic RNG 20260924; P(a,b|x,y) enumerated; explicit convex-hull LP over the (d,d,2,2) deterministic-local-strategy polytope (d^2 per party, d^4 total: 16/81/256 for d=2/3/4). Infeasible LP => no LHV model. Classical generator, no hardware, no loophole-free claim.",
+    "claims": "measured (a) unless tagged",
+    "date": "2026-09-24",
+    "seed": [
+      0.57721,
+      1.618034,
+      2.71828
+    ],
+    "d3_n2_artifact_note": "Environment-/solver-dependent at d=3,n=2: an LP-infeasible reading recurs across runs (lead's independent fresh run reproduced it, I=1.8117 < LHV bound 2), but it is a non-facet observation (CGLMP I < 2), NOT a Bell violation, and is never claimed as one. Claims are limited to cells with measured violation margin above the LHV bound plus LP exclusion."
+  },
+  "rows": [
+    {
+      "d": 2,
+      "label": "product (control)",
+      "I_cglmp": 1.9212,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "expected": "LHV exists"
+    },
+    {
+      "d": 2,
+      "label": "max-entangled (control)",
+      "I_cglmp": 2.7851,
+      "lit_quantum_max_MES": 2.8284,
+      "known_bound_hit": true,
+      "violates": true,
+      "lhv_model_EXISTS": false,
+      "expected": "violates, LHV excluded"
+    },
+    {
+      "d": 2,
+      "n_units": 2,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 2.0305,
+      "margin_over_LHV": 0.0305,
+      "violates": true,
+      "lhv_model_EXISTS": false
+    },
+    {
+      "d": 2,
+      "n_units": 3,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.6763,
+      "margin_over_LHV": -0.3237,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 2,
+      "n_units": 4,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.1189,
+      "margin_over_LHV": -0.8811,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 2,
+      "n_units": 2,
+      "label": "FBSC-qubit-braid(approved engine)",
+      "CHSH": 2.825,
+      "violates": true,
+      "margin_over_LHV": 0.825,
+      "lhv_model_EXISTS": false,
+      "lhv_EXCLUDED": true
+    },
+    {
+      "d": 2,
+      "n_units": 3,
+      "label": "FBSC-qubit-braid(approved engine)",
+      "CHSH": 2.825,
+      "violates": true,
+      "margin_over_LHV": 0.825,
+      "lhv_model_EXISTS": false,
+      "lhv_EXCLUDED": true
+    },
+    {
+      "d": 2,
+      "n_units": 4,
+      "label": "FBSC-qubit-braid(approved engine)",
+      "CHSH": 2.0351,
+      "violates": true,
+      "margin_over_LHV": 0.0351,
+      "lhv_model_EXISTS": false,
+      "lhv_EXCLUDED": true
+    },
+    {
+      "d": 2,
+      "n_units": 2,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 2.3449,
+      "margin_over_LHV": 0.3449,
+      "violates": true,
+      "lhv_model_EXISTS": false,
+      "lhv_EXCLUDED": true
+    },
+    {
+      "d": 2,
+      "n_units": 3,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 0.9618,
+      "margin_over_LHV": -1.0382,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 2,
+      "n_units": 4,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 1.7562,
+      "margin_over_LHV": -0.2438,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 3,
+      "label": "product (control)",
+      "I_cglmp": 1.8803,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "expected": "LHV exists"
+    },
+    {
+      "d": 3,
+      "label": "max-entangled (control)",
+      "I_cglmp": 2.3321,
+      "lit_quantum_max_MES": 2.9147,
+      "known_bound_hit": false,
+      "violates": true,
+      "lhv_model_EXISTS": false,
+      "expected": "violates, LHV excluded"
+    },
+    {
+      "d": 3,
+      "n_units": 2,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.817,
+      "margin_over_LHV": -0.183,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 3,
+      "n_units": 3,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.4517,
+      "margin_over_LHV": -0.5483,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 3,
+      "n_units": 4,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.5184,
+      "margin_over_LHV": -0.4816,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 3,
+      "n_units": 2,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 1.8117,
+      "margin_over_LHV": -0.1883,
+      "violates": false,
+      "lhv_model_EXISTS": false,
+      "lhv_EXCLUDED": true
+    },
+    {
+      "d": 3,
+      "n_units": 3,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 1.2555,
+      "margin_over_LHV": -0.7445,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 3,
+      "n_units": 4,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 1.6245,
+      "margin_over_LHV": -0.3755,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 4,
+      "label": "product (control)",
+      "I_cglmp": 1.7058,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "expected": "LHV exists"
+    },
+    {
+      "d": 4,
+      "label": "max-entangled (control)",
+      "I_cglmp": 1.3484,
+      "lit_quantum_max_MES": 3.0319,
+      "known_bound_hit": false,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "expected": "violates, LHV excluded"
+    },
+    {
+      "d": 4,
+      "n_units": 2,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.414,
+      "margin_over_LHV": -0.586,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 4,
+      "n_units": 3,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.2853,
+      "margin_over_LHV": -0.7147,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 4,
+      "n_units": 4,
+      "label": "FBSC-core(Appendix A)",
+      "I_cglmp": 1.4445,
+      "margin_over_LHV": -0.5555,
+      "violates": false,
+      "lhv_model_EXISTS": true
+    },
+    {
+      "d": 4,
+      "n_units": 2,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 0.9948,
+      "margin_over_LHV": -1.0052,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 4,
+      "n_units": 3,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 0.8542,
+      "margin_over_LHV": -1.1458,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    },
+    {
+      "d": 4,
+      "n_units": 4,
+      "label": "FBSC-qudit-braid",
+      "I_cglmp": 1.4757,
+      "margin_over_LHV": -0.5243,
+      "violates": false,
+      "lhv_model_EXISTS": true,
+      "lhv_EXCLUDED": false
+    }
+  ]
+}
