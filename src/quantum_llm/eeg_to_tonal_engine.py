@@ -176,6 +176,52 @@ class ResonanceMonitor:
                 "peak_hz": peak, "valid": True}
 
     # ------------------------------------------------------------------
+    # TTC spectral-radius F0 (unified fundamental-frequency estimate)
+    # ------------------------------------------------------------------
+    def estimate_f0(self, samples: np.ndarray, fs: float = None) -> float:
+        """Fundamental frequency via the TTC spectral-radius formula.
+
+        The Tonal Theory of Consciousness defines F0 from the dominant mode of
+        the signal's dynamics, not from a bit-count heuristic. For the analytic
+        signal z[n] = x[n] + j*H{x[n]} (H = Hilbert transform), the lag-1
+        complex autocorrelation is the spectral radius (dominant AR(1) pole)
+
+            rho_1 = <z[n-1], z[n]> / <z[n-1], z[n-1]>,
+
+        and the fundamental frequency is
+
+            F0 = (fs / 2*pi) * arg(rho_1).
+
+        For a pure tone x[n] = A cos(2*pi*f0*n/fs + phi), the analytic signal is
+        z[n] = A exp(j(2*pi*f0*n/fs + phi)), so rho_1 = exp(j 2*pi*f0/fs) and the
+        formula returns f0 exactly (sub-bin resolution, no target-frequency bias).
+        Falls back to the un-restricted PSD peak when the pole is not a sustained
+        oscillation (|rho_1| < 0.6). Returns None when the signal is too short or
+        degenerate.
+        """
+        fs = fs or self.fs
+        samples = np.asarray(samples, dtype=float).ravel()
+        if samples.size < 8:
+            return None
+        x = samples - float(np.mean(samples))
+        z = signal.hilbert(x)
+        z0, z1 = z[:-1], z[1:]
+        denom = float(np.vdot(z0, z0).real)
+        if denom <= 1e-18:
+            return None
+        rho = complex(np.vdot(z0, z1) / denom)
+        if abs(rho) < 0.6:
+            return self._psd_peak_f0(samples, fs)
+        f0 = fs * float(np.angle(rho)) / (2.0 * math.pi)
+        return float(abs(f0))
+
+    def _psd_peak_f0(self, samples: np.ndarray, fs: float) -> float:
+        """Un-restricted dominant PSD frequency (robust fallback for F0)."""
+        freqs, psd = signal.welch(samples, fs,
+                                  nperseg=min(len(samples), int(fs)))
+        return float(freqs[int(np.argmax(psd))])
+
+    # ------------------------------------------------------------------
     # Noise-gated streaming update (one window)
     # ------------------------------------------------------------------
     def update(self, samples: np.ndarray, fs: float = None) -> Dict[str, Any]:
@@ -281,26 +327,35 @@ class ResonanceMonitor:
 
         - If ``samples`` (raw signal) is provided, ``resonance_detected`` is the
           noise-gated spectral verdict: it requires a REAL sustained 41.02 Hz
-          component above the local noise floor (the fix).
+          component above the local noise floor (the fix). ``f0`` is the TTC
+          spectral-radius fundamental frequency (``estimate_f0``) — the unified
+          definition; a clean 41.02 Hz carrier reads ~41.02 Hz (reaching the
+          40 Hz threshold the bit heuristic could never cross).
         - If only bits are provided (old callers), the detector CANNOT verify a
-          spectral component, so the trigger stays OFF (``NO_SIGNAL``). The
-          legacy bit-derived f0 estimate is still returned under ``f0`` for
-          display, but it never drives the trigger.
+          spectral component, so the trigger stays OFF (``NO_SIGNAL``) and ``f0``
+          is ``None`` (no fabricated frequency). The retired bit-count value is
+          retained only under ``f0_legacy_estimate`` for display; it is never a
+          frequency and never drives the trigger.
         """
         fs = fs or self.fs
         z_count = int(sum(bits.get("z_bits", [])))
         y_count = int(sum(bits.get("y_bits", [])))
         x_count = int(sum(bits.get("x_bits", [])))
-        f0_est = 10.0 + (z_count * 4.0) + (y_count * 0.5)   # legacy estimate only
+        f0_est = 10.0 + (z_count * 4.0) + (y_count * 0.5)   # retired heuristic — diagnostic only
         q_factor = (x_count * 1.5) / (1.0 + (8 - z_count) * 0.1)
 
         if samples is not None:
             res = self.analyze_signal(samples, fs)
             out = dict(res)
-            out["f0"] = round(res["f0_measured_hz"], 2)     # measured peak
+            f0_sr = self.estimate_f0(samples, fs)
+            out["f0"] = round(f0_sr, 2) if f0_sr is not None else None  # TTC spectral-radius F0
+            out["f0_spectral_radius_hz"] = out["f0"]
+            out["f0_legacy_estimate"] = round(f0_est, 2)
         else:
             out = {
-                "f0": f0_est,                                 # estimate, not measured
+                "f0": None,                                   # no spectral evidence → no fabricated frequency
+                "f0_spectral_radius_hz": None,
+                "f0_legacy_estimate": round(f0_est, 2),       # retired heuristic — never a frequency
                 "f0_measured_hz": None,
                 "snr_db": None,
                 "signal_power_db": None,
