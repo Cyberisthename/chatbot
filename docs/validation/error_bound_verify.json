@@ -1,0 +1,360 @@
+{
+  "method": "numerical-verification-of-FBSC-error-bound-proof",
+  "generated": "2026-09-30T14:13:39+00:00",
+  "fbsc_module": "compression_specialist.py (imported verbatim, no modification)",
+  "seed": [
+    0.57721,
+    1.618034,
+    2.71828
+  ],
+  "measured": {
+    "d=2": [
+      {
+        "n": 8,
+        "d": 2,
+        "stored_amplitudes": 8,
+        "stored_bytes": 128,
+        "dense_ambient_bytes": 4096,
+        "dense_petabytes": 3.637978807091713e-12,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.211892,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 32.0
+      },
+      {
+        "n": 16,
+        "d": 2,
+        "stored_amplitudes": 16,
+        "stored_bytes": 256,
+        "dense_ambient_bytes": 1048576,
+        "dense_petabytes": 9.313225746154785e-10,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.212715,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 4096.0
+      },
+      {
+        "n": 32,
+        "d": 2,
+        "stored_amplitudes": 32,
+        "stored_bytes": 512,
+        "dense_ambient_bytes": 68719476736,
+        "dense_petabytes": 6.103515625e-05,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.203333,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 134217728.0
+      },
+      {
+        "n": 64,
+        "d": 2,
+        "stored_amplitudes": 64,
+        "stored_bytes": 1024,
+        "dense_ambient_bytes": 295147905179352825856,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.205141,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 2.8823037615171174e+17
+      },
+      {
+        "n": 128,
+        "d": 2,
+        "stored_amplitudes": 128,
+        "stored_bytes": 2048,
+        "dense_ambient_bytes": 5444517870735015415413993718908291383296,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.210903,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 2.658455991569832e+36
+      },
+      {
+        "n": 256,
+        "d": 2,
+        "stored_amplitudes": 256,
+        "stored_bytes": 4096,
+        "dense_ambient_bytes": 1852673427797059126777135760139006525652319754650249024631321344126610074238976,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.311015,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 4.523128485832664e+74
+      },
+      {
+        "n": 512,
+        "d": 2,
+        "stored_amplitudes": 512,
+        "stored_bytes": 8192,
+        "dense_ambient_bytes": 214524926879081553593184399971293538039669853129478294043576983099548224481176751628829988770670454843040509730983776813660062124991145119142938384097345536,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.328609,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 2.6187124863169135e+151
+      },
+      {
+        "n": 1024,
+        "d": 2,
+        "stored_amplitudes": 1024,
+        "stored_bytes": 16384,
+        "dense_ambient_bytes": 2876309015779705452366888305262439573788763166307690516374881298523722812888015410123335637158520576337921822077942293722540636301030665959885558890231585990044286294797847764420835513619937505911249327233360092301410410917479406103582609768653235794613608170953380771839155935015675460877365701273987586195456,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.362784,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.7555597020139804e+305
+      }
+    ],
+    "d=3": [
+      {
+        "n": 8,
+        "d": 3,
+        "stored_amplitudes": 24,
+        "stored_bytes": 384,
+        "dense_ambient_bytes": 104976,
+        "dense_petabytes": 9.323741778644035e-11,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.258065,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 273.375
+      },
+      {
+        "n": 16,
+        "d": 3,
+        "stored_amplitudes": 48,
+        "stored_bytes": 768,
+        "dense_ambient_bytes": 688747536,
+        "dense_petabytes": 6.117306980968351e-07,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.23044,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 896806.6875
+      },
+      {
+        "n": 32,
+        "d": 3,
+        "stored_amplitudes": 96,
+        "stored_bytes": 1536,
+        "dense_ambient_bytes": 29648323021629456,
+        "dense_petabytes": 26.333000688109692,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.207459,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 19302293633873.344
+      },
+      {
+        "n": 64,
+        "d": 3,
+        "stored_amplitudes": 192,
+        "stored_bytes": 3072,
+        "dense_ambient_bytes": 54938941124680199754525585428496,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.208798,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.7883769897356835e+28
+      },
+      {
+        "n": 128,
+        "d": 3,
+        "stored_amplitudes": 384,
+        "stored_bytes": 6144,
+        "dense_ambient_bytes": 188642953243817330744333965782600298650851385476413457745551376,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.218025,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 3.0703605671194224e+58
+      },
+      {
+        "n": 256,
+        "d": 3,
+        "stored_amplitudes": 768,
+        "stored_bytes": 12288,
+        "dense_ambient_bytes": 2224135238034315724239036588634580849827501612936466207865677190880577162076262975056028306465753752348986648648782390968336,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.2251,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.8100058903274055e+119
+      },
+      {
+        "n": 512,
+        "d": 3,
+        "stored_amplitudes": 1536,
+        "stored_bytes": 24576,
+        "dense_ambient_bytes": 309173597316622641687265099552313296886423452185653256802952602062439467942648592000287030876576469670241317268713377912082456145621327054145568647659658232680968802139638391724448997158517957409936694394691876425468664074543774127924358984663056,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.246907,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.258030588039643e+241
+      }
+    ],
+    "d=4": [
+      {
+        "n": 8,
+        "d": 4,
+        "stored_amplitudes": 32,
+        "stored_bytes": 512,
+        "dense_ambient_bytes": 1048576,
+        "dense_petabytes": 9.313225746154785e-10,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.205469,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 2048.0
+      },
+      {
+        "n": 16,
+        "d": 4,
+        "stored_amplitudes": 64,
+        "stored_bytes": 1024,
+        "dense_ambient_bytes": 68719476736,
+        "dense_petabytes": 6.103515625e-05,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.207538,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 67108864.0
+      },
+      {
+        "n": 32,
+        "d": 4,
+        "stored_amplitudes": 128,
+        "stored_bytes": 2048,
+        "dense_ambient_bytes": 295147905179352825856,
+        "dense_petabytes": 262144.0,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.207815,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.4411518807585587e+17
+      },
+      {
+        "n": 64,
+        "d": 4,
+        "stored_amplitudes": 256,
+        "stored_bytes": 4096,
+        "dense_ambient_bytes": 5444517870735015415413993718908291383296,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.227776,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.329227995784916e+36
+      },
+      {
+        "n": 128,
+        "d": 4,
+        "stored_amplitudes": 512,
+        "stored_bytes": 8192,
+        "dense_ambient_bytes": 1852673427797059126777135760139006525652319754650249024631321344126610074238976,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.310554,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 2.261564242916332e+74
+      },
+      {
+        "n": 256,
+        "d": 4,
+        "stored_amplitudes": 1024,
+        "stored_bytes": 16384,
+        "dense_ambient_bytes": 214524926879081553593184399971293538039669853129478294043576983099548224481176751628829988770670454843040509730983776813660062124991145119142938384097345536,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.314603,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 1.3093562431584567e+151
+      },
+      {
+        "n": 512,
+        "d": 4,
+        "stored_amplitudes": 2048,
+        "stored_bytes": 32768,
+        "dense_ambient_bytes": 2876309015779705452366888305262439573788763166307690516374881298523722812888015410123335637158520576337921822077942293722540636301030665959885558890231585990044286294797847764420835513619937505911249327233360092301410410917479406103582609768653235794613608170953380771839155935015675460877365701273987586195456,
+        "dense_petabytes": null,
+        "mse_reproducibility": 0.0,
+        "max_abs_diff": 0.0,
+        "time_s": 0.337407,
+        "fold_depth": 11,
+        "compression_ratio_ambient_vs_stored": 8.777798510069902e+304
+      }
+    ]
+  },
+  "analytic": {
+    "storage_crossover": {
+      "dense_vector_bytes": "16 * 2^n",
+      "fbsc_seed_artifact_bytes": 1024,
+      "n_star_vs_1KB": 6,
+      "n_32_ratio": 53687091.2
+    },
+    "ram_budget_crossovers": {
+      "64GB-laptop": {
+        "max_n_dense_statevector": 32,
+        "max_qudits_d2": 32
+      },
+      "1TB-node": {
+        "max_n_dense_statevector": 36,
+        "max_qudits_d2": 36
+      },
+      "4TB-hpc": {
+        "max_n_dense_statevector": 38,
+        "max_qudits_d2": 38
+      }
+    },
+    "wallclock_crossovers": {
+      "1e13 (1 node-h)": {
+        "max_n_dense_depth100": 29
+      },
+      "1e17 (1k-node-day)": {
+        "max_n_dense_depth100": 42
+      }
+    }
+  },
+  "cap_test": {
+    "n_qubits": 8,
+    "targets": {
+      "generator_own_state": "the FBSC state at the known owner seed",
+      "haar_random_8qubit": "dense 2^8-dim unit vector from a seeded RNG"
+    },
+    "search": {
+      "seeds_searched": 400,
+      "note": "single-instance search with ggraph topology fixed (conservative slice of the family; full family is still measure-zero in C^256)"
+    },
+    "best_fit": {
+      "mse_vs_generator_own_state": 0.0,
+      "mse_vs_haar_random": 1.766465387491401,
+      "best_random_seed_found": [
+        0.237782,
+        4.165459,
+        6.021201
+      ],
+      "searches": 400
+    },
+    "reading": "interpretation: the FBSC O(1)-parameter family reproduces its own states at MSE=0 but cannot approximate a generic (Haar-random) state of the same ambient dimension — the expressivity cap that makes the storage bound class-specific."
+  },
+  "platform": {
+    "numpy": "2.2.6",
+    "python": "3.12.3"
+  }
+}
