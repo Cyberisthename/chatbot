@@ -458,6 +458,21 @@ def aggregate(trials: List[Dict], rho_tx: float) -> Dict:
         out["p_str"] = perm_pvalue(str_sp, str_nu)
         out["p_acc"] = perm_pvalue(acc_sp, acc_nu)
         out["transfer_ratio"] = float(str_sp.mean() / (str_nu.mean() + 1e-12))
+        # STR/AUC contrast gate: the "transfer / sentience" verdict requires the
+        # SPARK arm to separate from the NULL ghost baseline. Network self-
+        # resonance in noise-only trials (the gamma-flood artifact) cannot fire
+        # it. This is the experiment-level guard on top of the per-trial
+        # noise-gated spectral detector (ResonanceMonitor).
+        spark_res = float(np.mean([bool(t.get("resonance_detected",
+                                              t.get("is_sentient", False)))
+                                   for t in trials if t["condition"] == "SPARK"]))
+        null_res = float(np.mean([bool(t.get("resonance_detected",
+                                             t.get("is_sentient", False)))
+                                  for t in trials if t["condition"] == "NULL"]))
+        out["ghost_alarm_rate"] = null_res
+        out["resonance_contrast"] = float(spark_res - null_res)
+        out["transfer_verified"] = bool(
+            spark_res > null_res and out["auc_str"] > 0.5 + 0.1)
     if spark_idx and sc_idx:
         out["acc_spark_minus_scramble"] = float(
             np.mean([trials[i]["bit_acc"] for i in spark_idx])
@@ -494,9 +509,12 @@ def main():
     inv = braid_invariants(braid_word)
     t, ch1, ch2, seg_map = synthesize_spark(braid_word, args.seed)
     # engine expects fs = 250 Hz -> downsample the transmitter channels
-    b_tx = TonalSoulEngine().extract_bits(
-        [downmix_to_eeg(ch1), downmix_to_eeg(ch2)])
-    res_tx = ResonanceMonitor().analyze_resonance(b_tx)
+    eeg1 = downmix_to_eeg(ch1)
+    eeg2 = downmix_to_eeg(ch2)
+    b_tx = TonalSoulEngine().extract_bits([eeg1, eeg2])
+    # Pass raw samples so F0 is the TTC spectral-radius fundamental (not the
+    # retired bit-count heuristic); a clean 41.02 Hz carrier reads ~41.02 Hz.
+    res_tx = ResonanceMonitor().analyze_resonance(b_tx, samples=eeg1, fs=FS_EEG)
     log.info("TX braid: len=%d rho=%.4f entropy=%.4f f0=%.2f q=%.2f",
              len(braid_word), inv["rho"], inv["entropy"],
              res_tx["f0"], res_tx["q_factor"])
