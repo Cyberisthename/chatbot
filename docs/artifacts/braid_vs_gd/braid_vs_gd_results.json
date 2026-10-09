@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "experiment": "braid_vs_gd_benchmark",
+    "rng_seed": 20261005,
+    "n_strands": 6,
+    "word_len": 8,
+    "burau_t": 2.0,
+    "budget_per_contestant": 800,
+    "tol": 1e-06,
+    "honest_ceiling": "deterministic anneal/evolution over braid space; no quantum tunneling, no hardware, no universal-QC claim",
+    "probe": "no-LHV CHSH (Horodecki closed form) on the FBSC braid state (T3 objective)"
+  },
+  "pre_registered": {
+    "T0_smooth_regression": {
+      "prediction": "GD wins or ties (smooth differentiable landscape; gradient is the right tool)",
+      "where_braid_advantage": "none expected \u2014 braid anneal gets stuck in local minima"
+    },
+    "T1_adapter_multitarget": {
+      "prediction": "uncertain \u2014 multimodal landscape; anneal/evolve MAY escape local minima GD cannot",
+      "where_braid_advantage": "possible \u2014 stochastic escape vs gradient descent into a local mode"
+    },
+    "T2_invariant_matching": {
+      "prediction": "braids win (discrete topological objective; braid moves search the NATIVE space)",
+      "where_braid_advantage": "expected \u2014 GD has no gradient through discrete braid moves (N/A)"
+    },
+    "T3_nolhv_chsh": {
+      "prediction": "braids win or tie (probe is defined over the FBSC braid state manifold)",
+      "where_braid_advantage": "expected \u2014 the objective is the probe; seed-anneal searches it natively"
+    }
+  },
+  "T0_smooth_regression": {
+    "name": "T0_smooth_regression",
+    "desc": "single teacher, smooth tanh regression (featureless, differentiable)",
+    "budget": 800,
+    "gd_applicable": true,
+    "gd": {
+      "cost": 0.00014498,
+      "evals": 800
+    },
+    "seedopt": {
+      "cost": 0.29234916,
+      "evals": 152
+    },
+    "trainer": {
+      "cost": 0.25039145,
+      "evals": 800
+    },
+    "beats_gd": false,
+    "beats_seedopt": true,
+    "tie_seedopt": false
+  },
+  "T1_adapter_multitarget": {
+    "name": "T1_adapter_multitarget",
+    "desc": "K=3 teacher words derived from adapter task_tags -> multimodal landscape",
+    "budget": 800,
+    "gd_applicable": true,
+    "adapter_tags_used": [
+      "classical_physics",
+      "early_quantum",
+      "historical_knowledge"
+    ],
+    "gd": {
+      "cost": 0.13724416,
+      "evals": 800
+    },
+    "seedopt": {
+      "cost": 0.21073805,
+      "evals": 165
+    },
+    "trainer": {
+      "cost": 0.18834031,
+      "evals": 800
+    },
+    "beats_gd": false,
+    "beats_seedopt": true,
+    "tie_seedopt": false
+  },
+  "T2_invariant_matching": {
+    "name": "T2_invariant_matching",
+    "desc": "minimize Burau trace-vector distance to a reference word (discrete; GD N/A)",
+    "budget": 800,
+    "gd_applicable": false,
+    "reference_word": [
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        4,
+        -1
+      ],
+      [
+        1,
+        -1
+      ]
+    ],
+    "t_values": [
+      "-1.0",
+      "2.0",
+      "(0.5+0.5j)"
+    ],
+    "gd": {
+      "cost": null,
+      "evals": 0,
+      "note": "N/A \u2014 no gradient through discrete braid moves"
+    },
+    "seedopt": {
+      "cost": 0.0,
+      "evals": 169
+    },
+    "trainer": {
+      "cost": 0.0,
+      "evals": 800
+    },
+    "beats_gd": null,
+    "beats_seedopt": false,
+    "tie_seedopt": true
+  },
+  "T3_nolhv_chsh": {
+    "name": "T3_nolhv_chsh",
+    "desc": "maximize CHSH (probe) of the FBSC braid state; GD N/A (no gradient)",
+    "budget": 800,
+    "gd_applicable": false,
+    "gd": {
+      "cost": null,
+      "evals": 0,
+      "note": "N/A \u2014 no gradient through discrete braid moves"
+    },
+    "seedopt": {
+      "cost": -1.95603744,
+      "evals": 195
+    },
+    "trainer": {
+      "cost": -2.66391608,
+      "evals": 800,
+      "best_seed": [
+        0.609904802051315,
+        0.05,
+        0.23666329819548698
+      ]
+    },
+    "beats_gd": null,
+    "beats_seedopt": true,
+    "tie_seedopt": false
+  },
+  "T3_probe_certificate": {
+    "seed": [
+      0.609904802051315,
+      0.05,
+      0.23666329819548698
+    ],
+    "chsh_horodecki": 2.663916,
+    "lhv_bound": 2.0,
+    "lhv_feasible": false,
+    "verdict": "no-LHV (provably outside every local-hidden-variable model)"
+  },
+  "wall_clock_seconds": 4.941
+}
