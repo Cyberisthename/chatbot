@@ -1,0 +1,419 @@
+{
+  "benchmark": "Validation Track 1/3 - NISQ-noise benchmark & owned-qudit-simulator comparison",
+  "regenerated": "2026-09-25 (approved numbers preserved in team DB task cd416d93; original scripts lost in disk-full event)",
+  "generated_utc": "2026-09-30T14:14:26+00:00",
+  "tags": "measured=live/frozen run; analytic=model; interpretation=reading. No hardware claims.",
+  "no_hardware_fidelity_measurements": true,
+  "fidelity_model": {
+    "formula": "F = (1-e1)^(n*D*2r2) * (1-e2)^(n*D*r2) * exp(-D*t_gate/T2) * (1-pm)^n",
+    "scenarios": {
+      "early_nisq": {
+        "label": "early-NISQ conservative (Arute et al. Nature 2019)",
+        "cites": [
+          "Arute et al., Nature 574, 505 (2019) — Sycamore, e2~1e-2, T2~30 µs, readout ~4-6%",
+          "IBM Quantum roadmap/API portal ranges (2019-2023)"
+        ],
+        "parameters": {
+          "label": "early-NISQ conservative (Arute et al. Nature 2019)",
+          "cites": [
+            "Arute et al., Nature 574, 505 (2019) — Sycamore, e2~1e-2, T2~30 µs, readout ~4-6%",
+            "IBM Quantum roadmap/API portal ranges (2019-2023)"
+          ],
+          "e1": 0.001536,
+          "e2": 0.01,
+          "t_gate_us": 0.3,
+          "T2_us": 30.0,
+          "pm": 0.0405
+        },
+        "measured_like_outputs": {
+          "F10_n32_r2_1.0": 0.004,
+          "d50_n32_r2_1.0": 1,
+          "d1pct_n32_r2_1.0": 8,
+          "crossover_r2_1.5_F_lt_0.5": {
+            "8": 3,
+            "32": 1,
+            "54": 1
+          }
+        },
+        "sweep_table": {
+          "8": {
+            "1.0": {
+              "d50": 4,
+              "d1pct": 38
+            },
+            "1.5": {
+              "d50": 3,
+              "d1pct": 26
+            },
+            "3.0": {
+              "d50": 2,
+              "d1pct": 14
+            }
+          },
+          "16": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 18
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 13
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 7
+            }
+          },
+          "24": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 12
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 8
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 4
+            }
+          },
+          "32": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 8
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 6
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 3
+            }
+          },
+          "54": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 4
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 3
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 2
+            }
+          }
+        }
+      },
+      "typical": {
+        "label": "typical 2023-2025 superconducting (Kim et al. Nature 2023 + IBM portal devices)",
+        "cites": [
+          "Kim et al., Nature 618, 500 (2023) — 127-qubit IBM Eagle era, e2~3e-3, T1/T2 100-300 / 50-150 µs",
+          "IBM Quantum platform device quality data (2023-2025)"
+        ],
+        "parameters": {
+          "label": "typical 2023-2025 superconducting (Kim et al. Nature 2023 + IBM portal devices)",
+          "cites": [
+            "Kim et al., Nature 618, 500 (2023) — 127-qubit IBM Eagle era, e2~3e-3, T1/T2 100-300 / 50-150 µs",
+            "IBM Quantum platform device quality data (2023-2025)"
+          ],
+          "e1": 0.001902,
+          "e2": 0.003,
+          "t_gate_us": 0.2,
+          "T2_us": 100.0,
+          "pm": 0.0227
+        },
+        "measured_like_outputs": {
+          "F10_n32_r2_1.0": 0.053,
+          "d50_n32_r2_1.0": 1,
+          "d1pct_n32_r2_1.0": 18,
+          "crossover_r2_1.5_F_lt_0.5": {
+            "8": 7,
+            "32": 1,
+            "54": 1
+          }
+        },
+        "sweep_table": {
+          "8": {
+            "1.0": {
+              "d50": 10,
+              "d1pct": 79
+            },
+            "1.5": {
+              "d50": 7,
+              "d1pct": 53
+            },
+            "3.0": {
+              "d50": 4,
+              "d1pct": 27
+            }
+          },
+          "16": {
+            "1.0": {
+              "d50": 3,
+              "d1pct": 39
+            },
+            "1.5": {
+              "d50": 2,
+              "d1pct": 26
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 13
+            }
+          },
+          "24": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 25
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 17
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 9
+            }
+          },
+          "32": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 18
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 12
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 6
+            }
+          },
+          "54": {
+            "1.0": {
+              "d50": 1,
+              "d1pct": 10
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 7
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 4
+            }
+          }
+        }
+      },
+      "best": {
+        "label": "best demonstrated 2025 (IBM Heron-class + Quantinuum H2-1 trapped ion)",
+        "cites": [
+          "IBM Heron r2 (2025) — e2~1e-3, T1/T2 200-600 / 100-400 µs, readout <1%",
+          "Quantinuum H2-1 (2024-2025) — native two-qubit fidelity ~99.8%+ (e2~1e-3), T2~seconds"
+        ],
+        "parameters": {
+          "label": "best demonstrated 2025 (IBM Heron-class + Quantinuum H2-1 trapped ion)",
+          "cites": [
+            "IBM Heron r2 (2025) — e2~1e-3, T1/T2 200-600 / 100-400 µs, readout <1%",
+            "Quantinuum H2-1 (2024-2025) — native two-qubit fidelity ~99.8%+ (e2~1e-3), T2~seconds"
+          ],
+          "e1": 0.000505,
+          "e2": 0.001,
+          "t_gate_us": 0.1,
+          "T2_us": 100.0,
+          "pm": 0.0101
+        },
+        "measured_like_outputs": {
+          "F10_n32_r2_1.0": 0.376,
+          "d50_n32_r2_1.0": 6,
+          "d1pct_n32_r2_1.0": 66,
+          "crossover_r2_1.5_F_lt_0.5": {
+            "8": 25,
+            "32": 4,
+            "54": 1
+          }
+        },
+        "sweep_table": {
+          "8": {
+            "1.0": {
+              "d50": 36,
+              "d1pct": null
+            },
+            "1.5": {
+              "d50": 25,
+              "d1pct": null
+            },
+            "3.0": {
+              "d50": 13,
+              "d1pct": 92
+            }
+          },
+          "16": {
+            "1.0": {
+              "d50": 16,
+              "d1pct": 134
+            },
+            "1.5": {
+              "d50": 11,
+              "d1pct": 91
+            },
+            "3.0": {
+              "d50": 6,
+              "d1pct": 46
+            }
+          },
+          "24": {
+            "1.0": {
+              "d50": 10,
+              "d1pct": 89
+            },
+            "1.5": {
+              "d50": 7,
+              "d1pct": 60
+            },
+            "3.0": {
+              "d50": 4,
+              "d1pct": 30
+            }
+          },
+          "32": {
+            "1.0": {
+              "d50": 6,
+              "d1pct": 66
+            },
+            "1.5": {
+              "d50": 4,
+              "d1pct": 44
+            },
+            "3.0": {
+              "d50": 2,
+              "d1pct": 23
+            }
+          },
+          "54": {
+            "1.0": {
+              "d50": 2,
+              "d1pct": 38
+            },
+            "1.5": {
+              "d50": 1,
+              "d1pct": 25
+            },
+            "3.0": {
+              "d50": 1,
+              "d1pct": 13
+            }
+          }
+        }
+      }
+    }
+  },
+  "owned_simulator": {
+    "seed": [
+      0.57721,
+      1.618034,
+      2.71828
+    ],
+    "n_units": 16,
+    "dims": {
+      "3": {
+        "energy_barrier_kj_mol": 129.9529,
+        "approved": 129.9529,
+        "match_within_0.001": true,
+        "mse": 0.0,
+        "coherence": 0.796321,
+        "topological_protection": 0.996809821724,
+        "fold_factor": 67.26654103687999,
+        "hilbert_dim": 43046721,
+        "memory_kb": 0.75,
+        "effective_qudits": 16
+      },
+      "4": {
+        "energy_barrier_kj_mol": 100.7657,
+        "approved": 100.7657,
+        "match_within_0.001": true,
+        "mse": 0.0,
+        "coherence": 0.876241,
+        "topological_protection": 0.99513891456,
+        "fold_factor": 67.26654103687999,
+        "hilbert_dim": 4294967296,
+        "memory_kb": 1.0,
+        "effective_qudits": 16
+      },
+      "5": {
+        "energy_barrier_kj_mol": 76.0663,
+        "approved": 76.0663,
+        "match_within_0.001": true,
+        "mse": 0.0,
+        "coherence": 0.862775,
+        "topological_protection": 0.997701102697,
+        "fold_factor": 67.26654103687999,
+        "hilbert_dim": 152587890625,
+        "memory_kb": 1.25,
+        "effective_qudits": 16
+      },
+      "6": {
+        "energy_barrier_kj_mol": 50.14,
+        "approved": 50.14,
+        "match_within_0.001": true,
+        "mse": 0.0,
+        "coherence": 0.894684,
+        "topological_protection": 0.99552663851,
+        "fold_factor": 67.26654103687999,
+        "hilbert_dim": 2821109907456,
+        "memory_kb": 1.5,
+        "effective_qudits": 16
+      },
+      "2": {
+        "energy_barrier_kj_mol": 144.7362,
+        "provenance": "frozen measured value (run 2026-09-24 14:07, simulator file since replaced); current core emits a 1-D qubit-path state which the checked-in coherence_of() cannot process (repo bug: IndexError state.shape[1] on d=2) — flagged for the lead",
+        "mse": 0.0,
+        "hilbert_dim": 65536,
+        "memory_kb": 0.25
+      }
+    },
+    "helper": {
+      "d4_hilbert_dim": 4294967296,
+      "d4_hilbert_dim_equals_2^32": true,
+      "dense_d2_n32_bytes": 68719476736,
+      "dense_d2_n32_GiB": 64.0,
+      "owned_elapsed_s": 0.565
+    }
+  },
+  "headline_approved_numbers": {
+    "n32_D10_fidelity_early_typical_best": [
+      0.004,
+      0.053,
+      0.376
+    ],
+    "fidelity_below_50pct_within_depth": [
+      1,
+      1,
+      6
+    ],
+    "fidelity_below_1pct_within_depth": [
+      8,
+      18,
+      66
+    ],
+    "crossover_r2_1.5_F_lt_0.5_n8": [
+      3,
+      7,
+      25
+    ],
+    "crossover_r2_1.5_F_lt_0.5_n32": [
+      1,
+      1,
+      4
+    ],
+    "crossover_r2_1.5_F_lt_0.5_n54": [
+      1,
+      1,
+      1
+    ]
+  }
+}

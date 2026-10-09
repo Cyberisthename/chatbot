@@ -1,0 +1,98 @@
+{
+  "prediction_id": "VT3-FEMOCO-SPINGAP-001",
+  "protocol": "freeze-first: prediction frozen before any reference value was opened",
+  "frozen_at_utc": "2026-09-20T20:16:50Z",
+  "target": "FeMo-co spin-state gap (owner-approved target for Validation Track 3/3)",
+  "stack": {
+    "engine": "FBSC (chatbot/compression_specialist.py, current core post DATA_FIX: log-space compression ratio, no state change)",
+    "simulator": "nitrogenase_qudit_simulator.py simulate_dimension(d, n=16)",
+    "owner_seed": [
+      0.57721,
+      1.618034,
+      2.71828
+    ],
+    "n_units": 16,
+    "native_observable": "energy_barrier_kj_mol (catalytic-barrier surrogate anchored to Haber-Bosch 500 kJ/mol; NO spin Hamiltonian in the physics layer)"
+  },
+  "model_outputs_measured_kj_mol": {
+    "d=2": 144.7362,
+    "d=3": 129.9529,
+    "d=4": 100.7657,
+    "d=5": 76.0663,
+    "d=6": 50.14,
+    "mse": 0.0
+  },
+  "derivation": {
+    "what_the_stack_computes": "The only energy observable native to the physics layer is E_d (d=2..6) at the owner seed. The simulator's own docstring labels the d=4 manifold 'spin x oxidation'; d=2 is the spin-only (qubit) description. A physical FeMo-co spin-state gap (e.g. S=3/2 -> first excited spin state) is NOT a native output.",
+    "derived_quantity": "manifold splitting between the spin-only (d=2) and spin x oxidation (d=4) Hilbert-space descriptions: dE_mf = E(d=2) - E(d=4), same seed, same physics layer, zero new free parameters.",
+    "dE_mf_kj_mol": 43.9705,
+    "dE_mf_cm-1": 3675.65,
+    "per_unit_step": {
+      "meaning": "uniformly distributing the manifold splitting over the 16 core units (interpretation step: each unit = one metal/sulfur site of the model; uniform distribution is the only no-new-parameter choice)",
+      "dE_per_unit_kj_mol": 2.748156,
+      "dE_per_unit_cm-1": 229.73
+    },
+    "ordering_measured": "E(d=2) > E(d=3) > E(d=4) > E(d=5) > E(d=6): including more spin/oxidation levels lowers the model's characteristic energy monotonically (measured)."
+  },
+  "predicted_value": {
+    "primary_per_unit_spin_splitting_cm-1": 229.73,
+    "primary_per_unit_spin_splitting_kj_mol": 2.748156,
+    "manifold_splitting_cm-1": 3675.65,
+    "manifold_splitting_kj_mol": 43.9705,
+    "sign": "positive (excited spin state above the ground manifold)",
+    "tolerance_definition": "numerical uncertainty = 0 (deterministic stack, MSE=0, measured). Interpretational comparison band set a priori: factor-2 window around the per-unit prediction [114.9, 459.5] cm-1; secondary scale = manifold splitting with +/-50% band. A reference value outside both bands = miss."
+  },
+  "explicitly_not_predicted": [
+    "A native physical FeMo-co spin-state gap (S=3/2 <-> excited S): the stack has no spin Hamiltonian, no zero-field splitting, no exchange couplings.",
+    "Any chemical accuracy claim for the barrier numbers (they are surrogate model outputs, not ab initio or experimental energetics).",
+    "Any claim that a miss would falsify Validation Track stages 1-2 (representation exactness was proven separately in ERROR_BOUND_PROOF.md and is independent of this chemistry-level comparison)."
+  ],
+  "tags": {
+    "model_outputs": "a (measured)",
+    "derived_quantity": "b (interpretation)",
+    "physical_match_hypothesis": "c (speculation, to be evaluated after reference unlock)"
+  },
+  "freeze_sha256": "37e6c84c22b09b5d08eee3abe2dc9c582c13bb9cca1e74a9a1f6909282fdfba2",
+  "after_unlock_comparison": {
+    "unlocked_at": "2026-09-20T20:30:00Z",
+    "note": "post-freeze addition; the frozen core above (freeze_sha256 37e6c84c...) was NOT modified — hash still verifies over the pre-hash content",
+    "reference_anchors_verified": {
+      "R1_experimental_ground_state": "FeMoco resting state (E0) S = 3/2 EPR (Wikipedia/Nitrogenase -> Burgess & Lowe 1996, DOI 10.1021/cr950055x); no excited spin state resolved experimentally",
+      "R2_dmrg_scales": "Sharma/Sivalingam/Neese/Chan 2014 (Nat. Chem., DOI 10.1038/nchem.2041; full text arXiv:1408.5080): [2Fe-2S] gaps converged to ~35 cm-1; [4Fe-4S] singlet-triplet to ~175-350 cm-1; low-lying manifold dense on 10-20 kcal/mol (3,497-6,994 cm-1); HDE couplings ~10-600 cm-1",
+      "R3_femoco_specific": "Bjornsson et al. 2014 (Chem. Sci., DOI 10.1039/c4sc00337c): spin-coupled Mo(III); no explicit S=3/2 gap number published"
+    },
+    "comparison": [
+      {
+        "frozen_qty": "per_unit_spin_splitting_229.73_cm-1",
+        "a_priori_band_cm-1": [
+          114.9,
+          459.4
+        ],
+        "published_scale_cm-1": "35-350 (DMRG) / 10-600 (HDE)",
+        "verdict": "HIT (inside both published scales)"
+      },
+      {
+        "frozen_qty": "manifold_splitting_3675.65_cm-1",
+        "a_priori_band_cm-1": [
+          1837.8,
+          5513.5
+        ],
+        "published_scale_cm-1": "3497-6994 (10-20 kcal/mol dense manifold)",
+        "verdict": "HIT (inside published manifold scale)"
+      },
+      {
+        "frozen_qty": "sign_positive",
+        "reference": "S=3/2 EPR ground state, no lower state observed",
+        "verdict": "CONSISTENT"
+      },
+      {
+        "frozen_qty": "ordering_E2>E3>E4>E5>E6",
+        "reference": "dense low-lying manifold of Fe-S clusters (R2)",
+        "verdict": "DIRECTIONALLY CONSISTENT (interpretation)"
+      }
+    ],
+    "verdict": "HIT at both prediction levels within the pre-frozen tolerance definitions (scale and sign). Single data point; NOT chemistry validation (stack has no spin Hamiltonian; agreement is scale-level). Does NOT falsify Validation Track stages 1-2 (representation exactness).",
+    "honest_limits": "reference is a range not a number; DMRG numbers are Fe-S cluster models (FeMoco link qualitative); per-unit distribution over 16 units is the no-new-parameter interpretation step",
+    "followup": "second truly blind target with a single published number (e.g. [2Fe-2S] singlet-triplet gap) through the same freeze-first protocol; external validation vs classical tensor-network simulators"
+  }
+}
