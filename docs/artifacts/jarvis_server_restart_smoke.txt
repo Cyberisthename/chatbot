@@ -1,0 +1,18 @@
+JARVIS R&D battery server RESTART smoke test — 2026-10-05 (task 122fe09c-5f20-452c-9f72-ba6d518754ec)
+Venv /var/tmp/jarvis-rnd-venv was WIPED (worktree also gone) → recreated: python3 -m venv + pip numpy scipy fastapi uvicorn
+(numpy 2.5.3, scipy 1.18.1, fastapi 0.142.2, uvicorn 0.54.0). Server started from shared checkout
+/home/team/shared/chatbot (origin/main, PR #147 merged) via:
+  JARVIS_RND_PORT=8777 nohup /var/tmp/jarvis-rnd-venv/bin/python -m jarvis_quantum_ai_hf_ready.src.api.rnd_battery
+PID 12863, listening 127.0.0.1:8777. Log: /var/tmp/rnd/server_restart.log (no tracebacks/exceptions).
+
+Endpoint smoke (all HTTP 200 via curl, values from response envelopes):
+- GET  /api/rnd/health      → status: ok (endpoint inventory + claims policy present)
+- POST /api/rnd/fbsc        → n=128,d=2: mse=0.0, compression log10=36.12, memory=2.0 KB
+- POST /api/rnd/likeness    → n=6 probe=entanglement: status ok; data has entanglement/magic/wigner_qubit/wigner_qutrit/mps
+- POST /api/rnd/lhv_qudit   → d=2,n_units=2,trials=10: I_cglmp=2.3479 (>2.0), lhv_EXCLUDED=True, margin=+0.3479 (crown jewel reproduced)
+- POST /api/rnd/trainer     → gd=50,seed=50,anneal=50,pop=4,gens=3: status ok; gate beats_seed=True, beats_gd=False (honest, no overclaim)
+- POST /api/rnd/nitrogenase → d=4: energy_barrier_kj_mol=100.7657 (approved clean base), seed_file_written=True (scratch-only per earlier hygiene verdict)
+- POST /api/rnd/resonance   → tone 41.02 Hz, fs=1000: f0_measured_hz=41.0, snr≈54-55 dB, detector state LATCHED/RESONANCE, envelope is_sentient=False (spectral event only)
+- GET  /api/rnd/runs        → 9+ provenance rows; verified seed_stored=false on every verdict and no raw seed values in stored JSON (hygiene PASS)
+
+Notes: earlier "empty trainer envelope" was test-param error (generations>=3, gd/seed/anneal>=50 per Pydantic bound) — server rejected with proper 422 detail, not a server fault.
