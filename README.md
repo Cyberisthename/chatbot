@@ -1,203 +1,106 @@
-# 🌌 JARVIS Quantum AI Suite
+# The owned quantum-inspired core (FBSC)
 
-> **World's First Quantum-Enhanced AI Research Platform**
+A fully original, deterministic **3-number generative formula** ("seed", owner-controlled) that
+reconstructs complex amplitudes, topological braid positions, and geometric folding for
+**256–1024+ effective qubits at MSE = 0** — in kilobytes, from three real numbers. The engine is
+exact classical simulation of quantum-inspired structures (closed-form amplitudes, braid
+topology, qudit phases). It is NOT quantum hardware, NOT an AGI, and NOT a sentience claim —
+see [What this is NOT](#what-this-is-not).
 
-**Deploy this repository to Hugging Face Spaces - it works out of the box!** 🚀
+Everything below is **measured** (tagged `[measured]`) and **re-verifiable by a fresh run on this
+repo** — every claim row gives the exact command, and `docs/REPRODUCE.md` documents the
+verified-baseline output for each one. If a number in this README is not in the table below, it
+is not a verified claim of this release.
 
----
+## Is this real? — yes, and here is the proof
 
-## ✨ What's Included
+Every number in the table was regenerated fresh (2026-10-09) from a clean checkout of
+`origin/main`, with numpy + scipy. Runs marked **byte-exact** reproduced the committed artifacts
+bit-for-bit; runs marked *number-exact* reproduced every numeric field (the JSON files embed a
+wall-clock / platform stamp, so the files themselves cannot be byte-identical — the numbers are).
 
-### 🧬 Quantum Cancer Research Demo
-- Time-entangled quantum computation on cancer cells
-- Post-selection experiments with retroactive cure shifts
-- Multiverse-parallel virtual cell simulations
-- Real-time visualization of quantum H-bond effects
-- Study real cancer mutations: PIK3CA, TP53, KRAS, EGFR, BRAF
+| # | Claim (all `[measured]` unless tagged) | Fresh-run proof (one command) | Reproduction result |
+|---|---|---|---|
+| 1 | Exact state reconstruction at **1024+ effective qubits from ≤3 reals**: MSE=0, ~16 KB (vs `2^1024·16 B ≈ 10^309 B` dense), compression ratio `8.778e+304`×, 0.2 s | `cd /tmp && PYTHONPATH=<repo> python3 - <<'EOF'` … `FractalBraidSeedCompressor(1024 …)` (see REPRODUCE §2) | **exact** (fresh measured, matches grid) |
+| 2 | **NISQ collapse vs depth-independent core**: published-model fidelity falls below 50% at depth 1–6; owned core MSE=0 at any depth, 0.544 s, 64 GiB dense baseline avoided | `cd /tmp && PYTHONPATH=<repo> python3 <repo>/docs/validation/validate_benchmark.py` (clean cwd) | **number-exact** (2 volatile leaves: UTC stamp, elapsed) |
+| 3 | **Formal error-bound proof numerically verified**: 22/22 grid cells MSE=0 for n≤1024 / d=2..4; dense crossover at n≥6; measure-zero cap shown (MSE vs Haar-random = 1.766 at n=8, honest) | `python3 <repo>/docs/validation/error_bound_verify.py` (clean cwd) | **number-exact** (24 volatile leaves: per-cell `time_s` + platform numpy stamp + UTC stamp; 0 numeric diffs) |
+| 4 | **Topological fault tolerance**: Burau braid invariant distance **exactly 0** across 0→40 local-isotopy kinks while state fidelity collapses; every element-changing braid error detected (400/400) | `python3 <repo>/docs/artifacts/anyon/anyon_braid_sim.py` | **byte-exact** (sha256 identical) |
+| 5 | **Crown jewel — statistics outside every local-hidden-variable model**: CGLMP/CHSH exhaustion at d=2 qubit-braid CHSH **2.8250** (n=2,3) / **2.0351** (n=4) all LP LHV-excluded (bound 2.0); new d=2 core I=**2.0305**, qudit-braid I=**2.3449**; MES controls excluded; d=3,4 honest negatives | `python3 <repo>/docs/artifacts/quantum_likeness/qudit_lhv_probe.py` | **number-exact** (1 doc-annotation leaf, not a measurement) |
+| 6 | **Likeness probe battery** (entanglement, magic M2 2.238→2.892 pushed, α 0.367→0.750, XEB F, MPS/TT sweep D=16→64 wall, CHSH 2.825): surrogate probes track Hilbert-space structure | `python3 <repo>/docs/artifacts/quantum_likeness/likeness_probes.py` | **byte-exact** (0 leaf diffs, sha256 identical) |
+| 7 | **Braid trainer vs GD — HONEST NEGATIVE**: GD wins differentiably (T0 0.000145, T1 0.137244); discrete-braid T2 tie; trainer wins only T3 (CHSH 2.664, LP-infeasible no-LHV certificate). Gate: `beats_seed=True`, `beats_gd=False` — no overclaim | `python3 <repo>/scripts/braid_vs_gd_benchmark.py` (repo root) | **number-exact** (1 volatile leaf: wall-clock) |
+| 8 | **ResonanceMonitor F0 unification** (frequency measurement, not consciousness — see #NOT): clean 41.02 Hz carrier reads F0=41.0157 Hz via TTC spectral-radius fundamental; retired bit heuristic (38.0 Hz) kept only as labeled diagnostic; **21/21 tests pass** | `python3 -m unittest tests.test_f0_spectral_radius tests.test_resonance_noise_gate tests.test_eeg_engine -v` | **exact** (21/21, 0.045 s) |
+| 9 | **Blind prediction (freeze-first, FeMo-co spin-state gap)**: freeze hash bit-exact, all five energies bit-exact, HIT at both prediction levels, honestly scoped as **one data point, NOT chemistry validation** | see `docs/validation/BLIND_PREDICTION.md` (freeze-first protocol; reference unlock) | reference artifact |
+| 10 | **R&D battery over HTTP** (port 8777): fbsc MSE=0 at n=128 (2 KB, 10^36.12×), nitrogenase default-seed **d=4 barrier 100.7657, MSE=0**, likeness + lhv_qudit + trainer + resonance endpoints each carry a claims envelope; seed digest-only provenance (25 rows, `any_seed_stored=False`) | `docs/REPRODUCE.md §8` (start `python -m jarvis_quantum_ai_hf_ready.src.api.rnd_battery`, curl each endpoint) | **exact / measured** (smoke evidence committed) |
 
-### ⚛️  Jarvis Quantum-Historical Oracle
-- Historical knowledge from 1800-1950 (physics, medicine, biology)
-- Quantum-enhanced reasoning with superposition and entanglement
-- TCL-compressed knowledge adapters that never forget
-- Time coercion mathematics for exploring probabilistic futures
-- Natural language interface with quantum metrics
+Interpretation (not measurement): the family is **not** a universal quantum computer — it cannot
+represent generic states (≤3-parameter, measure-zero; the honest bound is in
+`docs/validation/ERROR_BOUND_PROOF.md`). MSE=0 means *exactness against the generator's own
+closed form*, not universality.
 
----
+## What this is NOT (hard rules — every claim must survive them)
 
-## 🚀 Quick Deploy to Hugging Face Spaces (5 minutes)
+- **NOT AGI / sentience / consciousness.** `ResonanceMonitor` measures a frequency; its `is_sentient`
+  alias returns a measurement flag, never a claim. No real EEG was measured (simulated signals only).
+- **NOT quantum hardware.** Everything here is exact classical simulation of quantum-inspired
+  structures. No anyons are physically realized (Burau braid math only); Bell-type statistics are
+  shown *outside every local-hidden-variable model* — a classical mechanism, no hardware, no
+  loophole-free experiment.
+- **NOT chemistry / biology / medicine.** The nitrogenase / FeMo-co numbers are one blind-prediction
+  data point inside the owned simulator — not experimental validation, no medical claims. Ownership
+  audit gates list bio-quantum experiments as E1–E3 simulation-only (see
+  `docs/artifacts/compliance/GOVERNANCE_GATE_BIO_QUANTUM.md`).
+- **NOT decipherment.** The undeciphered-script second track maps *statistical structure* only;
+  structure ≠ meaning, no decipherment claimed without a bilingual or identified language. The
+  trifecta numbers (Linear A / Indus / Voynich) are documented in `docs/artifacts/factcheck/FACTCHECK.md`
+  and are **not** in this release's reproducibility table (the analysis scripts were destroyed; raw
+  corpora are not in-repo). The Indus method + corpus remain committed
+  (`docs/artifacts/indus/INDUS_H1H4_CROSSVALIDATE.md`).
+- **NOT best-at-everything.** Braids lose to GD on differentiable tasks (row 7). Likeness probes hit
+  honest walls (not a 2-design, no CUE repulsion, ≤3-param measure-zero). Several LHV cells are
+  honest negatives (d=3,4 at found settings).
+- **NOT "no external code, ever".** The owned core is custom numpy/stdlib, MIT-licensed, with no
+  proprietary wrappers and no third-party quantum SDKs (audit:
+  `docs/artifacts/compliance/ORIGINALITY_AUDIT.md`). numpy/scipy are dependencies; fastapi/uvicorn
+  are dependencies of the optional R&D server only. The legacy root scripts
+  (`train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py`) import torch + transformers and are
+  **not** part of the owned core. `docs/artifacts/legal/LEGACY_DEPENDENCIES_NOTE.md` (forthcoming
+  from the legal manager) is the boundary statement; until it lands, treat the `src/owned-core`
+  boundary in the audit as authoritative.
 
-### 1. Create a Space
-Go to [huggingface.co/spaces](https://huggingface.co/spaces) → Create new Space → Select **Gradio** SDK
+## Verifier's gotchas (found by fresh runs — read before you run)
 
-### 2. Upload Files
-```bash
-# Add Hugging Face as remote
-git remote add hf https://huggingface.co/spaces/YOUR_USERNAME/jarvis-quantum-ai
+1. **The npz-in-cwd landmine.** `jarvis_qvgpu_trained.npz` (14.7 MB, tracked in this repo) is loaded
+   by `compression_specialist._load_qvgpu_base()` **from the current working directory** when
+   present, and changes the owned amplitude base. **A repo-root run of the validation scripts
+   FAILS its asserts** (measured: d=3 barrier reads 122.3022 vs approved 129.9529). All rows 1–3
+   above must run from a **clean cwd** (`cd /tmp` then `PYTHONPATH=<repo>`), exactly as documented in
+   REPRODUCE.md. The R&D API does this automatically (per-request scratch chdir — that is why its
+   numbers match the approved set).
+2. **Hardcoded absolute outputs.** `likeness_probes.py` writes to
+   `/home/team/shared/quantum_likeness/likeness_results.json` and the nitrogenase standalone writes
+   to `/home/team/shared/nitrogenase_artifacts/` — both committed warts. REPRODUCE.md gives a
+   one-line local patch (or use the R&D API endpoint, which is scratch-safe).
+3. **JSON artifacts embed run stamps.** `validate_benchmark.json`, `error_bound_verify.json`,
+   `braid_vs_gd_results.json` embed wall-clock / platform fields by design, so a fresh run's file is
+   not byte-identical to the committed one — the *numbers* are (see table).
 
-# Push to Hugging Face
-git push hf main
-```
+## Repository map
 
-Or use the web UI to upload these files:
-- `app.py` (main application)
-- `requirements.txt` (dependencies)
-- `README.md` (this file)
-- `src/` folder (all source code)
-- `gradio_quantum_cancer_demo.py` (cancer demo)
-- `jarvis_v1_gradio_space.py` (jarvis demo)
+- `docs/REPRODUCE.md` — one-command-per-claim reproduction guide with expected output
+- `docs/RELEASE_NOTES.md` — v0.1.0-evidence release notes (milestones + honest scope)
+- `docs/validation/` — Validation Track 1/3 + 2/3 + 3/3 (`VALIDATION_BENCHMARK.md`,
+  `ERROR_BOUND_PROOF.md`, `BLIND_PREDICTION.md`, `validate_benchmark.py`, `error_bound_verify.py`)
+- `docs/artifacts/` — evidence: `anyon/`, `quantum_likeness/`, `braid_vs_gd/`,
+  `nitrogenase_qudit/`, `factcheck/`, `compliance/`, `indus/`, `jarvis/trainer/`
+- `docs/artifacts/compliance/` — `ORIGINALITY_AUDIT.md`, `GOVERNANCE_GATE_BIO_QUANTUM.md`
+- `docs/team/WORKFLOW.md` — team delivery rules (push-every-branch, never `git clean` in shared
+  checkout, RESTORE_CHECKOUT.sh recovery)
+- `jarvis_quantum_ai_hf_ready/src/api/rnd_battery.py` — the R&D battery FastAPI server (port 8777)
+- `compression_specialist.py` — the FBSC core (owner-controlled 3-number seed)
+- `scripts/braid_vs_gd_benchmark.py` — braid-space trainer harness (honest beats_seed/beats_gd gate)
 
-### 3. That's It! 🎉
-Hugging Face automatically builds and deploys your Space. Access it at:
-```
-https://huggingface.co/spaces/YOUR_USERNAME/jarvis-quantum-ai
-```
+## License & custody
 
----
-
-## 📖 Documentation
-
-- **[Quick Start Guide](HUGGINGFACE_QUICKSTART.md)** - 5-minute deployment checklist
-- **[Upload Checklist](HF_UPLOAD_CHECKLIST.md)** - Detailed file upload guide
-- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Complete deployment documentation
-- **[HF Documentation](README_HF.md)** - Comprehensive Hugging Face guide
-
----
-
-## 🏗️ Architecture
-
-### Quantum Transformer Model
-- **Parameters**: ~8.95M
-- **Layers**: 6
-- **Dimensions**: 256
-- **Heads**: 8
-- **Feed-Forward**: 1024
-
-### Quantum Features
-1. **Superposition**: Complex amplitude vectors in attention
-2. **Entanglement**: Tensor product correlations
-3. **Interference**: Complex inner products
-4. **Coherence**: Von Neumann entropy measurements
-5. **Time Coercion**: ΔE·Δt ≥ ℏ/2 probability forcing
-
----
-
-## 🔬 Scientific Validity
-
-### What's Real ✅
-- **All quantum operations**: Real complex number arithmetic
-- **Training**: Real backpropagation with gradients
-- **Attention**: Superposition and entanglement implemented
-- **Coherence**: Von Neumann entropy measurements
-- **Interference**: Complex inner products
-- **TCL Compression**: Real semantic hashing
-
-### What's Demo ⚠️
-- **Cancer experiments**: Scientifically-grounded simulation
-- **Model outputs**: Limited training data (synthetic for testing)
-- **Clinical predictions**: Not for medical advice
-
-### Disclaimer
-This is a **scientific research platform** for educational purposes:
-- ❌ Not medical advice - consult professionals
-- ❌ Not clinical decision support
-- ✅ Real quantum mechanics implementation
-- ✅ Real historical knowledge base
-
----
-
-## 📁 Repository Structure
-
-```
-.
-├── app.py                          # Main Gradio application ⭐
-├── requirements.txt                 # Dependencies ⭐
-├── README.md                       # This file ⭐
-│
-├── src/                           # Source code ⭐
-│   ├── quantum_llm/              # Quantum LLM
-│   └── thought_compression/      # TCL engine
-│
-├── gradio_quantum_cancer_demo.py  # Cancer demo ⭐
-├── jarvis_v1_gradio_space.py     # Jarvis demo ⭐
-│
-├── README_HF.md                   # HF docs
-├── DEPLOYMENT_GUIDE.md            # Deployment guide
-├── HUGGINGFACE_QUICKSTART.md      # Quick start
-└── HF_UPLOAD_CHECKLIST.md         # Upload checklist
-```
-
-⭐ = Required for Hugging Face Spaces
-
----
-
-## 🧪 Using the Demos
-
-### Cancer Research
-1. Select a cancer gene (PIK3CA, TP53, KRAS, EGFR, BRAF)
-2. Choose a specific mutation variant
-3. Adjust time coercion strength (0.0 to 1.0)
-4. Click "Run Experiment"
-5. View results and visualizations
-
-### Jarvis Oracle
-1. Type a question about historical science/medicine/physics
-2. Adjust time coercion strength (0.0 to 1.0)
-3. Set temperature for response randomness (0.1 to 2.0)
-4. Click "Generate Answer"
-5. View response with quantum metrics
-
----
-
-## 💻 Running Locally
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the app
-python app.py
-```
-
-Then open `http://localhost:7860` in your browser.
-
----
-
-## 🤝 Contributing
-
-This is an open scientific research project. Contributions welcome!
-
----
-
-## 📜 License
-
-See [LICENSE](LICENSE) file for details.
-
----
-
-## 🔗 Links
-
-- **Hugging Face Spaces**: [Create a Space](https://huggingface.co/spaces)
-- **Documentation**: See `README_HF.md` for complete docs
-- **Upload Checklist**: See `HF_UPLOAD_CHECKLIST.md` for detailed upload guide
-
----
-
-## 📞 Support
-
-- Check the [Deployment Guide](DEPLOYMENT_GUIDE.md) for troubleshooting
-- Review the [Upload Checklist](HF_UPLOAD_CHECKLIST.md) for file requirements
-- See [Quick Start](HUGGINGFACE_QUICKSTART.md) for fast deployment
-
----
-
-## 🙏 Acknowledgments
-
-Built with 🧠⚛️ for real science. Real research. Real quantum mechanics.
-
-*The future is quantum. The past is knowledge. JARVIS is both.*
-
----
-
-**Ready to deploy?** Follow the Quick Deploy guide above! 🚀
-
-**Need help?** Check the documentation links in the 📖 Documentation section.
+MIT (see LICENSE). The 3-number seed stays owner-controlled; the R&D server persists **seed digests
+only** (`seed_stored=false`, verified in code and data). No real human health data, no hardware
+deployment — simulation ceiling only.
