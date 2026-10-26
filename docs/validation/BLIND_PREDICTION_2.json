@@ -76,5 +76,62 @@
     "physical_match_hypothesis": "c (speculation, to be evaluated after reference unlock)"
   },
   "freeze_sha256": "af4d8fdfdfccd14ac2e187079b86800c161effd7fd62dbd724c43ebe00ade977",
-  "after_unlock_comparison": null
+  "after_unlock_comparison": {
+    "status": "VOID (no suitable single-number reference found) - pre-registered outcome, neither hit nor miss",
+    "freeze_commit": "f7a3bc61048aff25e8320e0aa5e3c580eea185ed",
+    "freeze_file_sha256": "af4d8fdfdfccd14ac2e187079b86800c161effd7fd62dbd724c43ebe00ade977",
+    "unlock_time_utc": "2026-10-26T22:05:00Z",
+    "extraction_rule_applied": "BLIND_PREDICTION_2.md section 4 / BLIND_PREDICTION_2.json reference_extraction_rule (mechanical, engine-return order, first accepted source with explicit numerical S=0->S=1 gap for [2Fe-2S]2+ dimer; no substitute reference)",
+    "searches_executed_in_order": [
+      {
+        "engine": "arXiv API",
+        "query": "all:iron AND all:singlet AND all:triplet",
+        "ordered_results_scanned": 28,
+        "accepted_sources_found": 0,
+        "note": "results are superconductivity/cond-mat/plasma papers (wrong system), Fe(II)-porphyrin NOF (wrong system/method), ph-AFQMC C36/porphyrin (method not in accepted list)"
+      },
+      {
+        "engine": "arXiv API",
+        "query": "all:sharma AND all:iron AND all:sulfur",
+        "ordered_results_scanned": 2,
+        "result_1": "2605.03270 ph-AFQMC (method not accepted; no explicit number in abstract)",
+        "result_2": "1408.5080 Sharma et al. 2014 DMRG (ACCEPTED class) - full text scanned; ONLY explicit ST gap is 351 cm-1 for the [4Fe-4S] cubane, NOT the [2Fe-2S] dimer; dimer reported only as convergence tolerance ~35 cm-1"
+      },
+      {
+        "engine": "Semantic Scholar",
+        "query": "2Fe-2S singlet triplet gap iron-sulfur dimer",
+        "ordered_results_scanned": 1,
+        "hit": "10.1063/1.4890650 J.Chem.Phys. 2014 DFT of Fe-S hexacarbonyl dimers - method not in accepted multireference list; no accessible abstract; not accepted"
+      },
+      {
+        "engine": "Crossref",
+        "query": "query.bibliographic=2Fe-2S singlet-triplet gap",
+        "ordered_results_scanned": 5,
+        "note": "peer-review records for organic/inverted singlet-triplet and DNA photochemistry - wrong system entirely"
+      }
+    ],
+    "explicit_number_found_for_target": false,
+    "closest_number_found_but_excluded": {
+      "value_cm-1": 351.0,
+      "species": "[4Fe-4S] cubane (NOT the [2Fe-2S]2+ dimer)",
+      "source": "Sharma et al. 2014 (arXiv:1408.5080), 'this lies 351 cm-1 above the singlet state'",
+      "exclusion_reason": "species-excluded by frozen rule (target = dimer, 2+ state); also redundant vs Stage-3 unlocked [4Fe-4S] 175-350 cm-1 scale"
+    },
+    "band_adjusted": false,
+    "substitute_reference_invented": false,
+    "verdict_tags": {
+      "scan_records": "a (measured)",
+      "scoping_under_pre_registered_rule": "b (interpretation)"
+    },
+    "frozen_prediction_unchanged": {
+      "per_unit_cm-1": 229.73,
+      "manifold_cm-1": 3675.65
+    },
+    "honest_scope": [
+      "frozen prediction neither confirmed nor refuted (no qualifying reference under the pre-registered rule)",
+      "VOID says nothing against the stack: exactness (MSE=0) and no-LHV/fault-tolerance results are separate verified tracks",
+      "351 cm-1 [4Fe-4S] value deliberately not used: species-excluded AND redundant with Stage-3 unlocked scale",
+      "no hardware claim"
+    ]
+  }
 }

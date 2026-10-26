@@ -170,5 +170,98 @@ parameters; full manifest in `BLIND_PREDICTION_2.json`):
 
 > Nothing below this line existed before the freeze push. Written only after
 > the frozen content above was committed and pushed to
-> `origin/docs/blind-prediction-2`, and only after the reference extraction
-> rule in §4 was run mechanically for the first time.
+> `origin/docs/blind-prediction-2` (freeze commit `f7a3bc6`, pushed
+> 2026-10-26T21:58Z), and only after the reference extraction rule in §4 was
+> run mechanically for the first time.
+
+### 6.1 Freeze integrity re-verification (measured)
+
+| item | value |
+|------|-------|
+| freeze commit (local) | `f7a3bc6` (= `origin/docs/blind-prediction-2`) |
+| frozen file sha256 | `af4d8fdfdfccd14ac2e187079b86800c161effd7fd62dbd724c43ebe00ade977` — re-verified byte-exact after push |
+| seed digest | `c35bca531ec4a1a30b30af971df07f2276964114a366f6cb660f78475af98ed0` |
+| code blobs frozen | compressor `9ca44863…`, simulator `8d7eda3f…` (identical at origin/main `a680d23`) |
+| frozen content edited post-freeze? | **No** (only §6 AFTER appended) |
+| reference value consulted before push? | **No** (reference extraction started only after `git push` confirmed) |
+
+### 6.2 Mechanical extraction (run once, in scan-return order)
+
+**Designated searches executed (in order; scan order = each engine's return
+order, first result first, exactly as frozen in §4.3):**
+
+1. **arXiv API, `all:iron AND all:singlet AND all:triplet` (sortBy=relevance),
+   28 results.** Full ordered list scanned. Results 1–10, 12, 14–28 are
+   condensed-matter superconductivity / neutron / plasma-atomic papers — not
+   iron-sulfur dimer science, **not accepted** (wrong system, wrong observable).
+   - result 11 `2212.01640` *Electron correlation in Iron(II) Porphyrin by NOF* —
+     Fe(II)-porphyrin, not a [2Fe-2S] dimer; NOF is not in the accepted method
+     list → **not accepted**.
+   - result 13 `2001.05109` — ph-AFQMC (quantum Monte Carlo, **not** an accepted
+     multireference class in the frozen list) on C₃₆/iron-porphyrin, not a
+     2Fe-2S dimer → **not accepted**.
+2. **arXiv API, `all:sharma AND all:iron AND all:sulfur` (Stage-3 anchor
+   query):** result 1 `2605.03270` — ph-AFQMC (method not in accepted list;
+   abstract has no explicit [2Fe-2S]²⁺ ST gap number) → **not accepted**.
+   - result 2 **`1408.5080` (Sharma, Sivalingam, Neese & Chan 2014, DMRG)** —
+     the only source scanned that is unambiguously **accepted-class (DMRG)**.
+     **Full text extracted and scanned.** The text contains exactly **one**
+     explicit numerical singlet–triplet energy difference: *"this lies 351 cm⁻¹
+     above the singlet state"* — which the same passage and Figure 6 state is
+     for the **[4Fe-4S] cluster** (cubane), **not** the [2Fe-2S] dimer. For the
+     [2Fe-2S] dimer the paper reports only a *convergence tolerance* ("relative
+     energies converged to better than 0.1 kcal/mol ≈ 35 cm⁻¹") and qualitative
+     spectrum complexity — **no explicit dimer ST gap number exists in the
+     text.** → accepted class, but **no explicit single number for the frozen
+     target**.
+3. **Semantic Scholar (rate-limited; 1 result returned):**
+   `10.1063/1.4890650` (*J. Chem. Phys.* 2014, DFT study of iron-sulfur dimers
+   and their **hexacarbonyl complexes**) — method = plain DFT (not in the
+   accepted multireference list), no accessible abstract, different ligand
+   environment, no explicit dimer ST gap extractable from returned text → **not
+   accepted**.
+4. **Crossref (publisher abstracts/DOIs):** top results are peer-review records
+   for organic/inverted singlet–triplet compounds and DNA photochemistry —
+   wrong system → **not accepted**.
+
+### 6.3 Verdict (single outcome, no adjustment, no substitute reference)
+
+**VOID — "no suitable single-number reference found"** (frozen rule §4.5).
+
+The frozen acceptance rule required an *explicit numerical S=0→S=1 energy
+difference for an iron-sulfur dimer model in the 2+ (diferric) charge state*
+from a multireference (DMRG/CASPT2/NEVPT2/RASPT2) or high-level
+broken-symmetry study. After the mechanical scan (engine order, all engines),
+**no published source satisfies that acceptance rule for the [2Fe-2S]²⁺
+dimer**: the relevant DMRG literature (Sharma 2014) reports its one explicit
+singlet–triplet gap for the [4Fe-4S] cubane (351 cm⁻¹), *not* the dimer; dimer
+numbers in the literature are convergence tolerances or exchange couplings J
+(which the frozen rule explicitly excludes); the remaining hits are either
+wrong-system, wrong-method, or contain no explicit number.
+
+**VOID means:** this data point is neither a hit nor a miss. No band was
+consulted, no band was adjusted, and **no substitute reference was invented**
+after seeing the scan — exactly as the frozen `no_value_found_rule`
+pre-committed. The prediction value in §3 remains frozen and unchanged.
+
+**Explicitly NOT claimed (honest scope):**
+- The frozen prediction (229.73 cm⁻¹ per-unit / 3,675.65 cm⁻¹ manifold) is
+  **not** asserted as confirmed or refuted — there is no qualifying reference
+  value to compare it against under the pre-registered rule.
+- The VOID says nothing against the stack: exactness (MSE=0) and the
+  no-LHV/fault-tolerance results are separate, already-verified tracks.
+- The 351 cm⁻¹ [4Fe-4S] gap found in Sharma 2014 was **deliberately not used**
+  — it is species-excluded by the frozen rule (target = dimer, not cubane) and
+  would in any case be redundant: it sits inside the [4Fe-4S] 175–350 cm⁻¹
+  scale already unlocked in Stage-3, so it could not serve as a fresh blind
+  number.
+- No hardware claim. Tags on this verdict: (a) measured — scan records above;
+  (b) interpretation — scoping under §4.5; (c) — none.
+
+**Follow-up (proposal, not a decision):** a future third blind target should
+pick a published single number whose qualifying reference demonstrably exists
+in a multireference text (e.g., a CASPT2/DMRG *cubane* singlet–triplet gap from
+a source not yet unlocked, or a molecule with an unambiguous published
+singlet–triplet gap), pre-registered together with the exact extraction
+sentence — this run's VOID is itself the honest output of the freeze-first
+discipline working as designed.
