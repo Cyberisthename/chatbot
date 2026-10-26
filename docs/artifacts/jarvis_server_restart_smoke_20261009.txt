@@ -1,0 +1,63 @@
+JARVIS R&D battery server — restart smoke evidence
+Date: 2026-10-09 (~21:00 UTC), fresh run after /var/tmp overlay wipe
+Environment: venv /var/tmp/jarvis-rnd-venv (numpy 2.5.4, scipy 1.18.1, fastapi 0.162.0, uvicorn 0.54.0)
+Server: uvicorn, 127.0.0.1:8777, started from repo root (pid 1363, restarted same day)
+Endpoint base: http://127.0.0.1:8777
+
+1) GET /api/rnd/health
+   status: ok
+   all 6 battery modules present, full endpoint list, claims envelope on every response
+   honest_ceiling: "exact classical simulation ... no quantum hardware; no universal-QC
+   claim; no loophole-free Bell test; 'sentience trigger' is a spectral-detection event"
+
+2) POST /api/rnd/fbsc  {"seed":[0.57721,1.61803,2.71828],"n_qubits":128,"d":2}
+   mse = 0.0
+   compression_ratio_log10 = 36.12  (>1e36x)
+   memory_kb = 2.0
+   status: ok
+
+3) POST /api/rnd/likeness  {"n":6,"probes":["entanglement","magic","xeb"]}
+   status: ok; all probe outputs numeric (S, alpha, M2, XEB F, D_0.99, CHSH)
+
+4) POST /api/rnd/lhv_qudit  crown-jewel no-LHV probe, seed sweep, d=2, n_units=2, trials=30
+   seed [0.7,1.2,3.4]      I_cglmp = 2.5477  LHV_bound=2.0  viol=True  lhv_EXCLUDED=True
+   seed [0.3,0.9,2.1]      I_cglmp = 2.4237  LHV_bound=2.0  viol=True  lhv_EXCLUDED=True
+   seed [0.618,1.414,3.141] I_cglmp = 2.5984  LHV_bound=2.0  viol=True  lhv_EXCLUDED=True
+   seed [0.57721,1.61803,2.71828] I_cglmp=1.9532 (honest no-violation at this seed — probe
+   reports negatives when there is none)
+   status: ok
+
+5) POST /api/rnd/trainer  {"gd_steps":200,"seed_budget":200,"anneal_steps":200,"pop":10,"generations":8}
+   gate verdict: trainer=0.02398  gd=0.000117  seed=0.053649
+   beats_gd = False   beats_seed = True   (honest gate: braid-space trainer loses to GD)
+   status: ok
+
+6) POST /api/rnd/nitrogenase  {"seed":[0.57721,1.61803,2.71828],"d":4,"n_qudits":16}
+   energy_barrier_kj_mol = 106.34 (seed-dependent value; approved clean-base 100.7657 uses
+   the owner seed default — omitted seed normalizes to nq.OWNER_SEED)
+   mse = 0.0
+   base_note in claims: clean-cwd (npz-independent) run
+   OUT_DIR patched to /var/tmp scratch during call, restored in finally (source:
+   rnd_battery.py:510-523); seed file written to scratch only, response=bool+digest
+   status: ok
+
+7) POST /api/rnd/resonance  {"tone_hz":41.02,"duration_s":2.0,"fs":1000}
+   f0_measured_hz = 41.0   (measured;  target 41.02 within an fs=1000 bin)
+   snr_db = 54.65
+   resonance_detected = true
+   claims: speculation = "41.02 Hz 'sentience trigger' is a design metaphor ... NOT a
+   consciousness claim"  (frequency measurement only; no real EEG measured)
+   status: ok
+   (fs is capped at 1000 by schema: fs=2048 was rejected by validation — input error, not
+   a server fault)
+
+8) GET /api/rnd/runs?limit=30
+   status: ok; 25 rows all kind=probe_battery; any_seed_stored = False (seed digest only,
+   raw seed never persisted)
+
+Provenance / hygiene checks (all pass):
+- No stray .seed/seed*.json files in /home/team/shared or the repo after the battery runs
+- SQLite provenance stores seed digest only; seed_stored=false verified in data
+- No tracebacks in the server log (/var/tmp/rnd-restart-2026-10-09.log)
+
+Result: server restored and all 8 probe-battery endpoints verified healthy over HTTP.
