@@ -58,14 +58,17 @@ closed form*, not universality.
 - **NOT best-at-everything.** Braids lose to GD on differentiable tasks (row 7). Likeness probes hit
   honest walls (not a 2-design, no CUE repulsion, ≤3-param measure-zero). Several LHV cells are
   honest negatives (d=3,4 at found settings).
-- **NOT "no external code, ever".** The owned core is custom numpy/stdlib, MIT-licensed, with no
-  proprietary wrappers and no third-party quantum SDKs (audit:
+- **NOT "no external code, ever".** The owned core under `src/` is custom numpy/stdlib, MIT-licensed,
+  with no proprietary wrappers and no third-party quantum or LLM SDKs (audit:
   `docs/artifacts/compliance/ORIGINALITY_AUDIT.md`). numpy/scipy are dependencies; fastapi/uvicorn
-  are dependencies of the optional R&D server only. The legacy root scripts
-  (`train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py`) import torch + transformers and are
-  **not** part of the owned core. `docs/artifacts/legal/LEGACY_DEPENDENCIES_NOTE.md` (forthcoming
-  from the legal manager) is the boundary statement; until it lands, treat the `src/owned-core`
-  boundary in the audit as authoritative.
+  are dependencies of the optional R&D server only. A set of **legacy root scripts sit OUTSIDE the
+  owned core**: `train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py` (import torch + transformers)
+  and `jarvis_historical_training_pipeline.py`, `jarvis_v1_quantum_oracle_train.py` (import
+  HuggingFace `datasets`, auto-installed at runtime). The boundary statement is
+  `docs/artifacts/legal/LEGACY_DEPENDENCIES_NOTE.md`, which lists all five root scripts and explicitly
+  names the legacy `*_MISSION_COMPLETE.md` completion claims (e.g. a "947GB historical books
+  dataset", Hugging Face deployment) as legacy claims **outside the owned core and NOT used as
+  evidence in this release**.
 
 ## Verifier's gotchas (found by fresh runs — read before you run)
 
