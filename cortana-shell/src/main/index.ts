@@ -16,7 +16,7 @@ const configManager = new ConfigManager(path.resolve(__dirname, '../../config.ya
 const historyStore = new HistoryStore();
 const voiceManager = new VoiceManager({
   modelDirectory: path.resolve(__dirname, '../../assets/wake-word-models'),
-  defaultModel: 'heycortana_enUS.table',
+  defaultModel: 'jarvis_wake_chime.wav',
   enabled: configManager.current.voice?.wakeWord?.enabled ?? false,
 });
 const toolManager = new ToolManager();
@@ -92,7 +92,7 @@ function registerShortcuts(): void {
 }
 
 function createTray(): void {
-  const iconPath = path.resolve(__dirname, '../../assets/icons/cortana.png');
+  const iconPath = path.resolve(__dirname, '../../assets/icons/jarvis_icon.png');
   if (!fs.existsSync(iconPath)) {
     return;
   }
