@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 
 URL = "https://storage.googleapis.com/flywire-data/challenges/mfas/connectome_graph.csv.gz"
-EXPECTED_HEADER = ["Source Node ID", "Target Node ID", "Edge Weight"]
+EXPECTED_HEADER = ["Source Node  ID", "Target Node ID", "Edge Weight"]
 SEEDS = [104729, 130363, 155921, 196613, 225307]
 MASK64 = (1 << 64) - 1
 
@@ -51,6 +51,7 @@ def parse_slice(path: Path):
         header = next(reader, None)
         if header != EXPECTED_HEADER:
             raise ValueError(f"unexpected header: {header!r}; expected {EXPECTED_HEADER!r}")
+        # The live source has two spaces in `Source Node  ID`; retain that exact spelling.
         for row_no, row in enumerate(reader, start=2):
             if len(row) != 3:
                 raise ValueError(f"row {row_no}: expected 3 columns, got {len(row)}")
