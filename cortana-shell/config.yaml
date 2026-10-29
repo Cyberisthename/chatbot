@@ -23,9 +23,9 @@ backend:
 voice:
   wakeWord:
     enabled: true
-    phrase: "hey cortana"
+    phrase: "hey jarvis"
     sensitivity: 0.5
-    modelPath: "./assets/wake-word-models/heycortana_enUS.table"
+    modelPath: "./assets/wake-word-models/jarvis_wake_chime.wav"
   stt:
     provider: "whisper"
     whisperUrl: "http://localhost:9000/api/transcribe"

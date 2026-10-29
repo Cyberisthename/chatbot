@@ -1,0 +1,137 @@
+{
+  "prediction_id": "VT3-BP2-2FES2-STGAP-002",
+  "protocol": "freeze-first: prediction frozen before any reference value was opened (second blind prediction)",
+  "frozen_at_utc": "2026-10-26T00:00:00Z",
+  "target": "singlet-triplet (S=0 -> S=1) energy gap of the [2Fe-2S]2+ model cluster (oxidized, diferric iron-sulfur dimer; two high-spin Fe3+ sites) as reported by a peer-reviewed multireference computational study (DMRG/CASPT2/NEVPT2) - ONE single published number",
+  "why_this_is_a_new_data_point": "Stage-3 (BLIND_PREDICTION_002) compared the per-unit scale against broad published scales (ranges). This second test holds the SAME stack-determined prediction to a SINGLE, specific, sharper number extracted by a mechanical pre-registered rule. Prediction value is fixed by the stack: no knob, no re-derivation, no possibility of tuning the prediction to the reference.",
+  "stack": {
+    "engine": "FBSC v2 (compression_specialist.py at origin/main a680d23, sha256 9ca44863...e2b92e5f)",
+    "simulator": "nitrogenase_qudit_simulator.py simulate_dimension(d, n=16) (sha256 8d7eda3f...c3478154)",
+    "owner_seed": [
+      0.57721,
+      1.618034,
+      2.71828
+    ],
+    "seed_digest_sha256": "c35bca531ec4a1a30b30af971df07f2276964114a366f6cb660f78475af98ed0",
+    "params_digest_sha256": "eb2fb330114f8d444472a38783c6ad7d69183276015a4631bec68e7dd5b24c44",
+    "n_units": 16,
+    "origin_main_pinned": "a680d23d66caae54b73248042deead430015e85a",
+    "native_observable": "energy_barrier_kj_mol (catalytic-barrier surrogate anchored to Haber-Bosch 500 kJ/mol; NO spin Hamiltonian, NO exchange couplings, NO [2Fe-2S] model in the physics layer)"
+  },
+  "model_outputs_measured_kj_mol": {
+    "d=2": 144.7362,
+    "d=3": 129.9529,
+    "d=4": 100.7657,
+    "d=5": 76.0663,
+    "d=6": 50.14,
+    "mse": 0.0,
+    "note": "fresh-run 2026-10-26 on exact origin/main blobs; bit-identical to the Stage-3 frozen table; deterministic, numerical uncertainty 0"
+  },
+  "derivation": {
+    "what_the_stack_computes": "The only energy observable native to the physics layer is E_d (d=2..6) at the owner seed. The simulator's own docstring labels the d=4 manifold 'spin x oxidation'; d=2 is the spin-only (qubit) description. A physical [2Fe-2S]2+ singlet-triplet gap is NOT a native output (no spin Hamiltonian).",
+    "derived_quantity": "manifold splitting between the spin-only (d=2) and spin x oxidation (d=4) Hilbert-space descriptions: dE_mf = E(d=2) - E(d=4), same seed, same physics layer, zero new free parameters (identical quantity to Stage-3 primary).",
+    "dE_mf_kj_mol": 43.9705,
+    "dE_mf_cm-1": 3675.65,
+    "per_unit_step": {
+      "meaning": "uniformly distributing the manifold splitting over the 16 core units (interpretation step: each unit = one metal/sulfur site of the model; uniform distribution is the only no-new-parameter choice) - identical to Stage-3 primary",
+      "dE_per_unit_kj_mol": 2.748156,
+      "dE_per_unit_cm-1": 229.73
+    },
+    "ordering_measured": "E(d=2) > E(d=3) > E(d=4) > E(d=5) > E(d=6): including more spin/oxidation levels lowers the model's characteristic energy monotonically (measured). Any derived spin splitting is positive (excited manifold above ground); for the target cluster: singlet ground, triplet first excited (gap > 0)."
+  },
+  "predicted_value": {
+    "primary_per_unit_spin_splitting_cm-1": 229.73,
+    "primary_per_unit_spin_splitting_kj_mol": 2.748156,
+    "manifold_splitting_cm-1": 3675.65,
+    "manifold_splitting_kj_mol": 43.9705,
+    "sign": "positive (singlet ground, triplet first excited for the antiferromagnetic diferric dimer)",
+    "tolerance_definition": "numerical uncertainty = 0 (deterministic stack, MSE=0, measured). Interpretational comparison band set a priori (same rule as Stage 3): factor-2 window around the per-unit prediction [114.9, 459.4] cm-1; secondary = manifold scale 3,675.65 cm-1 with +/-50% band [1,837.8, 5,513.5] cm-1. A reference value outside BOTH bands = MISS. Inside either band = HIT (membership in both recorded).",
+    "verdict_rule": "MISS iff reference outside both bands; HIT otherwise (primary band preferred)"
+  },
+  "conversion_constants_frozen": {
+    "1_kj_mol_cm-1": 83.593472,
+    "1_kcal_mol_cm-1": 349.755,
+    "1_meV_cm-1": 8.065544,
+    "1_eV_cm-1": 8065.544,
+    "1_hartree_cm-1": 219474.63,
+    "note": "extracted reference converted exactly once; reported in original units and cm-1"
+  },
+  "reference_extraction_rule": {
+    "search": "peer-reviewed / preprint literature (arXiv full text and abstracts, publisher abstracts/DOIs) for the singlet-triplet gap of the diferric [2Fe-2S]2+ iron-sulfur dimer model",
+    "acceptable_sources": "peer-reviewed multireference studies (DMRG, CASPT2, MS-CASPT2, NEVPT2, RASPT2) or high-level broken-symmetry treatments reporting an EXPLICIT numerical singlet-triplet (S=0 -> S=1) energy difference for an iron-sulfur dimer model in the 2+ (diferric) charge state",
+    "not_accepted": "exchange coupling J alone (any convention) is NOT the target number (J -> gap conversion requires convention assumptions; Stage-3 HDE 10-600 cm-1 already covered couplings)",
+    "scan_order": "sources scanned in search-return order; take the FIRST accepted source whose text contains an explicit numerical singlet-triplet gap value for the [2Fe-2S]2+ dimer model",
+    "extraction": "record number, unit, exact context sentence, DOI/arXiv id; convert once with frozen constants",
+    "no_value_found_rule": "if no accepted source yields an explicit single number after scanning the FIRST FIVE distinct sources returned, outcome = 'no suitable single-number reference found' (VOID data point, neither hit nor miss; plan explicitly accepts this as a legitimate outcome). No substitute reference is then invented."
+  },
+  "explicitly_not_predicted": [
+    "A native physical [2Fe-2S]2+ singlet-triplet gap (S=0 <-> S=1): the stack has no spin Hamiltonian, no zero-field splitting, no exchange couplings, no [2Fe-2S] model.",
+    "Any chemical accuracy claim for the E_d numbers (they are unchanged surrogate model outputs, not ab initio or experimental energetics).",
+    "Any claim that a miss would falsify Validation Track stages 1-2 (representation exactness proven separately in ERROR_BOUND_PROOF.md, independent of this chemistry-level comparison).",
+    "Any hardware claim (exact classical simulation is the honest ceiling)."
+  ],
+  "tags": {
+    "model_outputs": "a (measured)",
+    "derived_quantity": "b (interpretation)",
+    "physical_match_hypothesis": "c (speculation, to be evaluated after reference unlock)"
+  },
+  "freeze_sha256": "af4d8fdfdfccd14ac2e187079b86800c161effd7fd62dbd724c43ebe00ade977",
+  "after_unlock_comparison": {
+    "status": "VOID (no suitable single-number reference found) - pre-registered outcome, neither hit nor miss",
+    "freeze_commit": "f7a3bc61048aff25e8320e0aa5e3c580eea185ed",
+    "freeze_file_sha256": "af4d8fdfdfccd14ac2e187079b86800c161effd7fd62dbd724c43ebe00ade977",
+    "unlock_time_utc": "2026-10-26T22:05:00Z",
+    "extraction_rule_applied": "BLIND_PREDICTION_2.md section 4 / BLIND_PREDICTION_2.json reference_extraction_rule (mechanical, engine-return order, first accepted source with explicit numerical S=0->S=1 gap for [2Fe-2S]2+ dimer; no substitute reference)",
+    "searches_executed_in_order": [
+      {
+        "engine": "arXiv API",
+        "query": "all:iron AND all:singlet AND all:triplet",
+        "ordered_results_scanned": 28,
+        "accepted_sources_found": 0,
+        "note": "results are superconductivity/cond-mat/plasma papers (wrong system), Fe(II)-porphyrin NOF (wrong system/method), ph-AFQMC C36/porphyrin (method not in accepted list)"
+      },
+      {
+        "engine": "arXiv API",
+        "query": "all:sharma AND all:iron AND all:sulfur",
+        "ordered_results_scanned": 2,
+        "result_1": "2605.03270 ph-AFQMC (method not accepted; no explicit number in abstract)",
+        "result_2": "1408.5080 Sharma et al. 2014 DMRG (ACCEPTED class) - full text scanned; ONLY explicit ST gap is 351 cm-1 for the [4Fe-4S] cubane, NOT the [2Fe-2S] dimer; dimer reported only as convergence tolerance ~35 cm-1"
+      },
+      {
+        "engine": "Semantic Scholar",
+        "query": "2Fe-2S singlet triplet gap iron-sulfur dimer",
+        "ordered_results_scanned": 1,
+        "hit": "10.1063/1.4890650 J.Chem.Phys. 2014 DFT of Fe-S hexacarbonyl dimers - method not in accepted multireference list; no accessible abstract; not accepted"
+      },
+      {
+        "engine": "Crossref",
+        "query": "query.bibliographic=2Fe-2S singlet-triplet gap",
+        "ordered_results_scanned": 5,
+        "note": "peer-review records for organic/inverted singlet-triplet and DNA photochemistry - wrong system entirely"
+      }
+    ],
+    "explicit_number_found_for_target": false,
+    "closest_number_found_but_excluded": {
+      "value_cm-1": 351.0,
+      "species": "[4Fe-4S] cubane (NOT the [2Fe-2S]2+ dimer)",
+      "source": "Sharma et al. 2014 (arXiv:1408.5080), 'this lies 351 cm-1 above the singlet state'",
+      "exclusion_reason": "species-excluded by frozen rule (target = dimer, 2+ state); also redundant vs Stage-3 unlocked [4Fe-4S] 175-350 cm-1 scale"
+    },
+    "band_adjusted": false,
+    "substitute_reference_invented": false,
+    "verdict_tags": {
+      "scan_records": "a (measured)",
+      "scoping_under_pre_registered_rule": "b (interpretation)"
+    },
+    "frozen_prediction_unchanged": {
+      "per_unit_cm-1": 229.73,
+      "manifold_cm-1": 3675.65
+    },
+    "honest_scope": [
+      "frozen prediction neither confirmed nor refuted (no qualifying reference under the pre-registered rule)",
+      "VOID says nothing against the stack: exactness (MSE=0) and no-LHV/fault-tolerance results are separate verified tracks",
+      "351 cm-1 [4Fe-4S] value deliberately not used: species-excluded AND redundant with Stage-3 unlocked scale",
+      "no hardware claim"
+    ]
+  }
+}
