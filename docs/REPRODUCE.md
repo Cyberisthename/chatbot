@@ -40,7 +40,7 @@ patch; the API endpoints (§8) are scratch-safe and need no patch.
 **Runtimes** below are wall-clock on this box (python 3.12, numpy 2.5.4, scipy 1.18.1). JIT/no-GPU:
 everything is plain numpy.
 
-## 1. Quibit-scale attack — exact reconstruction at 1024+ effective qubits (row 1)
+## 1. Qubit-scale attack — exact reconstruction at 1024+ effective qubits (row 1)
 
 Claim: ≤3 real numbers (owner seed `(0.57721, 1.618034, 2.71828)`) exactly reconstruct
 1024-qubit amplitudes; MSE=0; ~16 KB stored; dense ambient would be `2^1024·16 B ≈ 10^309 B`.
@@ -225,4 +225,12 @@ bands. Scope: **one data point, NOT chemistry validation**.
 - npz-in-cwd base swap (see §0) — the R&D API is immune; script runs must use a clean cwd.
 - hardcoded absolute OUT paths in `likeness_probes.py` and nitrogenase standalone (see §0, §6).
 - JSON artifacts embed run stamps / platform fingerprint by design.
+- **Error-bound proof: the measurement stands, the derivation is being amended.** The
+  `ERROR_BOUND_PROOF.md` Appendix A describes the qubit path as 2×2 braid *unitaries*, but
+  `_reconstruct_qubit`'s 2-level mixing is non-unitary (unit-norm, non-orthogonal columns; inner
+  product −2cosθ·sinθ·sinφ ≠ 0) and ends in a final normalization the doc's reading omits. A
+  literal all-unitary re-reading fails (normalized MSE 1.58/2.12/1.85 at n=8/32/256); with the
+  normalization included, the closed form reproduces `reconstruct()` to machine precision (the
+  capstone smoke's R1b, MSE ≈ 8e-32). Rows 1–3 of this guide still reproduce exactly (fresh
+  2026-10-27). See the README's "Known issue found after release" for the full disclosure.
 - d=3,n=2 LHV row is solver-dependent non-facet (I<2, documented, never claimed).

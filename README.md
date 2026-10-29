@@ -21,7 +21,7 @@ wall-clock / platform stamp, so the files themselves cannot be byte-identical �
 
 | # | Claim (all `[measured]` unless tagged) | Fresh-run proof (one command) | Reproduction result |
 |---|---|---|---|
-| 1 | Exact state reconstruction at **1024+ effective qubits from ≤3 reals**: MSE=0, ~16 KB (vs `2^1024·16 B ≈ 10^309 B` dense), compression ratio `8.778e+304`×, 0.2 s | `cd /tmp && PYTHONPATH=<repo> python3 - <<'EOF'` … `FractalBraidSeedCompressor(1024 …)` (see REPRODUCE §2) | **exact** (fresh measured, matches grid) |
+| 1 | Exact state reconstruction at **1024+ effective qubits from ≤3 reals**: MSE=0, ~16 KB (vs `2^1024·16 B ≈ 10^309 B` dense), compression ratio `8.778e+304`×, 0.2 s | `cd /tmp && PYTHONPATH=<repo> python3 - <<'EOF'` … `FractalBraidSeedCompressor(1024 …)` (see REPRODUCE §1) | **exact** (fresh measured, matches grid) |
 | 2 | **NISQ collapse vs depth-independent core**: published-model fidelity falls below 50% at depth 1–6; owned core MSE=0 at any depth, 0.544 s, 64 GiB dense baseline avoided | `cd /tmp && PYTHONPATH=<repo> python3 <repo>/docs/validation/validate_benchmark.py` (clean cwd) | **number-exact** (2 volatile leaves: UTC stamp, elapsed) |
 | 3 | **Formal error-bound proof numerically verified**: 22/22 grid cells MSE=0 for n≤1024 / d=2..4; dense crossover at n≥6; measure-zero cap shown (MSE vs Haar-random = 1.766 at n=8, honest) | `python3 <repo>/docs/validation/error_bound_verify.py` (clean cwd) | **number-exact** (24 volatile leaves: per-cell `time_s` + platform numpy stamp + UTC stamp; 0 numeric diffs) |
 | 4 | **Topological fault tolerance**: Burau braid invariant distance **exactly 0** across 0→40 local-isotopy kinks while state fidelity collapses; every element-changing braid error detected (400/400) | `python3 <repo>/docs/artifacts/anyon/anyon_braid_sim.py` | **byte-exact** (sha256 identical) |
@@ -31,11 +31,34 @@ wall-clock / platform stamp, so the files themselves cannot be byte-identical �
 | 8 | **ResonanceMonitor F0 unification** (frequency measurement, not consciousness — see #NOT): clean 41.02 Hz carrier reads F0=41.0157 Hz via TTC spectral-radius fundamental; retired bit heuristic (38.0 Hz) kept only as labeled diagnostic; **21/21 tests pass** | `python3 -m unittest tests.test_f0_spectral_radius tests.test_resonance_noise_gate tests.test_eeg_engine -v` | **exact** (21/21, 0.045 s) |
 | 9 | **Blind prediction (freeze-first, FeMo-co spin-state gap)**: freeze hash bit-exact, all five energies bit-exact, HIT at both prediction levels, honestly scoped as **one data point, NOT chemistry validation** | see `docs/validation/BLIND_PREDICTION.md` (freeze-first protocol; reference unlock) | reference artifact |
 | 10 | **R&D battery over HTTP** (port 8777): fbsc MSE=0 at n=128 (2 KB, 10^36.12×), nitrogenase default-seed **d=4 barrier 100.7657, MSE=0**, likeness + lhv_qudit + trainer + resonance endpoints each carry a claims envelope; seed digest-only provenance (25 rows, `any_seed_stored=False`) | `docs/REPRODUCE.md §8` (start `python -m jarvis_quantum_ai_hf_ready.src.api.rnd_battery`, curl each endpoint) | **exact / measured** (smoke evidence committed) |
+| 11 | **FBSC vs classical tensor networks (external validation, quimb 1.15 baseline)**: the embedded core family is exactly a D=2 MPS — fidelity **1.000000** vs dense at n=4..20, amplitude-exact to machine precision at n=32..1024; the braid family's *exact* MPS bond grows **16→32→64→128** at n=8..14 (fidelity 1.0); quimb's `D_for_0.99` threshold **matches the approved P6 number at n=8** (both 16 — note: the *threshold* agrees, not the per-D fidelities: truncation algorithms differ, e.g. approved fid(D=2)=0.3442 vs quimb 0.1206 at n=8); the owned TT-SVD reproduces the approved sweep with **max\|Δfid\| = 0.0**; controls (product/GHZ/core) all 1.0. Verdict: **class-specific dominance on the covered family — NOT a general speedup**; tensor networks win on generic states (measure-zero cap) and on ecosystem maturity | scratch venv: `pip install quimb==1.15.0 numba cotengra`, then `python3 <repo>/docs/validation/tn_capstone/tn_benchmark.py --smoke` | **exact / measured** (fresh smoke 2026-10-27: n=1024 stored=16384 B vs dense≈2.876e309 B, maxdiff=0; bond 16→128 fid=1; D_0.99=16 both; TT-SVD max\|Δfid\|=0.0; controls 1.0) |
 
 Interpretation (not measurement): the family is **not** a universal quantum computer — it cannot
 represent generic states (≤3-parameter, measure-zero; the honest bound is in
 `docs/validation/ERROR_BOUND_PROOF.md`). MSE=0 means *exactness against the generator's own
 closed form*, not universality.
+
+## Known issue found after release — reported up front, not footnoted
+
+- **The error-bound proof's Appendix A does not describe the code that rows 1 and 3 cite. The
+  measured results stand; the derivation is being corrected.** `ERROR_BOUND_PROOF.md` Appendix A
+  describes the qubit path as a product of 2×2 braid *unitaries*, but
+  `compression_specialist.py::_reconstruct_qubit` is **not unitary**: its 2-level mixing columns
+  are unit-norm yet non-orthogonal (inner product `−2·cosθ·sinθ·sinφ ≠ 0` — verified analytically,
+  independently root-caused by the capstone work, `docs/validation/tn_capstone/TN_CAPSTONE_REPORT.md`
+  §5 R1b). A literal closed-form re-implementation of the documented (all-unitary) reading gives
+  normalized MSE **1.58 / 2.12 / 1.85** at n=8 / 32 / 256 (independently reproduced by the lead on
+  the release head). The **measured** numbers are unaffected: n=1024 MSE=0, 22/22 error-bound cells
+  MSE=0, rows 1–3 still reproduce exactly (re-verified fresh for this revision). Still, the
+  derivation does not describe the code, so the proof document is being amended (separate task:
+  re-derive its conclusions against the *actual* cascade — non-unitary mixing plus the final
+  normalization `_reconstruct_qubit` applies — and close with a test that the corrected closed form
+  reproduces `reconstruct()` to machine precision; `reconstruct()` itself will not change, because
+  every approved number in the table above comes from it). Nuance so nobody misreads the capstone
+  smoke digest: `tn_benchmark.py`'s own R1b closed-form check passes at MSE ≈ 8e-32 because its
+  `closed_form_qubit` faithfully includes that final normalization; the failure this item reports is
+  specific to the *document's* unitary-only reading, which omits it. We publish this because the
+  point of this release is that it reports what it finds.
 
 ## What this is NOT (hard rules — every claim must survive them)
 
@@ -58,14 +81,23 @@ closed form*, not universality.
 - **NOT best-at-everything.** Braids lose to GD on differentiable tasks (row 7). Likeness probes hit
   honest walls (not a 2-design, no CUE repulsion, ≤3-param measure-zero). Several LHV cells are
   honest negatives (d=3,4 at found settings).
-- **NOT "no external code, ever".** The owned core is custom numpy/stdlib, MIT-licensed, with no
-  proprietary wrappers and no third-party quantum SDKs (audit:
+- **NOT "no external code, ever".** The owned core under `src/` is custom numpy/stdlib, MIT-licensed,
+  with no proprietary wrappers and no third-party quantum or LLM SDKs (audit:
   `docs/artifacts/compliance/ORIGINALITY_AUDIT.md`). numpy/scipy are dependencies; fastapi/uvicorn
-  are dependencies of the optional R&D server only. The legacy root scripts
-  (`train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py`) import torch + transformers and are
-  **not** part of the owned core. `docs/artifacts/legal/LEGACY_DEPENDENCIES_NOTE.md` (forthcoming
-  from the legal manager) is the boundary statement; until it lands, treat the `src/owned-core`
-  boundary in the audit as authoritative.
+  are dependencies of the optional R&D server only. **Five root scripts import third-party ML
+  libraries and sit outside the owned core**: `train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py`
+  (torch + transformers) and `jarvis_historical_training_pipeline.py`, `jarvis_v1_quantum_oracle_train.py`
+  (HuggingFace `datasets`, imported at runtime). They are **being relocated to `legacy/`** with a
+  boundary README (owner-decided 2026-10-26, in flight). Until that lands they remain at the repo
+  root — this README does **not** claim a clean tree: the legacy root scripts and the
+  Microsoft-sourced Cortana assets (removal owner-approved, in flight) are still present in HEAD.
+  The boundary statement scoping "built from scratch" to the owned core is
+  `docs/artifacts/legal/LEGACY_DEPENDENCIES_NOTE.md` (as committed it documents the three
+  torch/transformers root importers; its §4 owner decision was *pending* as of its 2026-10-05 date —
+  it will be updated when the `legacy/` relocation lands). The legacy `*_MISSION_COMPLETE.md`
+  completion claims (e.g. a "947GB historical books dataset", Hugging Face deployment) are legacy
+  claims outside the owned core and are **NOT used as evidence in this release** — none appear in
+  the table above.
 
 ## Verifier's gotchas (found by fresh runs — read before you run)
 
@@ -89,7 +121,9 @@ closed form*, not universality.
 - `docs/REPRODUCE.md` — one-command-per-claim reproduction guide with expected output
 - `docs/RELEASE_NOTES.md` — v0.1.0-evidence release notes (milestones + honest scope)
 - `docs/validation/` — Validation Track 1/3 + 2/3 + 3/3 (`VALIDATION_BENCHMARK.md`,
-  `ERROR_BOUND_PROOF.md`, `BLIND_PREDICTION.md`, `validate_benchmark.py`, `error_bound_verify.py`)
+  `ERROR_BOUND_PROOF.md`, `BLIND_PREDICTION.md`, `validate_benchmark.py`, `error_bound_verify.py`),
+  plus `tn_capstone/` — FBSC exact-state guarantees vs classical tensor-network baselines
+  (quimb 1.15, scratch venv only)
 - `docs/artifacts/` — evidence: `anyon/`, `quantum_likeness/`, `braid_vs_gd/`,
   `nitrogenase_qudit/`, `factcheck/`, `compliance/`, `indus/`, `jarvis/trainer/`
 - `docs/artifacts/compliance/` — `ORIGINALITY_AUDIT.md`, `GOVERNANCE_GATE_BIO_QUANTUM.md`
