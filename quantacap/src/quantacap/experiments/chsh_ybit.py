@@ -38,17 +38,24 @@ SETTINGS: Tuple[Angles, PairMap] = (
 
 
 def _local_amplitudes(psi: np.ndarray, qubit: int) -> Tuple[complex, complex]:
-    if psi.ndim != 1:
-        psi = psi.reshape(-1)
-    alpha = 0.0 + 0.0j
-    beta = 0.0 + 0.0j
-    for idx, amp in enumerate(psi):
-        bit = (idx >> qubit) & 1
-        if bit:
-            beta += amp
-        else:
-            alpha += amp
-    return alpha, beta
+    """Return a canonical amplitude pair matching the local computational-basis marginal.
+
+    A subsystem of an entangled pure state is generally mixed, so it has no
+    standalone pure-state amplitude pair. We therefore use sqrt(P(0)), sqrt(P(1))
+    as a documented probability encoding; relative phase is not inferred.
+    """
+    flat = np.asarray(psi, dtype=np.complex128).reshape(-1)
+    if flat.size == 0 or flat.size & (flat.size - 1):
+        raise ValueError("psi length must be a non-zero power of two")
+    n_qubits = int(math.log2(flat.size))
+    if qubit < 0 or qubit >= n_qubits:
+        raise ValueError("qubit index out of range")
+    norm = float(np.vdot(flat, flat).real)
+    if not np.isfinite(norm) or norm <= 0.0:
+        raise ValueError("psi must have finite non-zero norm")
+    p1 = sum(float(abs(amp) ** 2) for idx, amp in enumerate(flat) if (idx >> qubit) & 1) / norm
+    p1 = float(np.clip(p1, 0.0, 1.0))
+    return complex(math.sqrt(1.0 - p1)), complex(math.sqrt(p1))
 
 
 def _rz_matrix(theta: float) -> np.ndarray:
