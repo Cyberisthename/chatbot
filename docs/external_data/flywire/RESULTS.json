@@ -1,0 +1,503 @@
+{
+  "decision_rule": "separated iff observed is outside all five controls and |observed-control_mean|/sample_sd >= 3; otherwise not_separated.",
+  "ensembles": {
+    "degree_preserving_directed_switch": {
+      "comparison": {
+        "canonical_edge_sequence_lz_ratio": {
+          "control_mean": 0.5369694733431729,
+          "control_sample_sd": 0.0004538491472339004,
+          "control_values": [
+            0.5365563915187732,
+            0.5376858418229598,
+            0.5367858814212174,
+            0.5366868857770258,
+            0.5371323661758882
+          ],
+          "decision": "separated",
+          "observed": 0.5043333093343892,
+          "observed_minus_control_mean": -0.032636164008783664,
+          "outside_all_control_draws": true,
+          "standardized_difference": -71.90971759601864
+        },
+        "directed_3_cycle_rate_per_arc": {
+          "control_mean": 0.028352352496490152,
+          "control_sample_sd": 0.0016705068758894233,
+          "control_values": [
+            0.02933870909679974,
+            0.02786277403794233,
+            0.025756866697865293,
+            0.02869073760754527,
+            0.03011267504229814
+          ],
+          "decision": "separated",
+          "observed": 0.138215918499586,
+          "observed_minus_control_mean": 0.10986356600309585,
+          "outside_all_control_draws": true,
+          "standardized_difference": 65.76660508781295
+        },
+        "feed_forward_motif_rate_per_arc": {
+          "control_mean": 0.11894236653587242,
+          "control_sample_sd": 0.005040989836519443,
+          "control_values": [
+            0.11618488786493394,
+            0.12318657979048922,
+            0.11467295439000684,
+            0.11514093379891285,
+            0.12552647683501925
+          ],
+          "decision": "separated",
+          "observed": 0.7152885273047986,
+          "observed_minus_control_mean": 0.5963461607689262,
+          "outside_all_control_draws": true,
+          "standardized_difference": 118.29941739788828
+        },
+        "reciprocity_fraction": {
+          "control_mean": 0.006400518377191404,
+          "control_sample_sd": 0.0003735865600380029,
+          "control_values": [
+            0.006227725980056878,
+            0.006443716476475035,
+            0.005867741819359948,
+            0.0066237085568234995,
+            0.006839699053241657
+          ],
+          "decision": "separated",
+          "observed": 0.2016991252384895,
+          "observed_minus_control_mean": 0.1952986068612981,
+          "outside_all_control_draws": true,
+          "standardized_difference": 522.7666831521761
+        }
+      },
+      "description": "20*m accepted simple directed double-edge switches per seed; exact in/out degree preservation",
+      "runs": [
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 119240,
+            "canonical_edge_sequence_lz_ratio": 0.5365563915187732,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 872,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5429690233335007,
+                "std": 10.546925189233638
+              },
+              "out_degree": {
+                "max": 777,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5619373678886084,
+                "std": 10.003674230299715
+              }
+            },
+            "directed_3_cycle_count": 1630,
+            "directed_3_cycle_rate_per_arc": 0.02933870909679974,
+            "feed_forward_motif_count": 6455,
+            "feed_forward_motif_rate_per_arc": 0.11618488786493394,
+            "reciprocity_fraction": 0.006227725980056878
+          },
+          "seed": 104729,
+          "switch_info": {
+            "accepted_swaps": 1111160,
+            "attempts": 1133612
+          }
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 119491,
+            "canonical_edge_sequence_lz_ratio": 0.5376858418229598,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 872,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5429690233335007,
+                "std": 10.546925189233638
+              },
+              "out_degree": {
+                "max": 777,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5619373678886084,
+                "std": 10.003674230299715
+              }
+            },
+            "directed_3_cycle_count": 1548,
+            "directed_3_cycle_rate_per_arc": 0.02786277403794233,
+            "feed_forward_motif_count": 6844,
+            "feed_forward_motif_rate_per_arc": 0.12318657979048922,
+            "reciprocity_fraction": 0.006443716476475035
+          },
+          "seed": 130363,
+          "switch_info": {
+            "accepted_swaps": 1111160,
+            "attempts": 1133866
+          }
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 119291,
+            "canonical_edge_sequence_lz_ratio": 0.5367858814212174,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 872,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5429690233335007,
+                "std": 10.546925189233638
+              },
+              "out_degree": {
+                "max": 777,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5619373678886084,
+                "std": 10.003674230299715
+              }
+            },
+            "directed_3_cycle_count": 1431,
+            "directed_3_cycle_rate_per_arc": 0.025756866697865293,
+            "feed_forward_motif_count": 6371,
+            "feed_forward_motif_rate_per_arc": 0.11467295439000684,
+            "reciprocity_fraction": 0.005867741819359948
+          },
+          "seed": 155921,
+          "switch_info": {
+            "accepted_swaps": 1111160,
+            "attempts": 1134109
+          }
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 119269,
+            "canonical_edge_sequence_lz_ratio": 0.5366868857770258,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 872,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5429690233335007,
+                "std": 10.546925189233638
+              },
+              "out_degree": {
+                "max": 777,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5619373678886084,
+                "std": 10.003674230299715
+              }
+            },
+            "directed_3_cycle_count": 1594,
+            "directed_3_cycle_rate_per_arc": 0.02869073760754527,
+            "feed_forward_motif_count": 6397,
+            "feed_forward_motif_rate_per_arc": 0.11514093379891285,
+            "reciprocity_fraction": 0.0066237085568234995
+          },
+          "seed": 196613,
+          "switch_info": {
+            "accepted_swaps": 1111160,
+            "attempts": 1133885
+          }
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 119368,
+            "canonical_edge_sequence_lz_ratio": 0.5371323661758882,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 872,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5429690233335007,
+                "std": 10.546925189233638
+              },
+              "out_degree": {
+                "max": 777,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.5619373678886084,
+                "std": 10.003674230299715
+              }
+            },
+            "directed_3_cycle_count": 1673,
+            "directed_3_cycle_rate_per_arc": 0.03011267504229814,
+            "feed_forward_motif_count": 6974,
+            "feed_forward_motif_rate_per_arc": 0.12552647683501925,
+            "reciprocity_fraction": 0.006839699053241657
+          },
+          "seed": 225307,
+          "switch_info": {
+            "accepted_swaps": 1111160,
+            "attempts": 1133555
+          }
+        }
+      ],
+      "seeds": [
+        104729,
+        130363,
+        155921,
+        196613,
+        225307
+      ]
+    },
+    "matched_density_directed_gnm": {
+      "comparison": {
+        "canonical_edge_sequence_lz_ratio": {
+          "control_mean": 0.5836864177976169,
+          "control_sample_sd": 0.00029428842745277725,
+          "control_values": [
+            0.5837458151841319,
+            0.5835478238957486,
+            0.5839708052845675,
+            0.5839168076604629,
+            0.5832508369631736
+          ],
+          "decision": "separated",
+          "observed": 0.5043333093343892,
+          "observed_minus_control_mean": -0.07935310846322763,
+          "outside_all_control_draws": true,
+          "standardized_difference": -269.6439990864437
+        },
+        "directed_3_cycle_rate_per_arc": {
+          "control_mean": 0.00041398178480146866,
+          "control_sample_sd": 8.725439823997137e-05,
+          "control_values": [
+            0.00044998020087116166,
+            0.0004859786169408546,
+            0.00035998416069692933,
+            0.00028798732855754344,
+            0.0004859786169408546
+          ],
+          "decision": "separated",
+          "observed": 0.138215918499586,
+          "observed_minus_control_mean": 0.13780193671478452,
+          "outside_all_control_draws": true,
+          "standardized_difference": 1579.312212271464
+        },
+        "feed_forward_motif_rate_per_arc": {
+          "control_mean": 0.0013211418697577307,
+          "control_sample_sd": 0.0001263795650062418,
+          "control_values": [
+            0.0011879477302998668,
+            0.001349940602613485,
+            0.0013679398106483315,
+            0.0014939342668922567,
+            0.0012059469383347134
+          ],
+          "decision": "separated",
+          "observed": 0.7152885273047986,
+          "observed_minus_control_mean": 0.7139673854350409,
+          "outside_all_control_draws": true,
+          "standardized_difference": 5649.3894831793295
+        },
+        "reciprocity_fraction": {
+          "control_mean": 0.0002663882789157277,
+          "control_sample_sd": 5.459430104792504e-05,
+          "control_values": [
+            0.0003239857446272364,
+            0.0002159904964181576,
+            0.00025198891248785055,
+            0.0003239857446272364,
+            0.0002159904964181576
+          ],
+          "decision": "separated",
+          "observed": 0.2016991252384895,
+          "observed_minus_control_mean": 0.20143273695957378,
+          "outside_all_control_draws": true,
+          "standardized_difference": 3689.629376933467
+        }
+      },
+      "description": "uniform simple directed G(n,m) without self loops on the same node set",
+      "runs": [
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 129727,
+            "canonical_edge_sequence_lz_ratio": 0.5837458151841319,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 15,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.031515808647003,
+                "std": 2.025773039742023
+              },
+              "out_degree": {
+                "max": 13,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0326667861596874,
+                "std": 2.0268292605323377
+              }
+            },
+            "directed_3_cycle_count": 25,
+            "directed_3_cycle_rate_per_arc": 0.00044998020087116166,
+            "feed_forward_motif_count": 66,
+            "feed_forward_motif_rate_per_arc": 0.0011879477302998668,
+            "reciprocity_fraction": 0.0003239857446272364
+          },
+          "seed": 104729
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 129683,
+            "canonical_edge_sequence_lz_ratio": 0.5835478238957486,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 15,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0305159960871917,
+                "std": 2.026537944264046
+              },
+              "out_degree": {
+                "max": 13,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0195297201398716,
+                "std": 2.0089081930498542
+              }
+            },
+            "directed_3_cycle_count": 27,
+            "directed_3_cycle_rate_per_arc": 0.0004859786169408546,
+            "feed_forward_motif_count": 75,
+            "feed_forward_motif_rate_per_arc": 0.001349940602613485,
+            "reciprocity_fraction": 0.0002159904964181576
+          },
+          "seed": 130363
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 129777,
+            "canonical_edge_sequence_lz_ratio": 0.5839708052845675,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 14,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0400327949398727,
+                "std": 2.043221162407226
+              },
+              "out_degree": {
+                "max": 13,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.026463197672619,
+                "std": 2.021542638018779
+              }
+            },
+            "directed_3_cycle_count": 20,
+            "directed_3_cycle_rate_per_arc": 0.00035998416069692933,
+            "feed_forward_motif_count": 76,
+            "feed_forward_motif_rate_per_arc": 0.0013679398106483315,
+            "reciprocity_fraction": 0.00025198891248785055
+          },
+          "seed": 155921
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 129765,
+            "canonical_edge_sequence_lz_ratio": 0.5839168076604629,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 16,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0199118781930814,
+                "std": 2.0089449294539774
+              },
+              "out_degree": {
+                "max": 14,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0232764082753842,
+                "std": 2.020994956744747
+              }
+            },
+            "directed_3_cycle_count": 16,
+            "directed_3_cycle_rate_per_arc": 0.00028798732855754344,
+            "feed_forward_motif_count": 83,
+            "feed_forward_motif_rate_per_arc": 0.0014939342668922567,
+            "reciprocity_fraction": 0.0003239857446272364
+          },
+          "seed": 196613
+        },
+        {
+          "metrics": {
+            "canonical_edge_sequence_compressed_bytes": 129617,
+            "canonical_edge_sequence_lz_ratio": 0.5832508369631736,
+            "canonical_edge_sequence_raw_bytes": 222232,
+            "degree_diagnostics": {
+              "in_degree": {
+                "max": 13,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0361909163204834,
+                "std": 2.0337720455520283
+              },
+              "out_degree": {
+                "max": 14,
+                "mean": 4.100221402214022,
+                "shannon_entropy_bits": 3.0275622297705125,
+                "std": 2.024789166479621
+              }
+            },
+            "directed_3_cycle_count": 27,
+            "directed_3_cycle_rate_per_arc": 0.0004859786169408546,
+            "feed_forward_motif_count": 67,
+            "feed_forward_motif_rate_per_arc": 0.0012059469383347134,
+            "reciprocity_fraction": 0.0002159904964181576
+          },
+          "seed": 225307
+        }
+      ],
+      "seeds": [
+        104729,
+        130363,
+        155921,
+        196613,
+        225307
+      ]
+    }
+  },
+  "experiment": "FlyWire challenge-connectome structural-order probe",
+  "input": {
+    "edge_interpretation": "directed, weighted input; binary simple directed topology analysis",
+    "header": [
+      "Source Node  ID",
+      "Target Node ID",
+      "Edge Weight"
+    ],
+    "local_filename": "connectome_graph.csv.gz",
+    "node_id_parsing": "Python int validated to signed int64 range; never parsed as float.",
+    "retrieval_date_utc": "2026-10-29",
+    "sha256": "5e99efb931e41dfbc4994dbd6c2ad1c2df5c188bf4c6c88ccd0f8c02c642a04d",
+    "url": "https://storage.googleapis.com/flywire-data/challenges/mfas/connectome_graph.csv.gz"
+  },
+  "non_transfer": "The Burau braid invariant is not used because it is defined on braid words, not arbitrary graphs.",
+  "observed": {
+    "canonical_edge_sequence_compressed_bytes": 112079,
+    "canonical_edge_sequence_lz_ratio": 0.5043333093343892,
+    "canonical_edge_sequence_raw_bytes": 222232,
+    "degree_diagnostics": {
+      "in_degree": {
+        "max": 872,
+        "mean": 4.100221402214022,
+        "shannon_entropy_bits": 3.5429690233335007,
+        "std": 10.546925189233638
+      },
+      "out_degree": {
+        "max": 777,
+        "mean": 4.100221402214022,
+        "shannon_entropy_bits": 3.5619373678886084,
+        "std": 10.003674230299715
+      }
+    },
+    "directed_3_cycle_count": 7679,
+    "directed_3_cycle_rate_per_arc": 0.138215918499586,
+    "feed_forward_motif_count": 39740,
+    "feed_forward_motif_rate_per_arc": 0.7152885273047986,
+    "reciprocity_fraction": 0.2016991252384895
+  },
+  "scope": "Structure-only graph analysis; no claim about neural function, behaviour, meaning, cognition, consciousness, or quantum/FBSC mechanisms.",
+  "slice": {
+    "arc_count": 55558,
+    "definition": "induced nodes satisfying splitmix64(uint64(node_id)) mod 10 == 0",
+    "density": 0.00030262169918178624,
+    "duplicate_ordered_pairs_collapsed": 0,
+    "node_count": 13550,
+    "raw_rows": 5657719,
+    "raw_weight_sum": 41912141,
+    "retained_nonloop_rows_before_deduplication": 55558,
+    "retained_self_loop_rows_excluded": 0,
+    "selected_node_count": 13550
+  }
+}
