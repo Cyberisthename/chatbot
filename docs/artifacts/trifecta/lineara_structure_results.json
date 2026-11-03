@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "script": "lineara",
+    "title": "Linear A structure-first probe (re-derived, no tuning), Linear B as deciphered control",
+    "linear_a_source": "https://raw.githubusercontent.com/mwenge/lineara.xyz/master/items_analysis/inscriptions.json",
+    "linear_a_sha256": "66b94203bd343ed9f2e7e124e55737686e56f246b26b7d6f279d92a6fb14abda",
+    "linear_b_source": "https://raw.githubusercontent.com/mwenge/linearb.xyz/master/LinearBInscriptions.js",
+    "linear_b_sha256": "0967d75699b814888f47e7abff3e0b40e5e3aaa2cc67983bfcc371925fa5c1cf",
+    "boundary": "structure != meaning; no decipherment claimed (no bilingual exists for Linear A)",
+    "seed": 2026,
+    "linear_a_records": 1720,
+    "linear_b_records": 5889
+  },
+  "linear_a_word_level": {
+    "name": "linear_a_words",
+    "tokens": {
+      "n_tokens": 3060,
+      "H1_bits": 8.407101167226957,
+      "H2_given_H1_bits": 1.6422422943036494,
+      "reduction_H21_vs_H1_pct": 80.46601008317192,
+      "type_token_ratio": 0.37222222222222223,
+      "tag": "measured",
+      "n_sequences": 1327,
+      "n_distinct_tokens": 1139,
+      "mean_seq_len": 2.3059532780708363
+    },
+    "compressibility": {
+      "budget_tokens": 1000,
+      "draws": 25,
+      "c_real_mean": 0.92896,
+      "c_real_sd": 0.008999911110672129,
+      "c_shuffle_mean": 0.9640799999999999,
+      "c_shuffle_sd": 0.008380548908036998,
+      "delta_pct_vs_shuffle": -3.6428512156667425,
+      "tag": "measured"
+    }
+  },
+  "linear_a_sign_level": {
+    "name": "linear_a_signs",
+    "tokens": {
+      "n_tokens": 5456,
+      "H1_bits": 5.936828468359469,
+      "H2_given_H1_bits": 4.416248818886341,
+      "reduction_H21_vs_H1_pct": 25.61265931089485,
+      "type_token_ratio": 0.03189149560117302,
+      "tag": "measured",
+      "n_sequences": 1327,
+      "n_distinct_tokens": 174,
+      "mean_seq_len": 4.111529766390354
+    },
+    "compressibility": {
+      "budget_tokens": 1000,
+      "draws": 25,
+      "c_real_mean": 0.8267599999999999,
+      "c_real_sd": 0.008208678334543272,
+      "c_shuffle_mean": 0.86812,
+      "c_shuffle_sd": 0.008401523671334869,
+      "delta_pct_vs_shuffle": -4.764318297009639,
+      "tag": "measured"
+    }
+  },
+  "linear_b_word_level": {
+    "name": "linear_b_words",
+    "tokens": {
+      "n_tokens": 25241,
+      "H1_bits": 10.072916337246868,
+      "H2_given_H1_bits": 2.622748320180055,
+      "reduction_H21_vs_H1_pct": 73.96237363272984,
+      "type_token_ratio": 0.23909512301414365,
+      "tag": "measured",
+      "n_sequences": 5233,
+      "n_distinct_tokens": 6035,
+      "mean_seq_len": 4.823428243837187
+    },
+    "compressibility": {
+      "budget_tokens": 1000,
+      "draws": 25,
+      "c_real_mean": 0.90868,
+      "c_real_sd": 0.031773850884020974,
+      "c_shuffle_mean": 0.98548,
+      "c_shuffle_sd": 0.006312653958518562,
+      "delta_pct_vs_shuffle": -7.793156634330478,
+      "tag": "measured"
+    }
+  },
+  "linear_b_sign_level": {
+    "name": "linear_b_signs",
+    "tokens": {
+      "n_tokens": 54873,
+      "H1_bits": 6.192400161377893,
+      "H2_given_H1_bits": 4.762133311042314,
+      "reduction_H21_vs_H1_pct": 23.0971321791537,
+      "type_token_ratio": 0.004884004884004884,
+      "tag": "measured",
+      "n_sequences": 5233,
+      "n_distinct_tokens": 268,
+      "mean_seq_len": 10.48595451939614
+    },
+    "compressibility": {
+      "budget_tokens": 1000,
+      "draws": 25,
+      "c_real_mean": 0.78604,
+      "c_real_sd": 0.04687470959910043,
+      "c_shuffle_mean": 0.88892,
+      "c_shuffle_sd": 0.014721195603618627,
+      "delta_pct_vs_shuffle": -11.573594924177666,
+      "tag": "measured"
+    }
+  },
+  "contrast": {
+    "delta_sign_level_linear_a_pct": -4.764318297009639,
+    "delta_sign_level_linear_b_pct": -11.573594924177666,
+    "linear_a_less_redundant_than_linear_b_by_pp": -6.8092766271680265,
+    "interpretation": "deciphered Linear B carries more order-driven redundancy than undeciphered Linear A under the same metric at the same token budget",
+    "tag": "measured"
+  }
+}

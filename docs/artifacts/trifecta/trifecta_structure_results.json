@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "title": "Three scripts, one method: structure-first probe comparison",
+    "budget_tokens": 1000,
+    "draws": 25,
+    "metric": "C = LZ phrases / token at matched budget; Delta% = 100*(C_real/C_shuffle-1)",
+    "deciphered_control": "Linear B (sign level)",
+    "boundary": "structure != meaning; no decipherment claimed for Linear A or Indus"
+  },
+  "rows": [
+    {
+      "script": "indus",
+      "level": "sign",
+      "role": "undeciphered",
+      "n_tokens": 1003,
+      "n_distinct_tokens": 182,
+      "c_real": 0.79988,
+      "c_real_sd": 0.0032039975031201286,
+      "c_shuffle": 0.88996,
+      "delta_pct": -10.121803227111325
+    },
+    {
+      "script": "linear_a",
+      "level": "sign",
+      "role": "undeciphered",
+      "n_tokens": 5456,
+      "n_distinct_tokens": 174,
+      "c_real": 0.8267599999999999,
+      "c_real_sd": 0.008208678334543272,
+      "c_shuffle": 0.86812,
+      "delta_pct": -4.764318297009639
+    },
+    {
+      "script": "linear_b",
+      "level": "sign",
+      "role": "deciphered control",
+      "n_tokens": 54873,
+      "n_distinct_tokens": 268,
+      "c_real": 0.78604,
+      "c_real_sd": 0.04687470959910043,
+      "c_shuffle": 0.88892,
+      "delta_pct": -11.573594924177666
+    },
+    {
+      "script": "linear_a",
+      "level": "word",
+      "role": "undeciphered",
+      "n_tokens": 3060,
+      "n_distinct_tokens": 1139,
+      "c_real": 0.92896,
+      "c_real_sd": 0.008999911110672129,
+      "c_shuffle": 0.9640799999999999,
+      "delta_pct": -3.6428512156667425
+    },
+    {
+      "script": "linear_b",
+      "level": "word",
+      "role": "deciphered control",
+      "n_tokens": 25241,
+      "n_distinct_tokens": 6035,
+      "c_real": 0.90868,
+      "c_real_sd": 0.031773850884020974,
+      "c_shuffle": 0.98548,
+      "delta_pct": -7.793156634330478
+    },
+    {
+      "script": "voynich",
+      "level": "word",
+      "role": "undeciphered",
+      "n_tokens": 38242,
+      "n_distinct_tokens": 11293,
+      "c_real": 0.99472,
+      "c_real_sd": 0.003747212297161721,
+      "c_shuffle": 0.9984,
+      "delta_pct": -0.3685897435897312
+    },
+    {
+      "script": "voynich",
+      "level": "letter",
+      "role": "undeciphered",
+      "n_tokens": 161419,
+      "n_distinct_tokens": 171,
+      "c_real": 0.5266000000000001,
+      "c_real_sd": 0.010503332804400715,
+      "c_shuffle": 0.64004,
+      "delta_pct": -17.723892256733954
+    }
+  ],
+  "indus_vs_deciphered_control": {
+    "indus_delta_pct": -10.121803227111325,
+    "linear_b_delta_pct": -11.573594924177666,
+    "gap_pp": 1.4517916970663407,
+    "indus_c_real": 0.79988,
+    "linear_b_c_real": 0.78604,
+    "note": "one deciphered control = one point, not a band; the gap is reported, not a membership claim",
+    "tag": "measured"
+  }
+}
