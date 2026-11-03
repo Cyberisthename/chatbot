@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "script": "voynich",
+    "title": "Voynich structure-first probe vs a random-scribble null (re-derived, no tuning)",
+    "source": "https://raw.githubusercontent.com/musyoku/voynich-transcription/master/voynich.txt",
+    "sha256": "0a96fbcf38e298689589dd8d4d4ba97d4856c2370a94602b83bb1cfd88dbaaae",
+    "transcription": "Glen Claston v101 (word-separated); NOT EVA, so letter-level numbers are transcription-specific",
+    "n_lines": 4486,
+    "n_words": 38242,
+    "n_distinct_words": 11293,
+    "n_distinct_letters": 171,
+    "boundary": "structure != meaning; no decipherment and no phonetic reading claimed",
+    "null_model": "i.i.d. letters drawn from the corpus letter unigram, same word lengths and positions (V1-V4); global token shuffle (V5)",
+    "z_threshold": 3.0,
+    "perms": 25,
+    "seed": 2026
+  },
+  "probes": [
+    {
+      "probe": "V1 letter mutual information I(X1;X2)",
+      "unit": "bits",
+      "real": 1.213292437248244,
+      "null_mean": 0.028409024363707774,
+      "null_sd": 0.0029747808185984588,
+      "z_score": 398.30948400520595,
+      "rejects_scribble_null": true,
+      "tag": "measured"
+    },
+    {
+      "probe": "V2 distinct-word share of tokens",
+      "unit": "ratio",
+      "real": 0.2953035929083207,
+      "null_mean": 0.7462297996966686,
+      "null_sd": 0.0014020631392324642,
+      "z_score": -321.6161912902152,
+      "rejects_scribble_null": true,
+      "tag": "measured"
+    },
+    {
+      "probe": "V3 letter MI vs within-word anagram null",
+      "unit": "bits",
+      "real": 1.213292437248244,
+      "null_mean": 0.262434727081438,
+      "null_sd": 0.00463248620228078,
+      "z_score": 205.25861678738653,
+      "rejects_scribble_null": true,
+      "tag": "measured"
+    },
+    {
+      "probe": "V4 first-minus-last letter entropy gap",
+      "unit": "bits",
+      "real": 0.7743433670317463,
+      "null_mean": 0.0006230886609458252,
+      "null_sd": 0.009472185832333216,
+      "z_score": 81.68339304848874,
+      "rejects_scribble_null": true,
+      "tag": "measured"
+    },
+    {
+      "probe": "V5 size-matched compressibility delta",
+      "unit": "% vs shuffle",
+      "real": -0.3685897435897312,
+      "null_mean": 0.0,
+      "null_sd": 0.12348585743126968,
+      "z_score": -2.984874148805927,
+      "rejects_scribble_null": false,
+      "tag": "measured"
+    }
+  ],
+  "summary": {
+    "probes_run": 5,
+    "probes_rejecting_scribble_null": 4,
+    "verdict": "inconsistent with this random-scribble model on 4 of 5 probes",
+    "tag": "measured"
+  },
+  "C_size_matched_compressibility": {
+    "budget_tokens": 1000,
+    "draws": 25,
+    "c_real_mean": 0.99472,
+    "c_real_sd": 0.003747212297161721,
+    "c_shuffle_mean": 0.9984,
+    "c_shuffle_sd": 0.0012328828005937964,
+    "delta_pct_vs_shuffle": -0.3685897435897312,
+    "tag": "measured"
+  }
+}

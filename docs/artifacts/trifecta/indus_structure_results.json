@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "script": "indus",
+    "title": "Indus structure-first probe (re-derived, no tuning)",
+    "corpus": "docs/artifacts/indus/indus_corpus_clean.tsv",
+    "corpus_sha16": "0db6fbd8f99df5f3",
+    "n_sequences": 179,
+    "n_tokens": 1003,
+    "n_distinct_tokens": 182,
+    "boundary": "structure != meaning; no decipherment claimed",
+    "seed": 2026
+  },
+  "H1_P385_initial": {
+    "measured_initial": 29,
+    "n_seqs": 179,
+    "base_rate": 0.16201117318435754,
+    "shuffle_mean": 6.8925,
+    "shuffle_sd": 2.2474304772339453,
+    "z_score": 9.836789268431163,
+    "perms": 400,
+    "tag": "measured"
+  },
+  "H2_P385_P122_collocation": {
+    "measured": 29,
+    "expected_independent": 2.1787479038457906,
+    "enrichment": 13.310397200525586,
+    "shuffle_mean": 2.2675,
+    "shuffle_sd": 1.419839339502889,
+    "z_score": 18.827834429041477,
+    "perms": 400,
+    "tag": "measured"
+  },
+  "H3_short_range_context": {
+    "H1_bits": 6.285878165557775,
+    "H2_bits": 8.698563474362967,
+    "H3_bits": 9.112459598550975,
+    "H2_given_H1_bits": 2.3252307166462693,
+    "H3_given_H21_bits": 0.6702257619293489,
+    "H2_minus_H1_bits_difference_convention": 2.4126853088051923,
+    "H3_minus_H2_bits_difference_convention": 0.413896124188009,
+    "reduction_H21_vs_H1_pct": 63.008657574896844,
+    "n_bigrams": 824,
+    "bigrams_used": 551,
+    "tag": "measured"
+  },
+  "H4_long_range": {
+    "lz_real": 0.8554336989032901,
+    "lz_token_shuffle_mean": 0.9787886340977069,
+    "lz_per_seq_shuffle_mean": 0.9704486540378864,
+    "lz_gap_vs_token_shuffle_pct": 12.60281647100766,
+    "lz_gap_vs_per_seq_shuffle_pct": 11.851730089586587,
+    "far_repeated_bigrams_real": 0,
+    "far_repeated_bigrams_shuffle_mean": 0.025,
+    "perms": 200,
+    "tag": "measured"
+  },
+  "C_size_matched_compressibility": {
+    "budget_tokens": 1000,
+    "draws": 25,
+    "c_real_mean": 0.79988,
+    "c_real_sd": 0.0032039975031201286,
+    "c_shuffle_mean": 0.88996,
+    "c_shuffle_sd": 0.004685979086594395,
+    "delta_pct_vs_shuffle": -10.121803227111325,
+    "tag": "measured"
+  }
+}
