@@ -1,0 +1,222 @@
+{
+  "analysis_of": "docs/qpu/results/ibm_fez_run-001/provenance.json",
+  "status_of_inputs": "OWNER-REPORTED. No job IDs, no job JSON, no shot counts. Nothing here is [measured] and nothing here may be upgraded without the job artifacts.",
+  "reported_inputs": {
+    "backend": "ibm_fez",
+    "qubits": [
+      44,
+      45
+    ],
+    "chsh_measured": 2.61,
+    "chsh_error": 0.02,
+    "chsh_design": 2.825,
+    "state_fidelity_vs_design": 0.98,
+    "freq_drift_first_khz": 1.85,
+    "freq_drift_second_khz": 1.5,
+    "wait_between_blocks_s": 1200,
+    "qpu_seconds_chsh": 39.0,
+    "qpu_seconds_total": 55.0,
+    "qpu_second_cap": 30.0
+  },
+  "tsirelson": 2.828427,
+  "chsh": {
+    "S_measured": 2.61,
+    "S_error_stated": 0.02,
+    "classical_bound": 2.0,
+    "tsirelson": 2.828427,
+    "design": 2.825,
+    "violates_classical_by_sigma": 30.5,
+    "deficit_from_tsirelson": 0.218427,
+    "deficit_from_tsirelson_fraction": 0.0772,
+    "deficit_from_design": 0.215,
+    "deficit_from_design_in_sigma": 10.75,
+    "tsirelson_minus_design": 0.003427,
+    "prereg": {
+      "success_leg1_floor": 2.6,
+      "leg1_clears_floor_by": 0.01,
+      "leg1_clears_floor_in_sigma": 0.5,
+      "leg1_95pct_low": 2.5708,
+      "leg1_95pct_low_inside_inconclusive_band": true,
+      "success_leg2_tolerance": 0.08,
+      "leg2_evaluable": false,
+      "leg2_reason": "requires S_model at E1's MEASURED channel; E1 never ran",
+      "failure_threshold": 2.0,
+      "verdict": "leg 1 marginal pass, leg 2 UNEVALUABLE -> not a pre-registered success"
+    },
+    "werner": {
+      "visibility_v": 0.9228,
+      "implied_fidelity_F_eq_1p3v_over_4": 0.9421,
+      "white_noise_fraction": 0.0772,
+      "note": "CHSH of a Werner state is 2*sqrt(2)*v (Horodecki); F=(1+3v)/4"
+    },
+    "fidelity_vs_chsh_consistency": {
+      "F_reported": 0.98,
+      "v_implied_by_F_if_Werner": 0.9733,
+      "S_implied_by_that_F": 2.753,
+      "gap_S": 0.143,
+      "gap_in_sigma": 7.15,
+      "required_correlator_attenuation": 0.9481,
+      "implied_per_qubit_readout_bitflip_error": 0.0132,
+      "consistent_with_typical_readout": true,
+      "caveat": "conditional on (a) F=0.98 being a Werner-equivalent state fidelity and (b) the whole residual being symmetric readout bit-flip. Neither is established."
+    },
+    "frame_rotation_degeneracy": {
+      "rotation_rad_that_gives_same_S": 0.3956,
+      "rotation_deg_that_gives_same_S": 22.66,
+      "note": "S is one number. Visibility loss and measurement-frame rotation are indistinguishable from S alone. The 3x3 correlation matrix separates them."
+    },
+    "identifiability_n2": {
+      "S_depends_on": "two largest singular values t1,t2 of the 3x3 correlation matrix T: S=2*sqrt(t1^2+t2^2)",
+      "pure_2q_state_parameters_up_to_local_unitaries": 1,
+      "correlation_matrix_entries": 9,
+      "statement": "At n=2 CHSH certifies entanglement and Bell nonlocality of WHATEVER state was prepared. The E2 circuit (H, CNOT) prepares the textbook |Phi+> Bell state, not the FBSC state. Any source with equal visibility gives 2.61."
+    }
+  },
+  "drift": {
+    "reported_drift_khz": [
+      1.85,
+      1.5
+    ],
+    "wait_s": 1200,
+    "rate_bracket_hz_per_s": [
+      0.2917,
+      2.7917
+    ],
+    "rate_bracket_note": "lower bound = drifting toward the calibrated value; upper bound = drifting through it. TWO POINTS CANNOT DISTINGUISH THESE.",
+    "rate_bracket_hz_per_hour": [
+      1050.0,
+      10050.0
+    ],
+    "relative_drift_per_hour_at_5GHz": [
+      2.1e-07,
+      2.01e-06
+    ],
+    "gate_angle_error": {
+      "Omega_2pi=5.0MHz@1.50kHz": {
+        "angle_error_per_gate": "4.500e-08"
+      },
+      "Omega_2pi=5.0MHz@1.85kHz": {
+        "angle_error_per_gate": "6.845e-08"
+      },
+      "Omega_2pi=10.0MHz@1.50kHz": {
+        "angle_error_per_gate": "1.125e-08"
+      },
+      "Omega_2pi=10.0MHz@1.85kHz": {
+        "angle_error_per_gate": "1.711e-08"
+      },
+      "Omega_2pi=20.0MHz@1.50kHz": {
+        "angle_error_per_gate": "2.812e-09"
+      },
+      "Omega_2pi=20.0MHz@1.85kHz": {
+        "angle_error_per_gate": "4.278e-09"
+      }
+    },
+    "gate_angle_half_life": {
+      "Omega_2pi=5.0MHz": {
+        "delta_for_1pct_angle_error_Hz": 707106.8,
+        "days_at_slow_rate": 28.06,
+        "days_at_fast_rate": 2.93
+      },
+      "Omega_2pi=10.0MHz": {
+        "delta_for_1pct_angle_error_Hz": 1414213.6,
+        "days_at_slow_rate": 56.12,
+        "days_at_fast_rate": 5.86
+      },
+      "Omega_2pi=20.0MHz": {
+        "delta_for_1pct_angle_error_Hz": 2828427.1,
+        "days_at_slow_rate": 112.24,
+        "days_at_fast_rate": 11.73
+      }
+    },
+    "phase_accumulation": {
+      "tau=10.0us": {
+        "phase_rad_at_1.50kHz": 0.094248,
+        "phase_deg_at_1.50kHz": 5.4,
+        "phase_deg_at_1.85kHz": 6.66,
+        "offset_for_1deg_error_Hz": 277.778
+      },
+      "tau=100.0us": {
+        "phase_rad_at_1.50kHz": 0.942478,
+        "phase_deg_at_1.50kHz": 54.0,
+        "phase_deg_at_1.85kHz": 66.6,
+        "offset_for_1deg_error_Hz": 27.778
+      },
+      "tau=150.0us": {
+        "phase_rad_at_1.50kHz": 1.413717,
+        "phase_deg_at_1.50kHz": 81.0,
+        "phase_deg_at_1.85kHz": 99.9,
+        "offset_for_1deg_error_Hz": 18.519
+      },
+      "tau=300.0us": {
+        "phase_rad_at_1.50kHz": 2.827433,
+        "phase_deg_at_1.50kHz": 162.0,
+        "phase_deg_at_1.85kHz": 199.8,
+        "offset_for_1deg_error_Hz": 9.259
+      }
+    },
+    "phase_accumulation_note": "T1 is a Z-basis population measurement and is INSENSITIVE to this phase. T2 Hahn echo REFOCUSES a static offset to first order -- which is why echo is used. So the observed kHz offset does not by itself invalidate E1.",
+    "echo_residual": {
+      "tau=150.0us,r=0.292Hz/s": {
+        "analytic_rad": "1.031e-08",
+        "numeric_rad": "1.031e-08",
+        "relative_difference": "2.00e-05",
+        "agree": true
+      },
+      "tau=150.0us,r=2.792Hz/s": {
+        "analytic_rad": "9.867e-08",
+        "numeric_rad": "9.867e-08",
+        "relative_difference": "2.00e-05",
+        "agree": true
+      },
+      "tau=150.0us_note": "echo refocuses a STATIC offset completely; only the changing part survives, and it is <=1e-7 rad -- at least 6 orders below any measurable phase",
+      "tau=300.0us,r=0.292Hz/s": {
+        "analytic_rad": "4.123e-08",
+        "numeric_rad": "4.123e-08",
+        "relative_difference": "2.00e-05",
+        "agree": true
+      },
+      "tau=300.0us,r=2.792Hz/s": {
+        "analytic_rad": "3.947e-07",
+        "numeric_rad": "3.947e-07",
+        "relative_difference": "2.00e-05",
+        "agree": true
+      },
+      "tau=300.0us_note": "echo refocuses a STATIC offset completely; only the changing part survives, and it is <=1e-7 rad -- at least 6 orders below any measurable phase"
+    },
+    "e3e5_drift_vs_effect_block_2.9s": {
+      "drift_during_block_Hz": 8.096,
+      "phase_over_20us_circuit_rad": "1.017e-03",
+      "implied_fidelity_change": "1.035e-06",
+      "predicted_kink_drop_E3": 0.123,
+      "drift_as_fraction_of_effect": "8.415e-06",
+      "verdict": "drift is ~1e-5 of the pre-registered effect: E3/E5 are safe from THIS mode"
+    },
+    "e3e5_drift_vs_effect_block_3.6s": {
+      "drift_during_block_Hz": 10.05,
+      "phase_over_20us_circuit_rad": "1.263e-03",
+      "implied_fidelity_change": "1.595e-06",
+      "predicted_kink_drop_E3": 0.123,
+      "drift_as_fraction_of_effect": "1.297e-05",
+      "verdict": "drift is ~1e-5 of the pre-registered effect: E3/E5 are safe from THIS mode"
+    }
+  },
+  "metering": {
+    "formula": "est = 2 + 0.00035 * executions  [published, runbook 5.1]",
+    "reported_seconds": 39.0,
+    "cap_seconds": 30.0,
+    "overrun_seconds": 9.0,
+    "overrun_fraction": 1.3,
+    "executions_implied_by_39s": 105714.0,
+    "estimate_for_prereg_200k_shots": 72.0,
+    "observed_below_published_estimate": true,
+    "implied_us_per_execution_if_200k_shots": 185.0,
+    "published_us_per_execution": 350.0,
+    "block_estimate_200k_assumed": 534.0,
+    "block_recost": {
+      "at_published_350us": 534.0,
+      "at_implied_185us_if_200k_ran": 283.0,
+      "fits_in_300s_if_implied_rate": true,
+      "caveat": "ONE data point. 39 s is consistent with (a) ~106k executions at default metering, or (b) the planned 200k at a reduced rep_delay (~85 us). The job JSON separates them. Do not book a plan on this yet."
+    }
+  }
+}
