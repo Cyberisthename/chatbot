@@ -1,7 +1,7 @@
 # JARVIS Originality Audit — Legal Ownership & Dependency Risk Report
 
 **Date:** 2026-10-05 (fresh audit of `Cyberisthename/chatbot` @ `origin/main` HEAD 5520238 + working tree)
-**Revision 2 — 2026-11-05:** the owner has decided to use IBM Quantum's free tier, which means **Qiskit**, a third-party quantum SDK. §4.6 is new and discloses it. **The core verdict is unchanged and the claim is unchanged**: the SDK is confined to a `hardware/` leaf that the FBSC path never imports, and the confinement is enforced by `hardware/check_boundary.sh` in CI. Nothing in this revision is `[measured]` on a device — **no QPU job has been submitted.**
+**Revision 2 — 2026-11-05:** the owner has decided to use IBM Quantum's free tier, which means **Qiskit**, a third-party quantum SDK. §4.6 is new and discloses it. **The core verdict is unchanged and the claim is unchanged**: the SDK is confined to a `hardware/` leaf that the FBSC path never imports, and the confinement is enforced by `hardware/check_boundary.sh` in CI. Nothing in this revision is `[measured]` on a device — **no QPU job has been submitted.** Line counts in §1 were also re-counted on 2026-11-05 (`quantum_transformer.py` has grown 491 → 555); a stale `wc -l` is the cheapest kind of disprovable claim, so it is fixed rather than left.
 **Auditor:** agent-legal-manager
 **Scope:** Verify that the JARVIS core (Quantum Transformer, TCL engine, FBSC seed compressor) is custom-built and NOT a wrapper on proprietary/third-party AI or quantum SDKs; report legal ownership status and dependency risks.
 **Method:** static import scan of all Python in the core package + root repo; review of `requirements.txt`, `package.json`, LICENSE files; spot-read of core module structure (forward/backward loops). Every claim below is tagged **(a) measured / (b) interpretation / (c) speculation** per house standard.
@@ -12,8 +12,8 @@
 
 **(a) PASS — the JARVIS core is original, custom-built, and dependency-lean.**
 
-- `src/quantum_llm/quantum_transformer.py` (491 lines) and `src/quantum_llm/quantum_attention.py` (474 lines) are hand-written numpy transformers with explicit `forward`/`backward` loops. **No import of torch, TensorFlow, Keras, transformers, JAX, or any quantum SDK.**
-- `src/thought_compression/` (tcl_engine 517 + compiler 506 + parser 447 + runtime 685 + symbols/types ≈ 2,300 lines) is a self-contained symbolic language implementation (its own parser → bytecode compiler → runtime). **No third-party language engine, no LLM SDK.**
+- `src/quantum_llm/quantum_transformer.py` (555 lines — 491 at audit time; it has grown since, re-counted 2026-11-05) and `src/quantum_llm/quantum_attention.py` (474 lines) are hand-written numpy transformers with explicit `forward`/`backward` loops. **No import of torch, TensorFlow, Keras, transformers, JAX, or any quantum SDK.**
+- `src/thought_compression/` (tcl_engine 517 + compiler 506 + parser 447 + runtime 685 + symbols 295 + types 98 + `__init__` 69 = **2,617 lines**, re-counted 2026-11-05) is a self-contained symbolic language implementation (its own parser → bytecode compiler → runtime). **No third-party language engine, no LLM SDK.**
 - `compression_specialist.py` (FBSC core) imports **only** numpy + stdlib (hashlib, json, math, os, pathlib, typing, time).
 - `requirements.txt` (root + HF-ready) declares only: `gradio`, `numpy`, `matplotlib`.
 - Repo `src/` web layer uses fastapi / flask / pydantic / uvicorn / yaml — ordinary infrastructure, not AI wrappers.
