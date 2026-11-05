@@ -1,0 +1,225 @@
+{
+  "template_id": "QPU-NITRO-001",
+  "status": "UNFROZEN TEMPLATE - do not treat as a pre-registration until frozen",
+  "companion_doc": "docs/QPU_NITROGENASE_EXPERIMENTS.md",
+  "protocol": "freeze-first: sha256 of this file is committed and pushed BEFORE any QPU job is submitted (precedent: docs/validation/BLIND_PREDICTION_2.frozen.json). Fill device fields at booking, then freeze. Thresholds and CHSH settings may NOT be edited after freeze.",
+  "framing_rule": "Hardware calibrates or validates our simulator. Hardware never computes the chemistry. No sentence of the form 'the QPU produced X kJ/mol' is permitted.",
+  "what_this_cannot_do": [
+    "FeMo-co active space (54 orbitals): out of reach - order 1e11 T gates, ~1e5 s at 1 us/cycle even fault-tolerant",
+    "The d=4, n=16 FBSC state: 4^16 = 2^32 amplitudes, no known state-prep circuit; generic prep ~2^32 gates = ~430 s per shot at 0.1 us/gate",
+    "Any barrier in kJ/mol from hardware: smallest ladder rung is 14.7833 kJ/mol, chemical accuracy is 4.184 kJ/mol"
+  ],
+  "budget": {
+    "qpu_seconds_available": 300,
+    "estimated_seconds_used": 29.3,
+    "estimated_utilization_fraction": 0.098,
+    "total_shots": 1520000,
+    "note": "seconds are not the binding constraint; the reserve is for one re-run of any experiment that fails its threshold"
+  },
+  "execution_order": [
+    "E1",
+    "E2",
+    "E3",
+    "E5",
+    "E6",
+    "E4"
+  ],
+  "rank_by_value_per_second": [
+    "E2",
+    "E4",
+    "E3",
+    "E6",
+    "E5",
+    "E1"
+  ],
+  "rank_note": "value-per-second ordering and execution ordering differ on purpose: E1 is last by ratio and first in the block because E3 and E5 consume its measured channel as an input.",
+  "device": {
+    "vendor": "TO_BE_FILLED_AT_BOOKING",
+    "device_name": "TO_BE_FILLED_AT_BOOKING",
+    "device_class": "TO_BE_FILLED_AT_BOOKING",
+    "calibration_timestamp_utc": "TO_BE_FILLED_AT_BOOKING",
+    "job_ids": [],
+    "note": "results are only reportable with vendor + device + date, because device parameters drift weekly"
+  },
+  "frozen_at_utc": null,
+  "frozen_sha256": null,
+  "experiments": [
+    {
+      "id": "E1",
+      "title": "device channel calibration (T1 / T2 echo / readout / two-qubit RB)",
+      "circuits": [
+        "T1: X, delay tau in 10 geometric points 10-300 us, measure; 4 qubits; 5000 shots/point",
+        "T2 echo: X, delay tau/2, X, delay tau/2, measure; 12 delays 5-150 us; 4 qubits; 5000 shots/point",
+        "readout: prepare |0> and X|0>, measure; 20000 shots each",
+        "2q RB: interleaved randomized benchmarking, 4 adjacent pairs, 25 depths 1-25, 2000 shots/depth/pair"
+      ],
+      "shots": 460000,
+      "estimated_qpu_seconds": 13.0,
+      "fits": {
+        "T1": "P1(tau) = A*exp(-tau/T1) + B",
+        "T2": "P(tau) = A*exp(-tau/T2) + 0.5",
+        "RB": "F(m) = A*p^m + B with e2 = (1-p)(d-1)/d, d=4"
+      },
+      "success_threshold": "all four fits chi2/dof < 3; T1 in [20,400] us; T2 in [10,300] us; T2 <= 2*T1; readout error in [0.1%,5%]; bootstrap 95% CI width < 20% of each value",
+      "failure_threshold": "any chi2/dof > 5, any value outside its physical range, or T2 < 5 us -> abort the whole block and report the abort",
+      "claim_earned": "measured T1, T2, readout error, two-qubit error for device D on date T; these replace the assumed coherence and protection inputs to our simulator",
+      "claim_not_earned": "that coherence=0.876241 or protection=0.995139 is validated; that any barrier is validated",
+      "depends_on": []
+    },
+    {
+      "id": "E2",
+      "title": "CHSH with the settings from our own LP LHV-exclusion search",
+      "circuits": [
+        "H(q0), CNOT(q0,q1), RZ(-2a) on q0, RZ(-2b) on q1, measure - for the 4 (ai,bj) combinations"
+      ],
+      "settings_source": "docs/artifacts/quantum_likeness/ LP-optimal angles, copied verbatim and NOT re-optimised after seeing data",
+      "settings_values": "TO_BE_COPIED_FROM_ARTIFACT_BEFORE_FREEZE",
+      "shots": 200000,
+      "estimated_qpu_seconds": 1.2,
+      "estimator": "E = (N_same - N_diff)/(N_same + N_diff); S = E00 + E01 + E10 - E11",
+      "success_threshold": "S_meas >= 2.60 AND |S_meas - S_model(measured channel)| <= 0.08",
+      "failure_threshold": "S_meas <= 2.00 OR |S_meas - S_model| > 0.15",
+      "inconclusive_band": "2.00 < S_meas < 2.60 is pre-declared inconclusive, not a success",
+      "claim_earned": "our LP-optimal settings are physically realisable; measured S and measured Tsirelson deficit; our analytic channel model reproduces measured S within a stated band",
+      "claim_not_earned": "any upgrade of the quantum-likeness claim (already classically proven); no loophole-free claim",
+      "depends_on": [
+        "E1"
+      ]
+    },
+    {
+      "id": "E3",
+      "title": "does the exact-zero braid invariance survive measurement (transfer gap)",
+      "circuits": [
+        "4-strand braid word (length 20) as a CNOT/swap network on 4 qubits",
+        "isotopy arm: insert k in {0,2,4,8,16,40} cancelling kink pairs with compiler optimisation DISABLED",
+        "control arm: insert k genuine crossing flips (element changes)",
+        "measure: mirror-circuit survival (U then U-dagger) + element error (shots outside expected permutation support)"
+      ],
+      "compiler_requirement": "optimization_level=0; PRINT AND CHECK that compiled depths differ across k. If depths are identical the run is VOID and must be reported as void.",
+      "shots": 240000,
+      "estimated_qpu_seconds": 2.9,
+      "predictions": {
+        "P1": "element error grows with k on the isotopy arm; e(40) - e(0) <= 0.05",
+        "P2": "mirror fidelity on the isotopy arm drops >= 0.15 from k=0 to k=40 (our analytic model predicts 0.967 -> 0.844, drop 0.123)",
+        "P3": "control-arm element error >= 10x isotopy-arm at every k >= 2"
+      },
+      "success_threshold": "P1 AND P2 AND P3 hold with non-overlapping 95% CIs",
+      "failure_threshold": "any of P1-P3 refuted, OR compiled depths identical across k (void)",
+      "claim_earned": "under a measured channel, the word-level invariant degrades by X while state fidelity degrades by Y; the classical exact-zero claim transfers with a measured gap",
+      "claim_not_earned": "topological protection, anyon braiding, non-abelian statistics, fault tolerance. No anyons exist on a transmon.",
+      "depends_on": [
+        "E1"
+      ]
+    },
+    {
+      "id": "E4",
+      "title": "is the d=3 / d=4 qudit row representable on device",
+      "availability_flag": "UNCERTAIN - qudit (d>=3) access is not a supported cloud API on major providers at time of writing; may require pulse-level control. Verify at booking.",
+      "circuits": [
+        "4 transmons as qutrits/ququarts; prepare (|0>+|1>)/sqrt2, (|0>+|2>)/sqrt2, (|0>+|1>+|2>)/sqrt3 and d=4 analogues with SU(3)/SU(4) pulses",
+        "read out 3 (4) levels via |2>->|1> shelving plus a second readout pulse"
+      ],
+      "shots": 120000,
+      "estimated_qpu_seconds": 1.2,
+      "success_threshold": "SPAM-corrected 3-outcome assignment fidelity >= 0.90 AND single-qudit qutrit process fidelity >= 0.95",
+      "failure_threshold": "assignment fidelity < 0.80 OR process fidelity < 0.90",
+      "claim_earned": "d=4 encoding is available on device class C at measured fidelity F; the d=4 row's dimension is not fiction",
+      "claim_not_earned": "that the d=4 row's 100.7657 kJ/mol means anything physically",
+      "depends_on": []
+    },
+    {
+      "id": "E5",
+      "title": "measured depth-decay curve replacing the analytic NISQ table",
+      "circuits": [
+        "random Clifford layers of depth D in {1,2,4,6,8,10} on n in {8,16,24,32} qubits, followed by the exact inverse (mirror)",
+        "both a linear chain and a heavy-hex-like coupling map, so the r2 connectivity factor is measured not assumed"
+      ],
+      "shots": 300000,
+      "estimated_qpu_seconds": 3.6,
+      "success_threshold": ">= 80% of (n,D) points inside the 95% band of our model re-evaluated with E1's measured channel parameters",
+      "failure_threshold": "systematic deviation in the optimistic direction (model predicts higher fidelity than measured) at more than half the points -> the published domination table must be weakened",
+      "claim_earned": "the depth axis of VALIDATION_BENCHMARK.md is measured for device D on date T; the domination claim over our depth-independent core holds with measured numbers",
+      "claim_not_earned": "any speedup, advantage, or fault tolerance",
+      "depends_on": [
+        "E1"
+      ]
+    },
+    {
+      "id": "E6",
+      "title": "chemical-accuracy floor: the negative experiment, run on purpose",
+      "circuits": [
+        "4-qubit (2-site) Heisenberg/Hubbard dimer standing in for the [2Fe-2S] singlet-triplet gap (the BLIND_PREDICTION_2 target)",
+        "fixed hardware-efficient ansatz, 20 parameter sets from a pre-computed classical optimisation, 10000 shots each",
+        "readout-error mitigation by calibration-matrix inversion; reference = exact diagonalisation of a 16x16 matrix"
+      ],
+      "shots": 200000,
+      "estimated_qpu_seconds": 2.4,
+      "success_threshold": "run completes and epsilon = |E_measured - E_exact| is reported with a bootstrap CI",
+      "expectation": "epsilon in [5,50] kJ/mol after mitigation (speculation, stated so it can fail)",
+      "surprise_clause": "if epsilon <= 4.184 kJ/mol at 4 qubits, publish as a HIT at the top of the doc - chemical accuracy has been demonstrated on hardware for small weakly-correlated molecules, so this is possible",
+      "failure_threshold": "no fitted energy, or CI width > 20 kJ/mol -> report inconclusive at this shot budget",
+      "claim_earned": "measured NISQ energy error epsilon at 4 qubits, expressed as a fraction of the smallest ladder rung (14.7833 kJ/mol) and of chemical accuracy (4.184 kJ/mol)",
+      "claim_not_earned": "anything about FeMo-co; the 4-qubit to 54-orbital extrapolation is interpretation only",
+      "depends_on": []
+    }
+  ],
+  "block_plan": [
+    {
+      "stage": 0,
+      "what": "calibrate + readout characterisation",
+      "qpu_s": 5,
+      "cumulative_s": 5,
+      "gate": "abort if T2 < 5 us"
+    },
+    {
+      "stage": 1,
+      "what": "E1",
+      "qpu_s": 13,
+      "cumulative_s": 18,
+      "gate": "abort block on failure"
+    },
+    {
+      "stage": 2,
+      "what": "E2",
+      "qpu_s": 1.2,
+      "cumulative_s": 19.2
+    },
+    {
+      "stage": 3,
+      "what": "E3",
+      "qpu_s": 2.9,
+      "cumulative_s": 22.1
+    },
+    {
+      "stage": 4,
+      "what": "E5",
+      "qpu_s": 3.6,
+      "cumulative_s": 25.7
+    },
+    {
+      "stage": 5,
+      "what": "E6",
+      "qpu_s": 2.4,
+      "cumulative_s": 28.1
+    },
+    {
+      "stage": 6,
+      "what": "E4 (if available)",
+      "qpu_s": 1.2,
+      "cumulative_s": 29.3
+    },
+    {
+      "stage": 7,
+      "what": "reserve for one re-run of anything that failed",
+      "qpu_s": null,
+      "cumulative_s": 300
+    }
+  ],
+  "legal_boundary": {
+    "requirement": "any hardware code lives outside src/ (e.g. hardware/ or legacy/qpu/), is never imported by the FBSC path, and is never a dependency of the owned core",
+    "reason": "connecting to a QPU needs a third-party vendor SDK, which the governance audit (PR #149) and the legacy/ boundary rule forbid inside the owned stack",
+    "status": "UNRESOLVED - needs a lead + legal manager decision before any job is submitted"
+  },
+  "cost_disclosure_required": true,
+  "report_voids_as_loudly_as_hits": true
+}
