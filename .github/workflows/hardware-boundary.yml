@@ -1,0 +1,20 @@
+name: hardware boundary
+
+# The originality audit claims, in public, that the owned core imports no
+# third-party quantum SDK and that the claim is enforced in CI. This is that CI.
+# docs/artifacts/compliance/ORIGINALITY_AUDIT.md §4.6 · hardware/README.md
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: hardware/ is a leaf; no vendor SDK outside it
+        run: bash hardware/check_boundary.sh

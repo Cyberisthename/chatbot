@@ -1,0 +1,16 @@
+# hardware/ only — never installed into the owned-core environment.
+#
+# Deliberately UNPINNED. No IBM Quantum account has been used yet, so any version
+# number written today would be invented. Pin both packages at booking and record
+# the exact versions in the frozen pre-registration
+# (`qiskit_version`, `qiskit_ibm_runtime_version`), per
+# docs/qpu/IBM_FREE_TIER_RUNBOOK.md §10.
+#
+# The import path changed at qiskit-ibm-runtime 0.50.0 — pinning is what makes a
+# hardware result reproducible, so it is a pre-registration field, not a nicety.
+#
+# Installing this file must never be part of the owned-core setup. If `qiskit`
+# shows up in a root requirements file, hardware/check_boundary.sh fails.
+
+qiskit
+qiskit-ibm-runtime

@@ -255,10 +255,14 @@ and nothing else. The experiment document's conclusion ("seconds are not the sca
 **true for a 300-second budget and false for a 10-minute-per-month budget.** On the free tier the
 scarce resource is *shots*, and the shot budget is now the thing to defend in review.
 
-We are **not** editing the experiment document in this PR (its thresholds and designs are approved
+We are **not** editing the experiment document's thresholds or designs in this PR (they are approved
 and its numbers stay; the `5 µs/shot` line is an explicit `[assumption]`, not a claim). It is
 flagged here so the lead can decide whether that provenance row gets a pointer to this file. **This
 is the correction that matters and it is stated first, per the working agreement.**
+
+> **Update, 2026-11-05 — the pointer exists.** `docs/QPU_NITROGENASE_EXPERIMENTS.md` §10 now marks
+> the `5 µs/shot` row **superseded on IBM hardware** and links here, quoting this section's 534 s
+> and §5.3's re-cost table. Nothing in that document's §3 was re-opened, and no QPU job has run.
 
 ### 5.2 What we can do about it
 

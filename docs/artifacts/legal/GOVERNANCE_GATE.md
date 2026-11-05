@@ -27,13 +27,17 @@
 
 **A3. No real human bio-data (⛔ FAIL).** No real-patient, human genetic, or real bio-signal data anywhere in the experiment; synthetic/generated samples and public **reference** sequences only. Any future real-data ingestion requires a new DPIA gate + owner approval (see §C6). (a)
 
-**A4. No hardware/biological-effect claims (⛔ FAIL).** Simulation-only; no physical device, wet-lab protocol, or human-subject contact. "Quantum" = quantum-inspired math, **exact classical simulation** — no quantum hardware. The 41.02 Hz "sentience trigger" is a spectral-detection event / design metaphor, not consciousness or bio-resonance. (a)
+**A4. No hardware/biological-effect claims (⛔ FAIL).** Simulation-only; no physical device, wet-lab protocol, or human-subject contact. "Quantum" = quantum-inspired math, **exact classical simulation** — no quantum hardware. The 41.02 Hz "sentience trigger" is a spectral-detection event / design metaphor, not consciousness or bio-resonance. (a) **Nuance (2026-11-05, owner's IBM free-tier decision):** a hardware sandbox now exists (§A8). The team may report **device calibration** and **measured device behaviour** of a third-party device — never **our core on a QPU**. The FBSC state stays an exact classical simulation, and device decay against an exact classical program is not an advantage. (a)
 
 **A5. Privacy & provenance (⛔ FAIL).** Zero PII/health/genetic/biometric collection; server stores no raw seeds and no person-linked artifacts (digest-only seed logging — current `rnd_battery.py` policy (a) — is the approved pattern). Each dataset/API used has documented source + license/TOS; no third-party corpus redistributed inside product artifacts without attribution. (a)
 
 **A6. Ownership (required, verified).** Code, math, and generated outputs are owner-owned originals; no third-party quantum/LLM SDKs or wrappers (verified by import audit in `ORIGINALITY_AUDIT.md`); the 3-seed key stays owner-controlled, derived instances only. Third-party data is an **input**, not a component of owned IP. (a)
 
 **A7. Reproducibility & durability (required).** Claims tagged (a)/(b)/(c); approved numbers re-verifiable by fresh run; artifact committed to git before task closes (this memo is the durability commit). (a)
+
+**A8. Hardware-sandbox boundary (required, verified; added 2026-11-05).** Any third-party quantum SDK (currently `qiskit` / `qiskit-ibm-runtime`) lives **only** in `hardware/`, which is a **leaf never imported by the FBSC path**, and this is enforced by `hardware/check_boundary.sh` in CI (`.github/workflows/hardware-boundary.yml`) — not by a README paragraph. The token is an env var (`QISKIT_IBM_TOKEN`), never a file or commit; no raw seed enters `hardware/`; results cross back as **JSON only**, never as code; no vendor code is vendored. `hardware/` is a **second, named exception** to the dependency rule, not a loosening of the `legacy/` rule. Disclosed in `docs/artifacts/compliance/ORIGINALITY_AUDIT.md` §4.6. (a)
+
+> **Note on the numbering:** `docs/qpu/IBM_FREE_TIER_RUNBOOK.md` §9.4 proposes recording this as "A5". A5 in this memo is Privacy & provenance and is not free, so the criterion is **A8**. Same content, no collision.
 
 ### Per-experiment verdict matrix
 
@@ -45,7 +49,9 @@
 
 *E1/E2 currently use risk language in repo artifacts (cancer "effectiveness", DNA-"repair"); that language must be re-framed as named model metrics / mathematical analogy per A1 before in-progress. (a)
 
-- **GO** = all A1–A7 pass; task may go to in-progress immediately.
+**A8 is repo-wide, not per-experiment** — it does not vary across E1–E3, so it is not a column above. Status as of 2026-11-05: **PASS**, verified by fresh run of `bash hardware/check_boundary.sh` → `BOUNDARY OK`, exit 0, on a clean tree; and by a planted-violation run (`import qiskit` in `src/`) → exit 1 with the offending file named, which is the proof that the gate has teeth rather than passing vacuously. (a)
+
+- **GO** = all A1–A8 pass; task may go to in-progress immediately.
 - **CONDITIONAL** = passes once disclaimer language (§B) is attached to the task/deliverable and any risk-language re-framing is done; in-progress only after lead confirms.
 - **NO-GO** = any immediate A1/A2/A3/A4 FAIL; task stays backlog until the claim is re-scoped.
 
