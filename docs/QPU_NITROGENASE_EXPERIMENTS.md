@@ -484,9 +484,11 @@ reported as if it did.
 | invariant distance exactly 0.000000 across 0→40 kinks | `docs/artifacts/anyon/ANYON_BRAID_EXPERIMENT.md` | `[measured, classical simulation]` |
 | CHSH 2.8250 (n=2,3), 2.0351 (n=4), 0.003 off Tsirelson | `docs/artifacts/quantum_likeness/` (PR #146) | `[measured, classical optimisation]` |
 | 54-orbital active space; 10¹¹ T-gate order of magnitude | Reiher, Wiebe, Svore, Wecker, Troyer, PNAS 114, 7555 (2017) | `[published]` |
-| per-shot 5 µs reset+readout; 5 µs/shot ⇒ 3–6×10⁷ shots in 300 s | stated assumption | `[assumption]`/`[analytic]` |
+| per-shot 5 µs reset+readout; 5 µs/shot ⇒ 3–6×10⁷ shots in 300 s | stated assumption — **superseded on IBM hardware; re-costed in `docs/qpu/IBM_FREE_TIER_RUNBOOK.md` §5** (350 µs per execution at defaults ⇒ 534 s for this plan, not ~30 s) | `[assumption]`/`[analytic]` |
 | all value scores, and the §2 ranking | my judgement, weights stated | `[interpretation]` |
 | every threshold in §3 | untested design | `[design]` |
+
+> **⚠ Re-costing (2026-11-05) — read §5 of the runbook before quoting §1.** The `5 µs/shot` row above is an explicit `[assumption]`, and on IBM hardware it is wrong by ~70×: metering is **350 µs per execution at default settings** (250 µs `rep_delay` + ~100 µs circuit), so this plan's 1.52×10⁶ shots cost **534 s**, not ~30 s — 89 % of one 28-day Open Plan allowance rather than 10 % of a 300-second block. **`docs/qpu/IBM_FREE_TIER_RUNBOOK.md` §5** carries the correction (§5.1), the per-experiment re-cost table (§5.3: 506 s at defaults, 192 s tuned, and the `L = 200 µs` sensitivity that makes the tuned column conditional), and the resulting rules of engagement (§5.4: submit tuned, one block per window, 40 % reserve). The conclusion in §1 — "the 300-second budget is not the binding constraint" — is **true for a 300-second block and false for a 10-minute-per-month free tier**; on the free tier the scarce resource is *shots*. Nothing else in this document changes: the thresholds and designs in §3 are approved and are not re-opened here, and **no QPU job has been submitted** — every second in the runbook is `[analytic]`.
 
 **Reproduce the `[measured]` numbers above** (no network, ~1 s):
 ```

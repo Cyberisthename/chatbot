@@ -1,6 +1,7 @@
 # JARVIS Originality Audit — Legal Ownership & Dependency Risk Report
 
 **Date:** 2026-10-05 (fresh audit of `Cyberisthename/chatbot` @ `origin/main` HEAD 5520238 + working tree)
+**Revision 2 — 2026-11-05:** the owner has decided to use IBM Quantum's free tier, which means **Qiskit**, a third-party quantum SDK. §4.6 is new and discloses it. **The core verdict is unchanged and the claim is unchanged**: the SDK is confined to a `hardware/` leaf that the FBSC path never imports, and the confinement is enforced by `hardware/check_boundary.sh` in CI. Nothing in this revision is `[measured]` on a device — **no QPU job has been submitted.**
 **Auditor:** agent-legal-manager
 **Scope:** Verify that the JARVIS core (Quantum Transformer, TCL engine, FBSC seed compressor) is custom-built and NOT a wrapper on proprietary/third-party AI or quantum SDKs; report legal ownership status and dependency risks.
 **Method:** static import scan of all Python in the core package + root repo; review of `requirements.txt`, `package.json`, LICENSE files; spot-read of core module structure (forward/backward loops). Every claim below is tagged **(a) measured / (b) interpretation / (c) speculation** per house standard.
@@ -20,6 +21,8 @@
 
 **Pass is scoped to the core.** Two risk items below (legacy HF-training scripts; brand name) do not change the core verdict but must be managed.
 
+**(a) Revision 2 — the same claim, now stated with its exception named.** The owned core (`src/`, `scripts/`) imports no third-party quantum SDK and no LLM SDK; this is **enforced by `hardware/check_boundary.sh` in CI**, not merely asserted. Device-calibration code lives in `hardware/`, is a **leaf**, is **not imported by the FBSC path**, and is disclosed in §4.6 because it uses `qiskit` / `qiskit-ibm-runtime` under IBM's terms. No vendor code is vendored and no result is imported as code. **The owned-core claim is unchanged; the hardware numbers are calibration of a third-party device, not part of the owned stack.** A `hardware/` directory is a *second, named exception* to the dependency rule, not a loosening of the first: `legacy/` keeps its rule unchanged.
+
 ---
 
 ## 2. What was scanned
@@ -33,9 +36,10 @@
 | API layer (`src/api/`) | main, cancer_routes, tcl_routes, rnd_battery | fastapi/flask/pydantic/uvicorn only |
 | Root-level legacy scripts | `train_jarvis.py`, `train_llm.py`, `convert_to_gguf.py` (all git-tracked) | **`torch` + `transformers` (HuggingFace, distilgpt2 fine-tune)** — legacy, NOT part of the core product |
 | Node layer (`package.json`, `server.js`) | — | express, cors, socket.io, helmet, winston, dotenv, multer, compression — infra only |
+| **`hardware/` (Revision 2, new)** | README, `check_boundary.sh`, `requirements.txt` | **`qiskit` / `qiskit-ibm-runtime` — declared, disclosed, sandboxed (§4.6). Nothing else in the repo may reference them.** |
 | Website (`/home/team/shared/site`) | — | TanStack Start/React/Vite/Tailwind — presentation only, no AI dependency |
 
-**Interpreted list of "no" verdicts:** no qiskit, no pennylane, no cirq, no braket, no dwave, no IBM/Google/Azure quantum APIs, no openai, no anthropic, no langchain, no google — anywhere in `src/` or the repo's Python core. (a)
+**Interpreted list of "no" verdicts:** no qiskit, no pennylane, no cirq, no braket, no dwave, no IBM/Google/Azure quantum APIs, no openai, no anthropic, no langchain, no google — anywhere in `src/` or the repo's Python core. (a) **Revision 2:** `qiskit` / `qiskit_ibm_runtime` / `qiskit_aer` appear **only** inside `hardware/`, and that is verified mechanically, not by reading: `bash hardware/check_boundary.sh` greps every `.py` file in the repo outside `hardware/` and `legacy/` and fails CI on a single hit. It also fails if anything outside `hardware/` imports `hardware`, and if a root or HF-ready requirements file lists the SDK. (a)
 
 ---
 
@@ -72,6 +76,33 @@
 ### 4.5 DLL/shared-object and binary blobs
 **(a)** `jarvis_qvgpu_trained.npz` is an owned training artifact (optional, cwd-dependent), not a third-party binary. No proprietary .so/.dll in the core path found.
 
+### 4.6 `hardware/` — the disclosed third-party quantum SDK (Revision 2, 2026-11-05)
+
+**(a) What happened.** The owner decided to use IBM Quantum's free tier. Reaching a real QPU requires IBM's SDK and a cloud account, i.e. a third-party quantum SDK — the exact thing this audit's verdict says is absent from the owned core.
+
+**(a) What the resolution is.** Qiskit lives in a third top-level sandbox, `hardware/`, that nothing in the owned path can reach:
+
+- `hardware/README.md` states, in those words, that it is **calibration of a third-party device, not part of the owned stack**, that it is **never imported by the FBSC path**, and that it is a **second, named exception, not a loosening of the `legacy/` rule**.
+- `hardware/check_boundary.sh` is the gate and runs in CI (`.github/workflows/hardware-boundary.yml`). It fails when: any `.py` outside `hardware/`/`legacy/` mentions `qiskit`, `qiskit_ibm_runtime` or `qiskit_aer`; anything outside `hardware/` imports `hardware`; or a root / HF-ready requirements file lists the SDK. It also carries a **teeth check** — if the pattern stops matching the one file allowed to contain it, the gate fails rather than passing forever. (a, verified by fresh run: clean tree → exit 0; a planted `import qiskit` in `src/` → exit 1 with the file named.)
+- `hardware/requirements.txt` is the only place the packages are declared, and it is deliberately **unpinned**: no account has been used, so a version number written today would be invented. Pinning happens at booking and is a pre-registration field (`qiskit_version`, `qiskit_ibm_runtime_version`).
+- **No vendor code is vendored.** MIT covers our files; it does not cover IBM's SDK terms, and it does not cover "J.A.R.V.I.S." (§3.3, still unresolved).
+- **The token is an environment variable** (`QISKIT_IBM_TOKEN`), never a file, a commit, a `.env`, or notebook output. **No raw seed enters `hardware/`** — hardware work consumes frozen pre-registered parameter sets.
+- **Results cross back as JSON only** (`docs/artifacts/qpu/<UTC-date>/`), read by the owned core the way it reads any data file. **No result is imported as code.**
+
+**(b) What this earns, and what it must never be worded to imply.**
+
+| | |
+|---|---|
+| Earned | *device calibration* and *measured device behaviour* — T1/T2, readout error, CHSH measured on hardware, measured depth decay. |
+| **NOT** earned | any claim that **our core ran on a QPU**. The FBSC state is an exact classical simulation; device decay against an exact classical program is not an advantage. |
+| **NOT** earned | any **d ≥ 3 qudit** result on IBM. Pulse-level control was deprecated and removed (early 2025; `qiskit.pulse` removed in Qiskit 2.0), so qudit access is **unobtainable there, not unaffordable**. We did not run it. No artifact may be worded as if we had. |
+
+**(a) Status right now: nothing has run.** No QPU job has been submitted by this repository. Every figure in `docs/qpu/` is arithmetic from IBM's published metering formula, tagged `[analytic]`. When the first job does run, its cost must be disclosed in the artifact with the measured `job.metrics()` value, not the estimate.
+
+**(b) Effect on the verdict: none.** The owned-core claim was never "no third-party SDK exists in the repo" — it was "the owned core imports none". That sentence is now true *and mechanically checked*, with its one exception named in public. A boundary that is only a paragraph in a README is a boundary that will be crossed; this one is a script in CI.
+
+**References:** `docs/qpu/IBM_FREE_TIER_RUNBOOK.md` §9 (sandbox rule, layout, audit wording) and §5 (the re-costing: 350 µs/execution at IBM defaults, so the 1.52×10⁶-shot plan is 534 s, not the ~30 s the `5 µs/shot` assumption implied); `docs/QPU_NITROGENASE_EXPERIMENTS.md` §7 (the legal boundary, stated before the vendor was chosen) and §10 (the pointer to that re-costing).
+
 ---
 
 ## 5. Repo-convention note (CLAUDE.md / AGENTS.md)
@@ -81,6 +112,8 @@
 
 ## 6. Bottom line for the lead
 - **Core originality: VERIFIED.** Quantum Transformer, TCL engine, and FBSC core are custom-built numpy/stdlib code with no proprietary wrappers, MIT-licensed, owner-owned.
+- **Revision 2 — the claim survives the owner's QPU decision, literally.** Qiskit is confined to a `hardware/` leaf, disclosed in §4.6, and the confinement is a CI gate (`hardware/check_boundary.sh`) rather than a promise. The sentence "the owned core imports no third-party quantum SDK" is now true *and* checkable with one command.
 - **Two action items:** (1) resolve the legacy torch/transformers scripts boundary (4.1); (2) make an owner-flagged decision on the "J.A.R.V.I.S." brand name (3.3).
+- **One new action item from Revision 2:** the boundary is only as good as its weakest sibling — when the first hardware artifact lands, it must be JSON-only, cost-disclosed, and must not be worded as "our core on a QPU" (§4.6). Also, `hardware/requirements.txt` must be pinned at booking; an unpinned vendor SDK is an unreproducible hardware result.
 - **One recommendation:** add `AGENTS.md` with conventions (5).
 - Every approved number referenced here is re-verifiable by fresh grep/run on the repo — no stale-doc numbers used.
